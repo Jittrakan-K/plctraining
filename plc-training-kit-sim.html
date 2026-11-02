@@ -1,0 +1,1977 @@
+<title>PLC Training Kit Sim</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: workbench — ladder (or ST) editor on the left, the machine simulator on the right; I/O, watch and the GX Works2 link below */
+:root{
+  --bg:#e9edf1; --panel:#ffffff; --panel-2:#f4f6f9; --ink:#17212b; --muted:#5b6878; --line:#d4dbe3; --faint:#e6ebf0;
+  --accent:#2457a6; --accent-ink:#ffffff; --accent-soft:#e3ebf8;
+  --ok:#1d9a52; --warn:#c98a00; --bad:#cf3434;
+  --mon:#1f6fe0; --mon-soft:rgba(31,111,224,.16);
+  --code-bg:#fbfcfd; --c-kw:#2457a6; --c-ty:#0d7c76; --c-num:#b25205; --c-com:#7d8896; --c-io:#8b36b8; --c-fn:#a2361a;
+  --sel:rgba(36,87,166,.22); --err-bg:rgba(207,52,52,.12);
+  --sim-bg:#d9dfe6;
+  --f-ui:"IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f141a; --panel:#171e26; --panel-2:#1c2530; --ink:#e2e8ee; --muted:#93a1b0; --line:#2a3542; --faint:#212b36;
+  --accent:#6f9ff0; --accent-ink:#0b1320; --accent-soft:#1d2b42;
+  --ok:#3ccf7e; --warn:#f0b429; --bad:#ff6b6b;
+  --mon:#5b9dff; --mon-soft:rgba(91,157,255,.22);
+  --code-bg:#121920; --c-kw:#7fb0ff; --c-ty:#4fd1c5; --c-num:#f6ad55; --c-com:#6c7a89; --c-io:#d29bff; --c-fn:#ff9b7a;
+  --sel:rgba(111,159,240,.3); --err-bg:rgba(255,107,107,.16);
+  --sim-bg:#1a222c; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0f141a; --panel:#171e26; --panel-2:#1c2530; --ink:#e2e8ee; --muted:#93a1b0; --line:#2a3542; --faint:#212b36;
+  --accent:#6f9ff0; --accent-ink:#0b1320; --accent-soft:#1d2b42;
+  --ok:#3ccf7e; --warn:#f0b429; --bad:#ff6b6b;
+  --mon:#5b9dff; --mon-soft:rgba(91,157,255,.22);
+  --code-bg:#121920; --c-kw:#7fb0ff; --c-ty:#4fd1c5; --c-num:#f6ad55; --c-com:#6c7a89; --c-io:#d29bff; --c-fn:#ff9b7a;
+  --sel:rgba(111,159,240,.3); --err-bg:rgba(255,107,107,.16);
+  --sim-bg:#1a222c; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:14px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 32px}
+.wrap{max-width:1560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.brand small{color:var(--muted);font-family:var(--f-code);font-size:12px}
+.status{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:var(--f-code);font-size:12px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-weight:700;font-family:var(--f-code);font-size:12px;border:1px solid var(--line);background:var(--panel)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.pill.run{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)} .pill.run i{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.pill.err{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)} .pill.err i{background:var(--bad)}
+.pill.link{color:var(--mon);border-color:color-mix(in srgb,var(--mon) 45%,transparent)} .pill.link i{background:var(--mon);box-shadow:0 0 8px var(--mon)}
+.grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:1120px){.grid{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0;overflow:hidden}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;background:var(--panel-2);border-bottom:1px solid var(--line)}
+.bar .title{font-weight:600;font-size:13px;margin-right:auto;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+button,select,input[type=text]{font:inherit;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 11px}
+button,select{cursor:pointer}
+button:hover,select:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible,.ladwrap:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.stop{color:var(--bad)}
+button:disabled{opacity:.5;cursor:default}
+select{max-width:100%}
+#ex{flex:1 1 180px;min-width:0;max-width:320px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;border-radius:0;padding:5px 12px;font-weight:600;color:var(--muted);background:transparent}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+/* ladder */
+.ltools{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+.ltools button{padding:3px 8px;font:600 12px/1.4 var(--f-code);display:inline-flex;flex-direction:column;align-items:center;gap:0;min-width:40px}
+.ltools button small{font:500 9.5px var(--f-code);color:var(--muted)}
+.ltools .sep{width:1px;background:var(--line);margin:2px 3px}
+.ladwrap{position:relative;height:560px;overflow:auto;background:var(--code-bg);outline:none}
+@media (max-width:700px){.ladwrap{height:420px}}
+.ladwrap svg{display:block}
+.pop{position:absolute;z-index:5;background:var(--panel);border:1px solid var(--accent);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.22);padding:8px;width:280px}
+.pop input{width:100%;font:600 14px var(--f-code);text-transform:uppercase;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--code-bg);color:var(--ink)}
+.pop .h{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+.pop .h.bad{color:var(--bad)}
+/* ST editor */
+.code{position:relative;display:flex;height:560px;background:var(--code-bg);font:13px/20px var(--f-code)}
+@media (max-width:700px){.code{height:400px}}
+.gutter{width:46px;flex:none;overflow:hidden;position:relative;border-right:1px solid var(--line);color:var(--c-com);text-align:right;user-select:none}
+.gutter-inner{padding:10px 9px 10px 0;white-space:pre;will-change:transform}
+.gutter .e{color:var(--bad);font-weight:700}
+.area{position:relative;flex:1;min-width:0;overflow:hidden}
+.under{position:absolute;top:0;left:0;min-width:100%;pointer-events:none;will-change:transform}
+.under pre{margin:0;padding:10px 12px;font:inherit;white-space:pre;color:var(--ink)}
+.errline{position:absolute;left:0;width:6000px;height:20px;background:var(--err-bg);border-left:3px solid var(--bad)}
+#ed{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:10px 12px;border:0;outline:0;resize:none;background:transparent;color:transparent;caret-color:var(--ink);font:inherit;white-space:pre;overflow:auto;tab-size:4}
+#ed::selection{background:var(--sel)}
+.kw{color:var(--c-kw);font-weight:600}.ty{color:var(--c-ty)}.num{color:var(--c-num)}.com{color:var(--c-com);font-style:italic}.io{color:var(--c-io);font-weight:600}.fn{color:var(--c-fn)}
+.console{border-top:1px solid var(--line);padding:9px 12px;font:12.5px/1.55 var(--f-code);min-height:42px;background:var(--panel)}
+.console.ok{color:var(--ok)} .console.bad{color:var(--bad);cursor:pointer} .console.info{color:var(--muted)}
+/* simulator */
+.simwrap{position:relative;background:var(--sim-bg)}
+#sim{display:block;width:100%;max-width:100%;aspect-ratio:900/500;touch-action:none;cursor:default}
+.toast{position:fixed;z-index:20;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);max-width:min(560px,90vw);padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;background:var(--panel);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.toast.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 50%,transparent)}
+.toast.warn{color:var(--warn)}
+.toast.ok{color:var(--ok)}
+.score{display:flex;gap:6px;flex-wrap:wrap;font-family:var(--f-code);font-size:12px}
+.score span{padding:3px 8px;border-radius:6px;background:var(--panel);border:1px solid var(--line)}
+.score b{font-variant-numeric:tabular-nums}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;user-select:none}
+.lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:760px){.lower{grid-template-columns:minmax(0,1fr)}}
+.iogrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:10px 12px}
+.iorow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;border:1px solid var(--line);background:var(--panel);font-size:12.5px;min-width:0;text-align:left;color:var(--ink)}
+.iorow b{font-family:var(--f-code);font-size:12px;color:var(--c-io);min-width:22px}
+.iorow span.d{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.led{flex:none;width:11px;height:11px;border-radius:50%;background:color-mix(in srgb,var(--muted) 35%,transparent);border:1px solid color-mix(in srgb,var(--muted) 50%,transparent)}
+.iorow.on .led{background:var(--ok);border-color:var(--ok);box-shadow:0 0 7px var(--ok)}
+.iorow.y.on .led{background:var(--warn);border-color:var(--warn);box-shadow:0 0 7px var(--warn)}
+button.iorow{cursor:pointer;padding:5px 8px;border-style:dashed}
+button.iorow:active{transform:translateY(1px)}
+.iohead{padding:10px 12px 0;font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.watch{width:100%;border-collapse:collapse;font:12.5px var(--f-code)}
+.watch th,.watch td{text-align:left;padding:6px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.watch th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;background:var(--panel-2)}
+.watch td.v{font-variant-numeric:tabular-nums}
+.tbool{padding:1px 7px;border-radius:5px;font-weight:700;font-size:11.5px}
+.tbool.t{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.tbool.f{background:color-mix(in srgb,var(--muted) 15%,transparent);color:var(--muted)}
+.scroll{overflow-x:auto;max-height:330px;overflow-y:auto}
+.empty{padding:14px 12px;color:var(--muted);font-size:13px}
+/* GX link */
+.gx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}
+@media (max-width:980px){.gx{grid-template-columns:minmax(0,1fr)}}
+.gx section{padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.gx section+section{border-left:1px solid var(--line)}
+@media (max-width:980px){.gx section+section{border-left:0;border-top:1px solid var(--line)}}
+.gx h3{margin:0;font-size:15px}
+.gx p{margin:0;color:var(--muted);font-size:13px;max-width:68ch}
+.gx .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#il{width:100%;min-height:220px;resize:vertical;font:12.5px/1.5 var(--f-code);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);color:var(--ink);white-space:pre;tab-size:8}
+#wsUrl{flex:1 1 200px;min-width:0;font-family:var(--f-code)}
+.linkst{font:12.5px var(--f-code);padding:7px 10px;border-radius:7px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.linkst.ok{color:var(--ok)} .linkst.bad{color:var(--bad)}
+.gx ol{margin:0;padding-left:20px;font-size:13px}
+.gx ol li{margin:4px 0}
+.gx code,.ref code{font-family:var(--f-code);font-size:12px;background:var(--panel-2);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+.ref{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:0}
+@media (max-width:980px){.ref{grid-template-columns:minmax(0,1fr)}}
+.ref section{padding:12px 16px;border-right:1px solid var(--line);min-width:0}
+.ref section:last-child{border-right:0}
+.ref h3{margin:0 0 8px;font-size:14px}
+.ref ul{margin:0;padding-left:18px}
+.ref li{margin:3px 0}
+.iotable{width:100%;border-collapse:collapse;font-size:12.5px}
+.iotable td{padding:4px 6px;border-bottom:1px solid var(--line)}
+.iotable td:first-child{font-family:var(--f-code);font-weight:700;color:var(--c-io);width:40px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>PLC Training Kit Sim</h1>
+      <small>Ladder (MELSEC FX) · Structured Text · สแกน 10 ms</small>
+    </div>
+    <div class="status">
+      <span class="pill" id="pill"><i></i><span id="pillTxt">STOP</span></span>
+      <span id="scanInfo">scan 0</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="bar">
+        <div class="seg" role="group" aria-label="ภาษา">
+          <button id="langLD" aria-pressed="true">Ladder</button>
+          <button id="langST" aria-pressed="false">ST</button>
+        </div>
+        <select id="ex" aria-label="ตัวอย่างโปรแกรม"></select>
+        <button class="primary" id="btnRun" title="Ctrl+Enter">▶ Run</button>
+        <button class="stop" id="btnStop">■ Stop</button>
+      </div>
+
+      <div id="ladView">
+        <div class="ltools" id="ltools">
+          <button data-k="F5" title="คอนแทค NO (F5)">┤ ├<small>F5</small></button>
+          <button data-k="sF5" title="คอนแทค NO ขนาน / OR (Shift+F5)">┴┤ ├<small>sF5</small></button>
+          <button data-k="F6" title="คอนแทค NC (F6)">┤/├<small>F6</small></button>
+          <button data-k="sF6" title="คอนแทค NC ขนาน / ORI (Shift+F6)">┴┤/├<small>sF6</small></button>
+          <button data-k="P" title="คอนแทคขอบขาขึ้น LDP">┤↑├<small>LDP</small></button>
+          <button data-k="Fe" title="คอนแทคขอบขาลง LDF">┤↓├<small>LDF</small></button>
+          <span class="sep"></span>
+          <button data-k="F7" title="คอยล์ OUT (F7)">( )<small>F7</small></button>
+          <button data-k="F8" title="คำสั่ง SET/RST/MOV... (F8)">[ ]<small>F8</small></button>
+          <span class="sep"></span>
+          <button data-k="F9" title="เส้นนอน (F9)">──<small>F9</small></button>
+          <button data-k="F10" title="เส้นตั้ง ที่ขอบซ้ายของช่อง เชื่อมขึ้นแถวบน (F10)">│<small>F10</small></button>
+          <button data-k="Del" title="ลบช่องที่เลือก (Delete)">ลบ<small>Del</small></button>
+          <span class="sep"></span>
+          <button data-k="insRow" title="แทรกแถว (Shift+Insert)">+แถว<small>sIns</small></button>
+          <button data-k="delRow" title="ลบแถว (Shift+Delete)">−แถว<small>sDel</small></button>
+          <button data-k="undo" title="ย้อนกลับ (Ctrl+Z)">↶<small>Ctrl+Z</small></button>
+        </div>
+        <div class="ladwrap" id="ladwrap" tabindex="0" aria-label="ตัวแก้ไข Ladder: ใช้ลูกศรเลื่อน Enter เพื่อพิมพ์คำสั่ง">
+          <svg id="lad"></svg>
+          <div class="pop" id="pop" hidden>
+            <input id="popIn" type="text" spellcheck="false" autocomplete="off" aria-label="พิมพ์คำสั่ง">
+            <div class="h" id="popHint">เช่น <b>LD X0</b>, <b>ANI X1</b>, <b>OR M0</b>, <b>OUT Y3</b>, <b>OUT T0 K20</b>, <b>SET M10</b>, <b>MOV K5 D0</b>, <b>LD= D0 K5</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="stView" hidden>
+        <div class="code">
+          <div class="gutter"><div class="gutter-inner" id="gut">1</div></div>
+          <div class="area">
+            <div class="under" id="under"><div id="errMark"></div><pre id="hl"></pre></div>
+            <textarea id="ed" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="ตัวแก้ไขโค้ด Structured Text"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="console info" id="con">กด Run (หรือ Ctrl+Enter) เพื่อรันโปรแกรม</div>
+    </div>
+
+    <div class="col">
+      <div class="card">
+        <div class="bar">
+          <span class="title">เครื่องจำลอง</span>
+          <button id="addM">+ ชิ้นงานโลหะ</button>
+          <button id="addP">+ ชิ้นงานพลาสติก</button>
+          <label class="chk"><input type="checkbox" id="auto" checked> ป้อนอัตโนมัติ</label>
+          <button id="resetSim">รีเซ็ตเครื่อง</button>
+        </div>
+        <div class="simwrap">
+          <canvas id="sim" aria-label="ภาพจำลองชุดฝึก PLC: สายพาน ตัวคีบลม เซนเซอร์ และไฟสถานะ"></canvas>
+        </div>
+        <div class="bar" style="border-top:1px solid var(--line);border-bottom:0">
+          <span class="title">ผลการคัดแยก</span>
+          <div class="score">
+            <span>ถูกต้อง <b id="sOk">0</b></span>
+            <span style="color:var(--bad)">ผิด <b id="sNg">0</b></span>
+            <span style="color:var(--warn)">ตกพื้น <b id="sDrop">0</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="lower">
+        <div class="card">
+          <div class="iohead">อินพุต (X) · กดค้างที่ X0 / X1 ได้</div>
+          <div class="iogrid" id="ioX"></div>
+          <div class="iohead">เอาต์พุต (Y)</div>
+          <div class="iogrid" id="ioY"></div>
+        </div>
+        <div class="card">
+          <div class="bar"><span class="title">Device Monitor</span></div>
+          <div class="scroll"><table class="watch"><thead><tr><th>อุปกรณ์</th><th>ชนิด</th><th>ค่า</th></tr></thead><tbody id="watch"></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card gx">
+    <section>
+      <h3>แลกโปรแกรมกับ GX Works2</h3>
+      <p>Ladder ในเว็บแปลงเป็น Instruction List (IL) ของ MELSEC ให้อัตโนมัติ ส่งออกเป็นไฟล์ CSV เพื่อนำเข้า GX Works2 หรือนำไฟล์ CSV ที่ส่งออกจาก GX Works2 มาเปิดเป็น Ladder ที่นี่ก็ได้</p>
+      <div class="row">
+        <button class="primary" id="saveCsv">บันทึก CSV สำหรับ GX Works2</button>
+        <button id="copyIl">คัดลอก IL</button>
+        <button id="openFile">นำเข้าไฟล์ CSV / IL…</button>
+        <input type="file" id="fileIn" accept=".csv,.txt" hidden>
+      </div>
+      <textarea id="il" spellcheck="false" aria-label="Instruction List"></textarea>
+      <div class="row">
+        <button id="ilToLad">แปลง IL ในช่องนี้เป็น Ladder</button>
+        <span class="kbd" id="ilInfo"></span>
+      </div>
+      <ol>
+        <li>ใน GX Works2 คลิกขวาที่หน้า Ladder → <b>Read from CSV File</b> แล้วเลือกไฟล์ที่บันทึกจากเว็บนี้</li>
+        <li>จาก GX Works2 ไปเว็บ: คลิกขวาที่ Ladder → <b>Write to CSV File</b> แล้วกด “นำเข้าไฟล์ CSV / IL” ที่นี่</li>
+      </ol>
+    </section>
+    <section>
+      <h3>รันโปรแกรมจาก GX Works2 กับเครื่องจำลองนี้ (Bridge)</h3>
+      <p>ให้โปรแกรม Ladder ที่รันอยู่ใน GX Simulator2 ขับเครื่องจำลองนี้แบบเรียลไทม์: เว็บส่งสถานะเซนเซอร์ X0–X7 ไปให้ และอ่าน Y0–Y7 กลับมาขยับเครื่อง ผ่านโปรแกรมตัวกลาง <code>gx_bridge.py</code> ที่รันบนเครื่องคอมพิวเตอร์ของคุณ</p>
+      <div class="row">
+        <input type="text" id="wsUrl" value="ws://localhost:8765" aria-label="ที่อยู่ Bridge">
+        <button class="primary" id="btnLink">เชื่อมต่อ</button>
+      </div>
+      <div class="linkst" id="linkSt">ยังไม่เชื่อมต่อ · เครื่องจำลองใช้โปรแกรมในเว็บ</div>
+      <ol>
+        <li>GX Works2: Debug → <b>Start/Stop Simulation</b> (เปิด GX Simulator2 ให้ RUN)</li>
+        <li>MX Component → Communication Setup Utility: สร้าง Logical Station No. 1 เลือกการเชื่อมต่อเป็น <b>GX Simulator2</b></li>
+        <li>เปิด Command Prompt: <code>pip install pywin32 websockets</code> แล้ว <code>python gx_bridge.py --station 1</code></li>
+        <li>เปิดไฟล์ <code>plc-training-kit-sim.html</code> จากเครื่อง (ไม่ใช่ลิงก์ออนไลน์) แล้วกด “เชื่อมต่อ”</li>
+      </ol>
+    </section>
+  </div>
+
+  <div class="card ref">
+    <section>
+      <h3>การต่อ I/O ของชุดฝึก</h3>
+      <table class="iotable" id="ioRef"></table>
+    </section>
+    <section>
+      <h3>คำสั่ง Ladder ที่รองรับ (FX)</h3>
+      <ul>
+        <li>คอนแทค <code>LD LDI LDP LDF</code> · <code>AND ANI ANDP ANDF</code> · <code>OR ORI ORP ORF</code></li>
+        <li>เปรียบเทียบ <code>LD= LD&lt;&gt; LD&gt; LD&lt; LD&gt;= LD&lt;=</code> (และ AND/OR)</li>
+        <li>เอาต์พุต <code>OUT</code> <code>SET</code> <code>RST</code> <code>PLS</code> <code>PLF</code></li>
+        <li>ไทเมอร์ <code>OUT T0 K20</code> (T0–T199 ฐาน 100 ms, T200–T245 ฐาน 10 ms)</li>
+        <li>เคาน์เตอร์ <code>OUT C0 K5</code> · รีเซ็ต <code>RST C0</code></li>
+        <li>ข้อมูล <code>MOV(P)</code> <code>INC(P)</code> <code>DEC(P)</code> กับ D0–D7999</li>
+        <li>รีเลย์พิเศษ <code>M8000</code> RUN, <code>M8002</code> พัลส์แรก, <code>M8012</code> 0.1 s, <code>M8013</code> 1 s</li>
+      </ul>
+    </section>
+    <section>
+      <h3>วิธีเขียน Ladder</h3>
+      <ul>
+        <li>คลิกช่อง แล้วกด <b>F5</b> พิมพ์ <code>X0</code> Enter (หรือดับเบิลคลิกแล้วพิมพ์ <code>LD X0</code>)</li>
+        <li>วงจรขนาน: ไปแถวล่าง กด <b>Shift+F5</b> เส้นตั้งจะต่อให้เอง</li>
+        <li><b>F7</b> พิมพ์ <code>Y3</code> วางคอยล์ท้ายแถว · <b>F8</b> พิมพ์ <code>SET M10</code></li>
+        <li>แก้โปรแกรมขณะ RUN ได้ (Online change) ค่าในหน่วยความจำไม่หาย</li>
+        <li>ขณะ RUN คอนแทค/คอยล์ที่ทำงานจะเป็นสีน้ำเงินแบบ Monitor ของ GX Works2</li>
+      </ul>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(()=>{
+'use strict';
+/* ================= Shared state & helpers ================= */
+const $=id=>document.getElementById(id);
+const SCAN=10;
+let lang='LD';            // 'LD' (ladder) | 'ST'
+let source='sim';         // 'sim' = program in this page, 'bridge' = GX Simulator2 / PLC via gx_bridge.py
+let running=false,plcErr=false,plcTime=0,scanCount=0;
+let linkOk=false;
+const plcActive=()=>running||(source==='bridge'&&linkOk);
+const ed=$('ed'),hl=$('hl'),gut=$('gut'),under=$('under'),errMark=$('errMark'),con=$('con');
+let errLine=null;
+let toastT=0;
+function toast(msg,cls){const t=$('toast');t.textContent=msg;t.className='toast '+(cls||'');t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},2600)}
+function setConsole(cls,msg){con.className='console '+cls;con.textContent=msg}
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let inFrame=false;try{inFrame=window.top!==window.self}catch(e){inFrame=true}
+
+/* ================= I/O map ================= */
+const IO_X=[
+  {n:'X0',d:'ปุ่ม START (เขียว, NO)'},
+  {n:'X1',d:'ปุ่ม STOP (แดง, NO)'},
+  {n:'X2',d:'Photo sensor ตรวจจับชิ้นงาน'},
+  {n:'X3',d:'Proximity ตรวจจับโลหะ'},
+  {n:'X4',d:'กระบอกแนวตั้ง อยู่บน'},
+  {n:'X5',d:'กระบอกแนวตั้ง อยู่ล่าง'},
+  {n:'X6',d:'กระบอกแนวนอน ตำแหน่งต้น'},
+  {n:'X7',d:'กระบอกแนวนอน ถึงกล่อง REJECT'}];
+const IO_Y=[
+  {n:'Y0',d:'ไฟเขียว'},
+  {n:'Y1',d:'ไฟเหลือง'},
+  {n:'Y2',d:'ไฟแดง'},
+  {n:'Y3',d:'มอเตอร์สายพาน'},
+  {n:'Y4',d:'วาล์ว กระบอกแนวตั้ง (ลง)'},
+  {n:'Y5',d:'วาล์ว ตัวคีบ (หนีบ)'},
+  {n:'Y6',d:'วาล์ว กระบอกแนวนอน (ไป REJECT)'},
+  {n:'Y7',d:'Buzzer'}];
+
+/* ================= Examples ================= */
+const ST_EXAMPLES=[
+{name:'แบบฝึก 1 · Start/Stop แบบรักษาสภาวะ',code:
+`(* แบบฝึก 1: วงจรรักษาสภาวะ (Self-holding)
+   กด START (X0) -> สายพานหมุน (Y3) + ไฟเขียว (Y0)
+   กด STOP  (X1) -> หยุด + ไฟแดง (Y2)                *)
+PROGRAM PLC_PRG
+VAR
+    Run : BOOL;
+END_VAR
+
+Run := (X0 OR Run) AND NOT X1;
+
+Y3 := Run;       (* มอเตอร์สายพาน *)
+Y0 := Run;       (* ไฟเขียว *)
+Y2 := NOT Run;   (* ไฟแดง *)
+`},
+{name:'แบบฝึก 2 · เจอชิ้นงานแล้วหยุด 2 วินาที (TON)',code:
+`(* แบบฝึก 2: สายพานหยุดเมื่อ Photo sensor (X2) เจอชิ้นงาน
+   รอ 2 วินาที (ไฟเหลืองกระพริบ) แล้วปล่อยชิ้นงานไปต่อ   *)
+PROGRAM PLC_PRG
+VAR
+    Run    : BOOL;
+    Step   : INT;
+    tWait  : TON;
+    tBlink : TON;
+    Blink  : BOOL;
+END_VAR
+
+Run := (X0 OR Run) AND NOT X1;
+
+(* สร้างสัญญาณกระพริบทุก 0.5 วินาที *)
+tBlink(IN := NOT tBlink.Q, PT := T#500MS);
+IF tBlink.Q THEN
+    Blink := NOT Blink;
+END_IF
+
+CASE Step OF
+    0:  (* สายพานวิ่ง รอชิ้นงาน *)
+        Y3 := Run;
+        IF Run AND X2 THEN
+            Step := 1;
+        END_IF
+
+    1:  (* เจอชิ้นงาน: หยุดรอ 2 วินาที *)
+        Y3 := FALSE;
+        tWait(IN := TRUE, PT := T#2S);
+        IF tWait.Q THEN
+            tWait(IN := FALSE);
+            Step := 2;
+        END_IF
+
+    2:  (* ปล่อยชิ้นงานผ่านเซนเซอร์ไป *)
+        Y3 := Run;
+        IF NOT X2 THEN
+            Step := 0;
+        END_IF
+END_CASE
+
+Y0 := Run AND (Step <> 1);
+Y1 := (Step = 1) AND Blink;
+Y2 := NOT Run;
+`},
+{name:'แบบฝึก 3 · คัดแยกโลหะด้วยตัวคีบ (CASE)',code:
+`(* แบบฝึก 3: คัดแยกชิ้นงานด้วยกระบอกลม + ตัวคีบ
+   - ชิ้นงานโลหะ    -> หยิบไปทิ้งกล่อง REJECT
+   - ชิ้นงานพลาสติก -> ปล่อยผ่านไปถาด OK          *)
+PROGRAM PLC_PRG
+VAR
+    Run       : BOOL;
+    Step      : INT := 0;
+    IsMetal   : BOOL;
+    tSettle   : TON;
+    tGrip     : TON;
+    ctMetal   : CTU;
+    ctPlastic : CTU;
+END_VAR
+
+Run := (X0 OR Run) AND NOT X1;
+
+CASE Step OF
+    0:  (* รอคำสั่ง START *)
+        Y3 := FALSE;
+        IF Run THEN Step := 10; END_IF
+
+    10: (* สายพานวิ่ง รอชิ้นงานมาถึงสถานี *)
+        Y3 := TRUE;
+        IF NOT Run THEN
+            Step := 0;
+        ELSIF X2 THEN
+            Y3 := FALSE;
+            Step := 20;
+        END_IF
+
+    20: (* หน่วงให้ชิ้นงานนิ่ง แล้วอ่านเซนเซอร์โลหะ *)
+        tSettle(IN := TRUE, PT := T#300MS);
+        IF tSettle.Q THEN
+            tSettle(IN := FALSE);
+            IsMetal := X3;
+            IF IsMetal THEN Step := 30; ELSE Step := 100; END_IF
+        END_IF
+
+    30: Y4 := TRUE;                       (* กระบอกแนวตั้งลง *)
+        IF X5 THEN Step := 40; END_IF
+
+    40: Y5 := TRUE;                       (* หนีบชิ้นงาน *)
+        tGrip(IN := TRUE, PT := T#300MS);
+        IF tGrip.Q THEN tGrip(IN := FALSE); Step := 50; END_IF
+
+    50: Y4 := FALSE;                      (* ยกขึ้น *)
+        IF X4 THEN Step := 60; END_IF
+
+    60: Y6 := TRUE;                       (* เลื่อนไปกล่อง REJECT *)
+        IF X7 THEN Step := 70; END_IF
+
+    70: Y5 := FALSE;                      (* ปล่อยชิ้นงาน *)
+        tGrip(IN := TRUE, PT := T#300MS);
+        IF tGrip.Q THEN tGrip(IN := FALSE); Step := 80; END_IF
+
+    80: Y6 := FALSE;                      (* กลับตำแหน่งต้น *)
+        IF X6 THEN Step := 10; END_IF
+
+    100: (* พลาสติก: ปล่อยผ่านไปถาด OK *)
+        Y3 := Run;
+        IF NOT X2 THEN Step := 10; END_IF
+END_CASE
+
+ctMetal(CU := (Step = 80), PV := 999);
+ctPlastic(CU := (Step = 100), PV := 999);
+
+Y0 := Run;                              (* ไฟเขียว: เครื่องทำงาน *)
+Y1 := (Step >= 30) AND (Step < 100);    (* ไฟเหลือง: กำลังหยิบ *)
+Y2 := NOT Run;                          (* ไฟแดง: หยุด *)
+Y7 := (Step = 70);                      (* Buzzer ตอนทิ้งชิ้นงาน *)
+`},
+{name:'โปรแกรมว่าง',code:
+`PROGRAM PLC_PRG
+VAR
+
+END_VAR
+
+`}];
+
+/* ================= Tokenizer ================= */
+class StErr extends Error{constructor(msg,line){super(msg);this.line=line}}
+const KW=new Set('IF THEN ELSIF ELSE END_IF CASE OF END_CASE VAR END_VAR PROGRAM END_PROGRAM AND OR XOR NOT MOD TRUE FALSE FOR TO BY DO END_FOR WHILE END_WHILE EXIT RETURN'.split(' '));
+const TUNIT={ms:1,s:1000,m:60000,h:3600000,d:86400000};
+function tokenize(src){
+  const out=[];let i=0,line=1;const n=src.length;
+  const reTime=/(?:TIME|T)#((?:\d+(?:\.\d+)?(?:ms|s|m|h|d)_?)+)/iy;
+  const reNum=/\d+(?:\.\d+)?/y, reId=/[A-Za-z_][A-Za-z0-9_]*/y;
+  while(i<n){
+    const c=src[i];
+    if(c==='\n'){line++;i++;continue}
+    if(c===' '||c==='\t'||c==='\r'){i++;continue}
+    if(c==='('&&src[i+1]==='*'){
+      const j=src.indexOf('*)',i+2);
+      if(j<0)throw new StErr('คอมเมนต์ (* ไม่ได้ปิดด้วย *)',line);
+      for(let k=i;k<j;k++)if(src[k]==='\n')line++;
+      i=j+2;continue}
+    if(c==='/'&&src[i+1]==='/'){while(i<n&&src[i]!=='\n')i++;continue}
+    let m;
+    reTime.lastIndex=i;
+    if((c==='T'||c==='t')&&(m=reTime.exec(src))){
+      let ms=0;for(const p of m[1].matchAll(/(\d+(?:\.\d+)?)(ms|s|m|h|d)/gi))ms+=parseFloat(p[1])*TUNIT[p[2].toLowerCase()];
+      out.push({t:'time',v:Math.round(ms),line,s:m[0]});i=reTime.lastIndex;continue}
+    if(c>='0'&&c<='9'){reNum.lastIndex=i;m=reNum.exec(src);out.push({t:'num',v:parseFloat(m[0]),line,s:m[0]});i=reNum.lastIndex;continue}
+    if(/[A-Za-z_]/.test(c)){reId.lastIndex=i;m=reId.exec(src);const u=m[0].toUpperCase();out.push({t:KW.has(u)?'kw':'id',v:u,line,s:m[0]});i=reId.lastIndex;continue}
+    const two=src.substr(i,2);
+    if([':=','<=','>=','<>','..','=>'].includes(two)){out.push({t:'op',v:two,line,s:two});i+=2;continue}
+    if(':;,()+-*/<>=.&'.includes(c)){out.push({t:'op',v:c,line,s:c});i++;continue}
+    throw new StErr(`ไม่รู้จักตัวอักษร '${c}'`,line);
+  }
+  out.push({t:'eof',v:'',line,s:''});
+  return out;
+}
+
+/* ================= Types & Function Blocks ================= */
+const BASIC={BOOL:false,INT:0,DINT:0,UINT:0,UDINT:0,SINT:0,USINT:0,BYTE:0,WORD:0,DWORD:0,REAL:0,LREAL:0,TIME:0};
+const INTS=new Set(['INT','DINT','UINT','UDINT','SINT','USINT','BYTE','WORD','DWORD']);
+const FBDEF={
+  TON:{in:{IN:'BOOL',PT:'TIME'},out:{Q:'BOOL',ET:'TIME'},run(s,now){if(s.IN){if(!s._on){s._on=true;s._t0=now}s.ET=Math.min(now-s._t0,s.PT);s.Q=s.ET>=s.PT}else{s._on=false;s.ET=0;s.Q=false}}},
+  TOF:{in:{IN:'BOOL',PT:'TIME'},out:{Q:'BOOL',ET:'TIME'},run(s,now){if(s.IN){s.Q=true;s.ET=0;s._on=false}else if(s.Q){if(!s._on){s._on=true;s._t0=now}s.ET=Math.min(now-s._t0,s.PT);if(s.ET>=s.PT){s.Q=false;s._on=false}}}},
+  TP:{in:{IN:'BOOL',PT:'TIME'},out:{Q:'BOOL',ET:'TIME'},run(s,now){if(!s._busy&&s.IN&&!s._m){s.Q=true;s._t0=now;s._busy=true}if(s._busy){s.ET=Math.min(now-s._t0,s.PT);if(s.ET>=s.PT){s.Q=false;if(!s.IN){s._busy=false;s.ET=0}}}else if(!s.IN)s.ET=0;s._m=s.IN}},
+  R_TRIG:{in:{CLK:'BOOL'},out:{Q:'BOOL'},run(s){s.Q=s.CLK&&!s._m;s._m=s.CLK}},
+  F_TRIG:{in:{CLK:'BOOL'},out:{Q:'BOOL'},run(s){s.Q=!s.CLK&&!!s._m;s._m=s.CLK}},
+  CTU:{in:{CU:'BOOL',RESET:'BOOL',PV:'INT'},out:{Q:'BOOL',CV:'INT'},run(s){if(s.RESET)s.CV=0;else if(s.CU&&!s._m)s.CV++;s._m=s.CU;s.Q=s.CV>=s.PV}},
+  CTD:{in:{CD:'BOOL',LOAD:'BOOL',PV:'INT'},out:{Q:'BOOL',CV:'INT'},run(s){if(s.LOAD)s.CV=s.PV;else if(s.CD&&!s._m&&s.CV>0)s.CV--;s._m=s.CD;s.Q=s.CV<=0}},
+  RS:{in:{SET:'BOOL',RESET1:'BOOL'},out:{Q1:'BOOL'},run(s){s.Q1=!s.RESET1&&(s.SET||s.Q1)}},
+  SR:{in:{SET1:'BOOL',RESET:'BOOL'},out:{Q1:'BOOL'},run(s){s.Q1=s.SET1||(!s.RESET&&s.Q1)}}
+};
+const FUNCS={
+  ABS:{n:1,f:a=>Math.abs(a[0])},MIN:{f:a=>Math.min(...a.map(Number))},MAX:{f:a=>Math.max(...a.map(Number))},
+  LIMIT:{n:3,f:a=>Math.min(Math.max(a[1],a[0]),a[2])},SEL:{n:3,f:a=>a[0]?a[2]:a[1]},
+  BOOL_TO_INT:{n:1,f:a=>a[0]?1:0},INT_TO_BOOL:{n:1,f:a=>Number(a[0])!==0},TIME_TO_INT:{n:1,f:a=>a[0]},INT_TO_TIME:{n:1,f:a=>a[0]}
+};
+
+/* ================= Parser ================= */
+function parse(src){
+  const T=tokenize(src);let p=0;
+  const sym=new Map();
+  IO_X.forEach(x=>sym.set(x.n,{type:'BOOL',kind:'in'}));
+  IO_Y.forEach(y=>sym.set(y.n,{type:'BOOL',kind:'out'}));
+  const pk=(o=0)=>T[Math.min(p+o,T.length-1)];
+  const kw=(v,o=0)=>{const t=pk(o);return t.t==='kw'&&t.v===v};
+  const op=(v,o=0)=>{const t=pk(o);return t.t==='op'&&t.v===v};
+  const show=t=>t.t==='eof'?'จุดจบโปรแกรม':`'${t.s}'`;
+  const fail=(msg,t)=>{throw new StErr(msg,(t||pk()).line)};
+  const eatKw=v=>{if(!kw(v))fail(`ต้องการ ${v} แต่พบ ${show(pk())}`);return T[p++]};
+  const eatOp=v=>{if(!op(v))fail(`ต้องการ '${v}' แต่พบ ${show(pk())}`);return T[p++]};
+  const eatSemi=()=>{if(!op(';'))fail(`ขาดเครื่องหมาย ; ท้ายคำสั่ง`,T[Math.max(0,p-1)]);p++};
+  const eatId=()=>{const t=pk();if(t.t!=='id')fail(`ต้องการชื่อตัวแปร แต่พบ ${show(t)}`);p++;return t};
+
+  function expr(){return bin(0)}
+  const LV=[['OR'],['XOR'],['AND','&'],['=','<>'],['<','>','<=','>='],['+','-'],['*','/','MOD']];
+  function bin(l){
+    if(l>=LV.length)return unary();
+    let a=bin(l+1);
+    for(;;){const t=pk();if(!((t.t==='kw'||t.t==='op')&&LV[l].includes(t.v)))return a;p++;
+      const b=bin(l+1);a={k:'bin',o:t.v==='&'?'AND':t.v,a,b,line:t.line}}
+  }
+  function unary(){
+    if(kw('NOT')){const t=T[p++];return {k:'not',a:unary(),line:t.line}}
+    if(op('-')){const t=T[p++];return {k:'neg',a:unary(),line:t.line}}
+    return prim();
+  }
+  function prim(){
+    const t=pk();
+    if(t.t==='num'||t.t==='time'){p++;return {k:'lit',v:t.v}}
+    if(kw('TRUE')){p++;return {k:'lit',v:true}}
+    if(kw('FALSE')){p++;return {k:'lit',v:false}}
+    if(op('(')){p++;const e=expr();eatOp(')');return e}
+    if(t.t==='id'){
+      if(op('(',1)){
+        const F=FUNCS[t.v];
+        if(!F){if(sym.get(t.v)?.kind==='fb')fail(`เรียก ${t.s}(...) ต้องเขียนเป็นคำสั่งแยก แล้วอ่านค่าผ่าน ${t.s}.Q`,t);fail(`ไม่รู้จักฟังก์ชัน '${t.s}'`,t)}
+        p+=2;const args=[];
+        if(!op(')')){for(;;){args.push(expr());if(op(',')){p++;continue}break}}
+        eatOp(')');
+        if(F.n!==undefined&&args.length!==F.n)fail(`${t.v} ต้องมี ${F.n} อาร์กิวเมนต์`,t);
+        return {k:'fn',f:F.f,args,line:t.line};
+      }
+      p++;const s=sym.get(t.v);
+      if(!s)fail(`ไม่รู้จักตัวแปร '${t.s}' (ลืมประกาศใน VAR หรือเปล่า?)`,t);
+      if(op('.')){p++;const m=eatId();
+        if(s.kind!=='fb')fail(`'${t.s}' ไม่ใช่ Function Block`,m);
+        const d=FBDEF[s.type];
+        if(!(m.v in d.in)&&!(m.v in d.out))fail(`${s.type} ไม่มีสมาชิก '${m.s}' (มี ${[...Object.keys(d.out),...Object.keys(d.in)].join(', ')})`,m);
+        return {k:'mem',name:t.v,m:m.v}}
+      if(s.kind==='fb')fail(`'${t.s}' เป็น ${s.type} ต้องอ่านผ่านสมาชิก เช่น ${t.s}.Q`,t);
+      return {k:'var',name:t.v};
+    }
+    fail(`ต้องการค่าหรือตัวแปร แต่พบ ${show(t)}`);
+  }
+  function stmts(stop){
+    const list=[];
+    while(!stop()){
+      if(pk().t==='eof')fail('โปรแกรมจบก่อนปิดบล็อก (ลืม END_IF / END_CASE / END_FOR หรือเปล่า?)');
+      const s=stmt();if(s)list.push(s);
+    }
+    return list;
+  }
+  function stmt(){
+    const t=pk();
+    if(op(';')){p++;return null}
+    if(t.t==='kw'){
+      switch(t.v){
+        case 'IF':return ifS();
+        case 'CASE':return caseS();
+        case 'FOR':return forS();
+        case 'WHILE':return whileS();
+        case 'EXIT':p++;eatSemi();return {k:'exit',line:t.line};
+        case 'RETURN':p++;eatSemi();return {k:'ret',line:t.line};
+        case 'VAR':fail('ต้องประกาศ VAR ... END_VAR ไว้ก่อนคำสั่งแรก',t);
+        default:fail(`ไม่คาดว่าจะพบ ${t.v} ตรงนี้`,t);
+      }
+    }
+    if(t.t==='id'){
+      if(op('(',1))return callS();
+      const lv=lval();
+      if(op('='))fail(`ใช้ := ในการกำหนดค่า (เครื่องหมาย = ใช้เปรียบเทียบ)`);
+      eatOp(':=');const e=expr();eatSemi();
+      return {k:'set',lv,e,line:t.line};
+    }
+    fail(`ไม่คาดว่าจะพบ ${show(t)}`,t);
+  }
+  function lval(){
+    const t=eatId();const s=sym.get(t.v);
+    if(!s)fail(`ไม่รู้จักตัวแปร '${t.s}' (ลืมประกาศใน VAR หรือเปล่า?)`,t);
+    if(op('.')){p++;const m=eatId();
+      if(s.kind!=='fb')fail(`'${t.s}' ไม่ใช่ Function Block`,t);
+      const d=FBDEF[s.type];
+      if(!(m.v in d.in))fail(`กำหนดค่าได้เฉพาะอินพุตของ ${s.type} (${Object.keys(d.in).join(', ')})`,m);
+      return {name:t.v,mem:m.v,type:d.in[m.v]}}
+    if(s.kind==='in')fail(`${t.v} เป็นอินพุต (X) เขียนค่าทับไม่ได้`,t);
+    if(s.kind==='fb')fail(`'${t.s}' เป็น ${s.type} ให้เรียกแบบ ${t.s}(IN := ..., PT := ...);`,t);
+    return {name:t.v,type:s.type};
+  }
+  function callS(){
+    const t=eatId();const s=sym.get(t.v);
+    if(!s)fail(`ไม่รู้จัก '${t.s}' (ลืมประกาศ เช่น ${t.s} : TON; หรือเปล่า?)`,t);
+    if(s.kind!=='fb')fail(`'${t.s}' ไม่ใช่ Function Block จึงเรียกแบบมีวงเล็บไม่ได้`,t);
+    const d=FBDEF[s.type];eatOp('(');const args=[];
+    if(!op(')')){
+      for(;;){
+        const a=eatId();
+        if(op('=>'))fail(`ยังไม่รองรับ => ให้อ่านค่าเอาต์พุตแบบ ${t.s}.${a.s} แทน`,a);
+        if(!(a.v in d.in))fail(`${s.type} ไม่มีอินพุต '${a.s}' (มี ${Object.keys(d.in).join(', ')})`,a);
+        eatOp(':=');args.push({n:a.v,e:expr(),type:d.in[a.v]});
+        if(op(',')){p++;continue}break;
+      }
+    }
+    eatOp(')');eatSemi();
+    return {k:'call',name:t.v,type:s.type,args,line:t.line};
+  }
+  function ifS(){
+    const t=T[p++];const arms=[];
+    const stop=()=>kw('ELSIF')||kw('ELSE')||kw('END_IF');
+    let c=expr();eatKw('THEN');arms.push({c,b:stmts(stop)});
+    while(kw('ELSIF')){p++;c=expr();eatKw('THEN');arms.push({c,b:stmts(stop)})}
+    let els=null;if(kw('ELSE')){p++;els=stmts(()=>kw('END_IF'))}
+    eatKw('END_IF');if(op(';'))p++;
+    return {k:'if',arms,els,line:t.line};
+  }
+  function num(){let neg=false;if(op('-')){p++;neg=true}const t=pk();if(t.t!=='num')fail(`ต้องการตัวเลข แต่พบ ${show(t)}`);p++;return neg?-t.v:t.v}
+  function caseS(){
+    const t=T[p++];const sel=expr();eatKw('OF');const arms=[];let els=null;
+    const isLabel=()=>{let o=0;if(op('-',o))o++;if(pk(o).t!=='num')return false;const b=pk(o+1);return b.t==='op'&&(b.v===':'||b.v===','||b.v==='..')};
+    while(!kw('END_CASE')){
+      if(pk().t==='eof')fail('ไม่พบ END_CASE');
+      if(kw('ELSE')){p++;els=stmts(()=>kw('END_CASE'));continue}
+      if(!isLabel())fail(`ต้องการเลขสเต็ป เช่น 10: แต่พบ ${show(pk())}`);
+      const labels=[];
+      for(;;){const lo=num();let hi=lo;if(op('..')){p++;hi=num()}labels.push([lo,hi]);if(op(',')){p++;continue}break}
+      eatOp(':');
+      arms.push({labels,b:stmts(()=>kw('END_CASE')||kw('ELSE')||isLabel())});
+    }
+    p++;if(op(';'))p++;
+    return {k:'case',sel,arms,els,line:t.line};
+  }
+  function forS(){
+    const t=T[p++];const v=eatId();const s=sym.get(v.v);
+    if(!s||s.kind!=='var'||!INTS.has(s.type))fail(`ตัวแปรนับรอบ '${v.s}' ต้องประกาศเป็น INT`,v);
+    eatOp(':=');const a=expr();eatKw('TO');const b=expr();let by=null;
+    if(kw('BY')){p++;by=expr()}
+    eatKw('DO');const body=stmts(()=>kw('END_FOR'));p++;if(op(';'))p++;
+    return {k:'for',v:v.v,a,b,by,body,line:t.line};
+  }
+  function whileS(){
+    const t=T[p++];const c=expr();eatKw('DO');const body=stmts(()=>kw('END_WHILE'));p++;if(op(';'))p++;
+    return {k:'while',c,body,line:t.line};
+  }
+
+  if(kw('PROGRAM')){p++;eatId()}
+  while(kw('VAR')){
+    p++;
+    while(!kw('END_VAR')){
+      if(pk().t==='eof')fail('ไม่พบ END_VAR');
+      const names=[eatId()];while(op(',')){p++;names.push(eatId())}
+      eatOp(':');
+      const tt=eatId();const ty=tt.v;
+      if(!(ty in BASIC)&&!(ty in FBDEF))fail(`ไม่รู้จักชนิดข้อมูล '${tt.s}'`,tt);
+      let init=null;
+      if(op(':=')){if(ty in FBDEF)fail('Function Block กำหนดค่าเริ่มต้นแบบนี้ไม่ได้');p++;init=expr()}
+      eatSemi();
+      for(const nm of names){
+        const ex=sym.get(nm.v);
+        if(ex)fail(ex.kind==='in'||ex.kind==='out'?`'${nm.s}' เป็นชื่อ I/O ที่มีอยู่แล้ว ใช้ได้เลยไม่ต้องประกาศ`:`ประกาศ '${nm.s}' ซ้ำ`,nm);
+        sym.set(nm.v,{type:ty,kind:ty in FBDEF?'fb':'var',init,decl:nm.s});
+      }
+    }
+    p++;if(op(';'))p++;
+  }
+  const body=stmts(()=>pk().t==='eof'||kw('END_PROGRAM'));
+  if(kw('END_PROGRAM')){p++;if(op(';'))p++}
+  if(pk().t!=='eof')fail(`มีโค้ดหลัง END_PROGRAM`);
+  return {sym,body};
+}
+
+/* ================= Runtime ================= */
+function coerce(ty,v){
+  if(ty==='BOOL')return typeof v==='number'?v!==0:!!v;
+  if(ty==='REAL'||ty==='LREAL')return Number(v);
+  if(ty==='TIME')return Math.max(0,Math.round(Number(v)));
+  let n=Math.trunc(Number(v));
+  if(ty==='INT')n=((n+32768)&0xFFFF)-32768;
+  else if(ty==='DINT')n|=0;
+  return n;
+}
+const truthy=v=>typeof v==='number'?v!==0:!!v;
+function makeRuntime(prog){
+  const mem={};let now=0;
+  for(const [n,s] of prog.sym){
+    if(s.kind==='fb'){const d=FBDEF[s.type];const o={};for(const k in d.in)o[k]=d.in[k]==='BOOL'?false:0;for(const k in d.out)o[k]=d.out[k]==='BOOL'?false:0;mem[n]=o}
+    else mem[n]=s.type in BASIC?BASIC[s.type]:false;
+  }
+  function ev(n){
+    switch(n.k){
+      case 'lit':return n.v;
+      case 'var':return mem[n.name];
+      case 'mem':return mem[n.name][n.m];
+      case 'not':{const a=ev(n.a);return typeof a==='number'?~a:!a}
+      case 'neg':return -Number(ev(n.a));
+      case 'fn':return n.f(n.args.map(ev));
+      case 'bin':{
+        const a=ev(n.a),b=ev(n.b),nn=typeof a==='number'&&typeof b==='number';
+        switch(n.o){
+          case 'AND':return nn?(a&b):(truthy(a)&&truthy(b));
+          case 'OR':return nn?(a|b):(truthy(a)||truthy(b));
+          case 'XOR':return nn?(a^b):(truthy(a)!==truthy(b));
+          case '=':return Number(a)===Number(b);
+          case '<>':return Number(a)!==Number(b);
+          case '<':return Number(a)<Number(b);
+          case '>':return Number(a)>Number(b);
+          case '<=':return Number(a)<=Number(b);
+          case '>=':return Number(a)>=Number(b);
+          case '+':return Number(a)+Number(b);
+          case '-':return Number(a)-Number(b);
+          case '*':return Number(a)*Number(b);
+          case '/':if(Number(b)===0)throw new StErr('หารด้วยศูนย์',n.line);return Number(a)/Number(b);
+          case 'MOD':if(Number(b)===0)throw new StErr('MOD ด้วยศูนย์',n.line);return Number(a)%Number(b);
+        }
+      }
+    }
+  }
+  function run(list){for(const s of list){const r=st(s);if(r)return r}}
+  function st(s){
+    try{
+      switch(s.k){
+        case 'set':{const v=coerce(s.lv.type,ev(s.e));if(s.lv.mem)mem[s.lv.name][s.lv.mem]=v;else mem[s.lv.name]=v;return}
+        case 'call':{const o=mem[s.name];for(const a of s.args)o[a.n]=coerce(a.type,ev(a.e));FBDEF[s.type].run(o,now);return}
+        case 'if':{for(const a of s.arms)if(truthy(ev(a.c)))return run(a.b);if(s.els)return run(s.els);return}
+        case 'case':{const v=Number(ev(s.sel));for(const a of s.arms)for(const [lo,hi] of a.labels)if(v>=lo&&v<=hi)return run(a.b);if(s.els)return run(s.els);return}
+        case 'for':{
+          const ty=prog.sym.get(s.v).type;let i=coerce(ty,ev(s.a));const end=Number(ev(s.b));const by=s.by?Number(ev(s.by)):1;
+          if(by===0)throw new StErr('FOR ... BY 0 จะวนไม่รู้จบ',s.line);
+          let g=0;
+          for(mem[s.v]=i;by>0?mem[s.v]<=end:mem[s.v]>=end;mem[s.v]=coerce(ty,mem[s.v]+by)){
+            if(++g>100000)throw new StErr('FOR วนเกิน 100000 รอบใน 1 สแกน',s.line);
+            const r=run(s.body);if(r==='exit')break;if(r==='ret')return r;
+          }
+          return}
+        case 'while':{let g=0;while(truthy(ev(s.c))){if(++g>100000)throw new StErr('WHILE วนไม่รู้จบ (เกิน 100000 รอบใน 1 สแกน) — PLC จะค้างที่สแกนนี้',s.line);const r=run(s.body);if(r==='exit')break;if(r==='ret')return r}return}
+        case 'exit':return 'exit';
+        case 'ret':return 'ret';
+      }
+    }catch(e){
+      if(e instanceof StErr){if(e.line==null)e.line=s.line;throw e}
+      throw new StErr(String(e&&e.message||e),s.line);
+    }
+  }
+  // initial values
+  for(const [n,s] of prog.sym)if(s.kind==='var'&&s.init)mem[n]=coerce(s.type,ev(s.init));
+  return {mem,prog,scan(t){now=t;run(prog.body)}};
+}
+
+/* ================= Machine model ================= */
+const G={W:900,H:500,beltY:360,bx0:60,bx1:600,pw:44,ph:34,home:460,photoX:482,travel:300,fUp:272,fDown:352,
+  bin:{l:712,r:808,t:288,b:404},tray:{l:612,r:690,t:378,b:404},floor:478,beltSpeed:90};
+const sim={parts:[],cyl:0,slide:0,grip:0,held:null,belt:0,motorA:0,Y:Array(8).fill(false),btn:{X0:false,X1:false},
+  auto:true,feedT:2600,jam:false,stats:{ok:0,ng:0,drop:0},nextId:1};
+const cX=()=>G.home+sim.slide*G.travel, fB=()=>G.fUp+sim.cyl*(G.fDown-G.fUp), gW=()=>30-sim.grip*7.5;
+function canSpawn(){return !sim.parts.some(p=>p.st==='belt'&&p.x<G.bx0+30+G.pw+16)}
+function spawn(metal,manual){
+  if(!canSpawn()){if(manual)toast('ทางเข้าสายพานยังมีชิ้นงานอยู่','warn');return false}
+  sim.parts.push({id:sim.nextId++,metal,x:G.bx0+30,y:G.beltY,st:'belt',vx:0,vy:0,t:0});return true;
+}
+function simInputs(){
+  const near=p=>(p.st==='belt'||p.st==='fall'||p.st==='held')&&p.y>G.beltY-20&&p.y<=G.beltY+4;
+  return {
+    X0:sim.btn.X0,X1:sim.btn.X1,
+    X2:sim.parts.some(p=>near(p)&&p.x-G.pw/2<=G.photoX&&p.x+G.pw/2>=G.photoX),
+    X3:sim.parts.some(p=>near(p)&&p.metal&&Math.abs(p.x-G.home)<22),
+    X4:sim.cyl<0.02,X5:sim.cyl>0.98,X6:sim.slide<0.02,X7:sim.slide>0.98};
+}
+function result(p,where){
+  if(where==='floor'){sim.stats.drop++;toast('ชิ้นงานตกพื้น!','bad');return}
+  const good=(where==='bin')===p.metal;
+  if(good)sim.stats.ok++;
+  else{sim.stats.ng++;toast(where==='bin'?'คัดผิด: พลาสติกถูกทิ้งลงกล่อง REJECT':'คัดผิด: ชิ้นงานโลหะหลุดไปถาด OK','bad')}
+}
+function simStep(dt,Y){
+  sim.Y=Y;const s=dt/1000;
+  const mv=(v,on,T)=>Math.min(1,Math.max(0,v+(on?1:-1)*s/T));
+  sim.cyl=mv(sim.cyl,Y[4],0.45);sim.slide=mv(sim.slide,Y[6],0.9);
+  const pg=sim.grip;sim.grip=mv(sim.grip,Y[5],0.2);
+  const X=cX(),F=fB(),w=gW();
+  if(!sim.held&&pg<0.9&&sim.grip>=0.9){
+    const p=sim.parts.find(p=>p.st==='belt'&&Math.abs(p.x-X)<20&&F>p.y-16);
+    if(p){p.st='held';sim.held=p}
+  }
+  if(sim.held){
+    if(sim.grip<0.6){sim.held.st='fall';sim.held.vy=0;sim.held.vx=0;sim.held=null}
+    else{sim.held.x=X;sim.held.y=F+8}
+  }
+  sim.jam=false;
+  if(Y[3]){
+    const d=G.beltSpeed*s;sim.belt+=d;sim.motorA+=s*9;
+    const on=sim.parts.filter(p=>p.st==='belt').sort((a,b)=>b.x-a.x);
+    const low=F>G.beltY-G.ph+4&&X<G.bx1+30;
+    let limit=Infinity;
+    for(const p of on){
+      let mx=Math.min(p.x+d,limit);
+      if(low){
+        let fl=Infinity;
+        if(p.x<X-w)fl=X-w-6-G.pw/2;else if(p.x<X+w)fl=X+w-G.pw/2;
+        if(fl<mx){mx=fl;sim.jam=true}
+      }
+      p.x=Math.max(p.x,mx);
+      limit=p.x-G.pw-1;
+      if(p.x>G.bx1+2){p.st='fall';p.vx=G.beltSpeed;p.vy=0}
+    }
+  }
+  for(const p of sim.parts){
+    if(p.st==='fall'){
+      const y0=p.y;p.vy+=1800*s;p.y+=p.vy*s;p.x+=p.vx*s;
+      if(p.x>G.bx0&&p.x<G.bx1&&y0<=G.beltY+0.5&&p.y>=G.beltY){p.y=G.beltY;p.st='belt';p.vx=p.vy=0;continue}
+      if(p.x>G.tray.l&&p.x<G.tray.r&&p.y>=G.tray.b-2){p.y=G.tray.b-2;p.x=Math.min(Math.max(p.x,G.tray.l+24),G.tray.r-24);p.st='tray';p.t=0;result(p,'tray');continue}
+      if(p.x>G.bin.l&&p.x<G.bin.r&&p.y>=G.bin.b-2){p.y=G.bin.b-2;p.x=Math.min(Math.max(p.x,G.bin.l+26),G.bin.r-26);p.st='bin';p.t=0;result(p,'bin');continue}
+      if(p.y>=G.floor){p.y=G.floor;p.st='floor';p.t=0;result(p,'floor')}
+    }else if(p.st!=='belt'&&p.st!=='held')p.t+=dt;
+  }
+  // tidy: fade floor parts, keep the latest 2 in tray & bin
+  sim.parts=sim.parts.filter(p=>!(p.st==='floor'&&p.t>2500));
+  for(const where of ['tray','bin']){const arr=sim.parts.filter(p=>p.st===where);if(arr.length>2){const old=new Set(arr.sort((a,b)=>a.t-b.t).slice(2));sim.parts=sim.parts.filter(p=>!old.has(p))}}
+  if(sim.auto){sim.feedT+=dt;if(sim.feedT>=2600&&spawn(Math.random()<0.45,false))sim.feedT=0}
+}
+function resetSim(){
+  Object.assign(sim,{parts:[],cyl:0,slide:0,grip:0,held:null,jam:false,stats:{ok:0,ng:0,drop:0},feedT:2600});
+}
+
+/* ================= Editor ================= */
+const TYPESET=new Set([...Object.keys(BASIC),...Object.keys(FBDEF)]);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function highlight(src){
+  const re=/(\(\*[\s\S]*?(?:\*\)|$))|(\/\/[^\n]*)|(\b(?:TIME|T)#[0-9A-Za-z_.]+)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][A-Za-z0-9_]*)|([\s\S])/gi;
+  let out='',m;
+  while((m=re.exec(src))){
+    if(m[1]!==undefined)out+=`<span class="com">${esc(m[1])}</span>`;
+    else if(m[2]!==undefined)out+=`<span class="com">${esc(m[2])}</span>`;
+    else if(m[3]!==undefined)out+=`<span class="num">${esc(m[3])}</span>`;
+    else if(m[4]!==undefined)out+=`<span class="num">${m[4]}</span>`;
+    else if(m[5]!==undefined){const u=m[5].toUpperCase();
+      const c=KW.has(u)?'kw':TYPESET.has(u)?'ty':/^[XY][0-7]$/.test(u)?'io':FUNCS[u]?'fn':'';
+      out+=c?`<span class="${c}">${m[5]}</span>`:m[5]}
+    else out+=esc(m[6]);
+  }
+  return out;
+}
+function renderEditor(){
+  const src=ed.value;
+  hl.innerHTML=highlight(src)+'\n';
+  const n=src.split('\n').length;let g='';
+  for(let i=1;i<=n;i++)g+=(i===errLine?`<span class="e">${i}</span>`:i)+'\n';
+  gut.innerHTML=g;
+  errMark.innerHTML=errLine?`<div class="errline" style="top:${10+(errLine-1)*20}px"></div>`:'';
+}
+function syncScroll(){
+  under.style.transform=`translate(${-ed.scrollLeft}px,${-ed.scrollTop}px)`;
+  gut.style.transform=`translateY(${-ed.scrollTop}px)`;
+}
+let saveT=0;
+ed.addEventListener('input',()=>{if(errLine){errLine=null}renderEditor();syncScroll();clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem('plcsim.code',ed.value)}catch(e){}},400)});
+ed.addEventListener('scroll',syncScroll);
+ed.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();startPLC();return}
+  if(e.key==='Tab'&&!e.shiftKey){e.preventDefault();document.execCommand('insertText',false,'    ')||insertAt('    ')}
+});
+function insertAt(t){const a=ed.selectionStart,b=ed.selectionEnd;ed.setRangeText(t,a,b,'end');ed.dispatchEvent(new Event('input'));return true}
+con.addEventListener('click',()=>{
+  if(!errLine)return;const lines=ed.value.split('\n');let pos=0;for(let i=0;i<errLine-1&&i<lines.length;i++)pos+=lines[i].length+1;
+  ed.focus();ed.setSelectionRange(pos,pos+(lines[errLine-1]||'').length);ed.scrollTop=Math.max(0,(errLine-5)*20);syncScroll();
+});
+let lastIn=simInputs();
+
+/* ================= Ladder: devices & instructions ================= */
+const DEV_LIM={X:64,Y:64,M:8512,T:256,C:256,D:8000};
+function parseDev(s){
+  s=String(s).trim().toUpperCase();let m;
+  if((m=/^K(-?\d+)$/.exec(s))){const v=parseInt(m[1],10);if(v<-32768||v>32767)throw `${s} เกินช่วง 16 บิต`;return {t:'K',v,s:'K'+v}}
+  if((m=/^H([0-9A-F]{1,4})$/.exec(s))){const v=parseInt(m[1],16);return {t:'K',v:v>32767?v-65536:v,s:'H'+m[1]}}
+  if((m=/^([XY])([0-9]+)$/.exec(s))){if(/[89]/.test(m[2]))throw `${m[1]} ใช้เลขฐาน 8 (0–7) เช่น ${m[1]}10 คือตัวที่ 8`;const n=parseInt(m[2],8);if(n>=DEV_LIM[m[1]])throw `${s} เกินช่วง`;return {t:m[1],n,s:m[1]+n.toString(8)}}
+  if((m=/^([MTCD])([0-9]+)$/.exec(s))){const n=parseInt(m[2],10);if(n>=DEV_LIM[m[1]])throw `${s} เกินช่วง`;return {t:m[1],n,s:m[1]+n}}
+  throw `อุปกรณ์ '${s}' ไม่ถูกต้อง (ใช้ X Y M T C D K H)`;
+}
+const isBitDev=d=>'XYMTC'.includes(d.t);
+const isWordDev=d=>'KDTC'.includes(d.t);
+const gxDev=s=>{const m=/^([XY])([0-7]+)$/.exec(s);return m?m[1]+m[2].padStart(3,'0'):s};
+const CONTACT_OPS={LD:['NO',0],AND:['NO',0],OR:['NO',1],LDI:['NC',0],ANI:['NC',0],ORI:['NC',1],LDP:['P',0],ANDP:['P',0],ORP:['P',1],LDF:['F',0],ANDF:['F',0],ORF:['F',1]};
+const CMP_RE=/^(LD|AND|OR)(=|<>|>=|<=|>|<)$/;
+const OUT_OPS=new Set(['OUT','SET','RST','PLS','PLF','MOV','MOVP','INC','INCP','DEC','DECP']);
+function parseCmd(text,def){
+  const tk=String(text).trim().toUpperCase().replace(/,/g,' ').split(/\s+/).filter(Boolean);
+  if(!tk.length)return null;
+  if(/^(=|<>|>=|<=|>|<)$/.test(tk[0]))tk[0]=(def==='OR'?'OR':'LD')+tk[0];
+  else if(/^[XYMTCDKH]-?[0-9A-F]+$/.test(tk[0])&&!CONTACT_OPS[tk[0]]&&!OUT_OPS.has(tk[0]))tk.unshift(def||'LD');
+  const op=tk[0],a=tk.slice(1);
+  if(CONTACT_OPS[op]){
+    if(a.length!==1)throw `${op} ต้องมีอุปกรณ์ 1 ตัว เช่น ${op} X0`;
+    const d=parseDev(a[0]);if(!isBitDev(d))throw `${op} ใช้กับ X Y M T C เท่านั้น`;
+    return {kind:'c',branch:!!CONTACT_OPS[op][1],el:{t:CONTACT_OPS[op][0],dev:d.s}};
+  }
+  const m=CMP_RE.exec(op);
+  if(m){
+    if(a.length!==2)throw `${op} ต้องมี 2 ค่า เช่น ${op} D0 K5`;
+    const x=parseDev(a[0]),y=parseDev(a[1]);
+    if(!isWordDev(x)||!isWordDev(y))throw 'การเปรียบเทียบใช้ K H D T C';
+    return {kind:'c',branch:m[1]==='OR',el:{t:'CMP',op:m[2],a:x.s,b:y.s}};
+  }
+  if(OUT_OPS.has(op)){
+    const ds=a.map(parseDev);
+    const need=n=>{if(ds.length!==n)throw `${op} ต้องมี ${n} ค่า`};
+    const wr=d=>{if(d.t==='M'&&d.n>=8000)throw `${d.s} เป็นรีเลย์พิเศษ เขียนไม่ได้`};
+    switch(op){
+      case 'OUT':
+        if(!ds.length)throw 'OUT ต้องระบุอุปกรณ์ เช่น OUT Y0';
+        if(ds[0].t==='T'||ds[0].t==='C'){if(ds.length!==2||!(ds[1].t==='K'||ds[1].t==='D'))throw `ไทเมอร์/เคาน์เตอร์ต้องมีค่าตั้ง เช่น OUT ${ds[0].s} K20`;if(ds[1].t==='K'&&ds[1].v<0)throw 'ค่าตั้งต้องเป็นบวก'}
+        else if(ds[0].t==='Y'||ds[0].t==='M'){need(1);wr(ds[0])}
+        else throw 'OUT ใช้กับ Y M T C';
+        break;
+      case 'SET':case 'PLS':case 'PLF':need(1);if(!(ds[0].t==='Y'||ds[0].t==='M'))throw `${op} ใช้กับ Y M`;wr(ds[0]);break;
+      case 'RST':need(1);if(!'YMTCD'.includes(ds[0].t))throw 'RST ใช้กับ Y M T C D';wr(ds[0]);break;
+      case 'MOV':case 'MOVP':need(2);if(!isWordDev(ds[0]))throw 'ค่าต้นทางใช้ K H D T C';if(ds[1].t!=='D')throw 'ปลายทาง MOV ต้องเป็น D';break;
+      default:need(1);if(ds[0].t!=='D')throw `${op} ใช้กับ D`;
+    }
+    return {kind:'o',el:{t:op,args:ds.map(d=>d.s)}};
+  }
+  throw `ไม่รู้จักคำสั่ง '${op}'`;
+}
+function elText(el){
+  if(!el||el.t==='H')return '';
+  const P={NO:'LD',NC:'LDI',P:'LDP',F:'LDF'};
+  if(P[el.t])return P[el.t]+' '+el.dev;
+  if(el.t==='CMP')return `LD${el.op} ${el.a} ${el.b}`;
+  return el.t+' '+el.args.join(' ');
+}
+
+/* ================= Ladder: program grid ================= */
+const LADC=10;
+const newRow=C=>({c:Array(C).fill(null),o:null,v:Array(C+1).fill(false)});
+let P={C:LADC,rows:[newRow(LADC)]};
+const rowEmpty=R=>!R.o&&R.c.every(x=>!x)&&R.v.every(x=>!x);
+function ensureRows(n){while(P.rows.length<n)P.rows.push(newRow(P.C))}
+function trimRows(){
+  while(P.rows.length>1&&rowEmpty(P.rows[P.rows.length-1])&&rowEmpty(P.rows[P.rows.length-2])&&!(P.rows[P.rows.length-3]?.v.some(Boolean)))P.rows.pop();
+  if(!rowEmpty(P.rows[P.rows.length-1])||P.rows[P.rows.length-2]?.v.some(Boolean))P.rows.push(newRow(P.C));
+}
+function autoStart(r){
+  const R=P.rows[r];if(!R.o)return null;
+  for(let c=P.C-1;c>=0;c--)if(R.c[c])return c+1;
+  for(let b=1;b<=P.C;b++)if(R.v[b]||(r>0&&P.rows[r-1].v[b]))return b;
+  return null;
+}
+function rungBlocks(){
+  const out=[];let s=null;
+  for(let r=0;r<P.rows.length;r++){
+    const R=P.rows[r];
+    if(s===null&&!rowEmpty(R))s=r;
+    if(s!==null&&!R.v.some(Boolean)){out.push([s,r]);s=null}
+  }
+  if(s!==null)out.push([s,P.rows.length-1]);
+  return out;
+}
+
+/* ================= Ladder: expressions ================= */
+const T_TRUE={t:'TRUE'};
+const isLeaf=e=>!!e&&(e.t==='NO'||e.t==='NC'||e.t==='P'||e.t==='F'||e.t==='CMP');
+function mkAnd(a,b){
+  if(!a||!b)return null;if(a.t==='TRUE')return b;if(b.t==='TRUE')return a;
+  return {t:'AND',ch:[...(a.t==='AND'?a.ch:[a]),...(b.t==='AND'?b.ch:[b])]};
+}
+function mkOr(parts){
+  const ps=[];
+  for(const p of parts){if(!p)continue;if(p.t==='TRUE')return T_TRUE;for(const q of (p.t==='OR'?p.ch:[p]))if(!ps.includes(q))ps.push(q)}
+  return !ps.length?null:ps.length===1?ps[0]:{t:'OR',ch:ps};
+}
+const andOf=l=>!l.length?T_TRUE:l.length===1?l[0]:{t:'AND',ch:l};
+function mkOrF(parts){
+  const ps=[...new Set(parts.filter(Boolean))];
+  if(!ps.length)return null;if(ps.some(p=>p.t==='TRUE'))return T_TRUE;if(ps.length===1)return ps[0];
+  const lists=ps.map(p=>p.t==='AND'?p.ch:[p]);
+  let k=0;const mn=Math.min(...lists.map(l=>l.length));
+  while(k<mn&&lists.every(l=>l[k]===lists[0][k]))k++;
+  if(k===0)return mkOr(ps);
+  const pre=andOf(lists[0].slice(0,k)),rests=lists.map(l=>l.slice(k));
+  if(rests.some(r=>!r.length))return pre;
+  return mkAnd(pre,mkOrF(rests.map(andOf)));
+}
+function mkLeaf(el){const d=x=>x?parseDev(x):null;return {t:el.t,el,d:d(el.dev),a:d(el.a),b:d(el.b),prev:false,_s:-1,_v:false}}
+function mkOut(el){return {t:el.t,el,ds:el.args.map(parseDev),prev:false,pw:false}}
+
+let LAD={rungs:[],mon:new Map()};
+function compileLadder(){
+  const C=P.C,rungs=[],mon=new Map();let step=0;
+  for(const [s,e] of rungBlocks()){
+    const n=e-s+1;let node=Array(n).fill(T_TRUE);
+    const auto=[];for(let i=0;i<n;i++)auto[i]=autoStart(s+i);
+    for(let c=0;c<C;c++){
+      const out=[];
+      for(let i=0;i<n;i++){
+        const el=P.rows[s+i].c[c],nd=node[i];
+        if(!el){out[i]=(auto[i]!=null&&c>=auto[i])?nd:null;continue}
+        if(el.t==='H'){out[i]=nd;continue}
+        const lf=mkLeaf(el);mon.set((s+i)+','+c,lf);
+        out[i]=nd?mkAnd(nd,lf):null;
+      }
+      node=[];let i=0;
+      while(i<n){let j=i;while(j<n-1&&P.rows[s+j].v[c+1])j++;const g=mkOrF(out.slice(i,j+1));for(let k=i;k<=j;k++)node[k]=g;i=j+1}
+    }
+    const outs=[];
+    for(let i=0;i<n;i++){const o=P.rows[s+i].o;if(o)outs.push({expr:node[i],el:o,row:s+i,x:mkOut(o)})}
+    if(outs.length){const r={s,e,outs,step};r.il=genRung(outs);step+=r.il.reduce((a,ins)=>a+stepsOf(ins),0);rungs.push(r)}
+  }
+  return {rungs,mon,steps:step};
+}
+
+/* ================= Ladder: runtime (FX-like) ================= */
+const LM={X:new Uint8Array(64),Y:new Uint8Array(64),M:new Uint8Array(8512),Ton:new Uint8Array(256),Tacc:new Float64Array(256),Con:new Uint8Array(256),Ccv:new Int32Array(256),D:new Int16Array(8000)};
+let ladFirst=true,SID=0,ladDt=SCAN;
+function resetLadMem(){for(const k in LM)LM[k].fill(0);ladFirst=true}
+const tBase=n=>n<200?100:n<246?10:1;
+function getBit(d){
+  switch(d.t){
+    case 'X':return LM.X[d.n];case 'Y':return LM.Y[d.n];
+    case 'M':if(d.n>=8000){switch(d.n){case 8000:return running?1:0;case 8001:return running?0:1;case 8002:return ladFirst?1:0;case 8003:return ladFirst?0:1;case 8012:return (plcTime%100)<50?1:0;case 8013:return (plcTime%1000)<500?1:0}}return LM.M[d.n];
+    case 'T':return LM.Ton[d.n];case 'C':return LM.Con[d.n];
+  }return 0;
+}
+function getWord(d){switch(d.t){case 'K':return d.v;case 'D':return LM.D[d.n];case 'T':return Math.floor(LM.Tacc[d.n]/tBase(d.n));case 'C':return LM.Ccv[d.n]}return 0}
+function setBit(d,v){if(d.t==='Y')LM.Y[d.n]=v?1:0;else if(d.t==='M'&&d.n<8000)LM.M[d.n]=v?1:0}
+function ev(e){
+  if(!e)return false;if(e.t==='TRUE')return true;if(e._s===SID)return e._v;
+  let v=false;
+  switch(e.t){
+    case 'AND':v=true;for(const c of e.ch)if(!ev(c))v=false;break;
+    case 'OR':for(const c of e.ch)if(ev(c))v=true;break;
+    case 'NO':v=!!getBit(e.d);break;
+    case 'NC':v=!getBit(e.d);break;
+    case 'P':{const cur=!!getBit(e.d);v=cur&&!e.prev;e.prev=cur;break}
+    case 'F':{const cur=!!getBit(e.d);v=!cur&&e.prev;e.prev=cur;break}
+    case 'CMP':{const a=getWord(e.a),b=getWord(e.b),o=e.el.op;v=o==='='?a===b:o==='<>'?a!==b:o==='>'?a>b:o==='<'?a<b:o==='>='?a>=b:a<=b;break}
+  }
+  e._s=SID;e._v=v;return v;
+}
+function execOut(o,pw){
+  const d=o.ds[0];
+  switch(o.t){
+    case 'OUT':
+      if(d.t==='T'){const k=Math.max(0,getWord(o.ds[1]))*tBase(d.n);if(pw){LM.Tacc[d.n]=Math.min(LM.Tacc[d.n]+ladDt,k);LM.Ton[d.n]=LM.Tacc[d.n]>=k?1:0}else{LM.Tacc[d.n]=0;LM.Ton[d.n]=0}}
+      else if(d.t==='C'){const k=getWord(o.ds[1]);if(pw&&!o.prev&&LM.Ccv[d.n]<k)LM.Ccv[d.n]++;LM.Con[d.n]=LM.Ccv[d.n]>=k?1:0}
+      else setBit(d,pw);
+      break;
+    case 'SET':if(pw)setBit(d,1);break;
+    case 'RST':if(pw){if(d.t==='T'){LM.Tacc[d.n]=0;LM.Ton[d.n]=0}else if(d.t==='C'){LM.Ccv[d.n]=0;LM.Con[d.n]=0}else if(d.t==='D')LM.D[d.n]=0;else setBit(d,0)}break;
+    case 'PLS':setBit(d,pw&&!o.prev);break;
+    case 'PLF':setBit(d,!pw&&o.prev);break;
+    case 'MOV':if(pw)LM.D[o.ds[1].n]=getWord(d);break;
+    case 'MOVP':if(pw&&!o.prev)LM.D[o.ds[1].n]=getWord(d);break;
+    case 'INC':if(pw)LM.D[d.n]++;break;
+    case 'INCP':if(pw&&!o.prev)LM.D[d.n]++;break;
+    case 'DEC':if(pw)LM.D[d.n]--;break;
+    case 'DECP':if(pw&&!o.prev)LM.D[d.n]--;break;
+  }
+  o.prev=pw;o.pw=pw;
+}
+function scanLadder(inp,dt){
+  ladDt=dt;SID++;
+  for(let i=0;i<8;i++)LM.X[i]=inp['X'+i]?1:0;
+  for(const r of LAD.rungs)for(const o of r.outs)execOut(o.x,ev(o.expr));
+  ladFirst=false;
+  return Array.from({length:8},(_,i)=>!!LM.Y[i]);
+}
+
+/* ================= Ladder <-> Instruction List (MELSEC) ================= */
+function stepsOf(ins){
+  const op=ins[0];
+  if(CMP_RE.test(op))return 5;
+  if(op==='OUT')return /^[TC]/.test(ins[1])?3:1;
+  if(op==='MOV'||op==='MOVP')return 5;
+  if(/^(INC|DEC)/.test(op))return 3;
+  if(op==='PLS'||op==='PLF')return 2;
+  return 1;
+}
+function ilLeaf(l,pre){
+  const el=l.el||l;
+  if(el.t==='CMP')return [(pre||'LD')+el.op,el.a,el.b];
+  const M={NO:['LD','AND','OR'],NC:['LDI','ANI','ORI'],P:['LDP','ANDP','ORP'],F:['LDF','ANDF','ORF']};
+  return [M[el.t][pre==='AND'?1:pre==='OR'?2:0],el.dev];
+}
+function emitBlock(e,L){
+  if(!e){L.push(['LDI','M8000']);return}
+  if(e.t==='TRUE'){L.push(['LD','M8000']);return}
+  if(isLeaf(e)){L.push(ilLeaf(e,''));return}
+  if(e.t==='AND'){emitBlock(e.ch[0],L);emitSeries(e.ch.slice(1),L);return}
+  emitBlock(e.ch[0],L);
+  for(const x of e.ch.slice(1)){if(isLeaf(x))L.push(ilLeaf(x,'OR'));else{emitBlock(x,L);L.push(['ORB'])}}
+}
+function emitSeries(list,L){for(const x of list){if(!x||x.t==='TRUE')continue;if(isLeaf(x))L.push(ilLeaf(x,'AND'));else{emitBlock(x,L);L.push(['ANB'])}}}
+function splitCommon(outs){
+  const lists=outs.map(o=>o.expr?(o.expr.t==='AND'?o.expr.ch:[o.expr]):null);
+  if(lists.some(l=>!l))return {k:0,lists};
+  let k=0;const mn=Math.min(...lists.map(l=>l.length));
+  while(k<mn&&lists.every(l=>l[k]===lists[0][k]))k++;
+  return {k,lists};
+}
+function genRung(outs){
+  const L=[],outI=o=>[o.el.t,...o.el.args];
+  if(outs.length===1){emitBlock(outs[0].expr,L);L.push(outI(outs[0]));return L}
+  const {k,lists}=splitCommon(outs);
+  if(k===0){for(const o of outs){emitBlock(o.expr,L);L.push(outI(o))}return L}
+  emitBlock(andOf(lists[0].slice(0,k)),L);
+  const rests=lists.map(l=>l.slice(k));
+  if(rests.every(r=>!r.length)){for(const o of outs)L.push(outI(o));return L}
+  outs.forEach((o,i)=>{L.push([i===0?'MPS':i===outs.length-1?'MPP':'MRD']);emitSeries(rests[i],L);L.push(outI(o))});
+  return L;
+}
+function ilList(){const L=[];for(const r of LAD.rungs)L.push(...r.il);L.push(['END']);return L}
+function ilText(list){let st=0;return list.map(ins=>{const line=`${String(st).padStart(4)}  ${ins[0].padEnd(6)} ${ins.slice(1).map(gxDev).join(' ')}`.trimEnd();st+=stepsOf(ins);return line}).join('\n')}
+function ilCsv(list){
+  const q=s=>'"'+String(s).replace(/"/g,'""')+'"';
+  const rows=[[q('MAIN')],[q('PLC Information:'),q('FX3U/FX3UC')],['Step Number','Line Statement','Instruction','I/O(Device)','Blank','PI Statement','Note'].map(q)];
+  let st=0;
+  for(const ins of list){
+    const ops=ins.slice(1).map(gxDev);
+    rows.push([q(st),q(''),q(ins[0]),q(ops[0]||''),q(''),q(''),q('')]);
+    for(const o of ops.slice(1))rows.push([q(''),q(''),q(''),q(o),q(''),q(''),q('')]);
+    st+=stepsOf(ins);
+  }
+  return rows.map(r=>r.join('\t')).join('\r\n')+'\r\n';
+}
+function utf16(s){const b=new Uint8Array(2+s.length*2);b[0]=0xFF;b[1]=0xFE;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);b[2+i*2]=c&255;b[3+i*2]=c>>8}return b}
+function decodeFile(buf){
+  const b=new Uint8Array(buf);
+  if(b[0]===0xFF&&b[1]===0xFE)return new TextDecoder('utf-16le').decode(b.subarray(2));
+  if(b[0]===0xFE&&b[1]===0xFF)return new TextDecoder('utf-16be').decode(b.subarray(2));
+  if(b.length>3&&b[1]===0&&b[3]===0)return new TextDecoder('utf-16le').decode(b);
+  try{return new TextDecoder('utf-8',{fatal:true}).decode(b)}catch(e){try{return new TextDecoder('shift_jis').decode(b)}catch(e2){return new TextDecoder('utf-8').decode(b)}}
+}
+function ilLines(text){
+  const lines=String(text).replace(/\r/g,'').split('\n'),ins=[];let iI=-1,iD=-1;
+  for(let ln=0;ln<lines.length;ln++){
+    const raw=lines[ln];if(!raw.trim())continue;
+    if(raw.includes('\t')||(raw.includes('"')&&raw.includes(','))){
+      const f=(raw.includes('\t')?raw.split('\t'):raw.split(',')).map(x=>x.trim().replace(/^"|"$/g,'').replace(/""/g,'"').trim());
+      const hi=f.findIndex(x=>/^(instruction|命令)$/i.test(x));
+      if(hi>=0){iI=hi;iD=f.findIndex(x=>/(I\/O|device|デバイス)/i.test(x));if(iD<0)iD=hi+1;continue}
+      if(iI<0)continue;
+      const op=(f[iI]||'').toUpperCase(),dv=(f[iD]||'').toUpperCase();
+      if(op)ins.push({op,args:dv?[dv]:[],line:ln+1});else if(dv&&ins.length)ins[ins.length-1].args.push(dv);
+      continue;
+    }
+    const t=raw.replace(/(\/\/|;).*$/,'').trim();
+    if(!t||t.startsWith('"')||t.startsWith('*'))continue;
+    const tk=t.toUpperCase().split(/\s+/);
+    if(/^\d+$/.test(tk[0]))tk.shift();
+    if(!tk.length)continue;
+    if(tk.length===1&&/^(K-?\d+|H[0-9A-F]+|D\d+)$/.test(tk[0])&&ins.length){ins[ins.length-1].args.push(tk[0]);continue}
+    ins.push({op:tk[0],args:tk.slice(1),line:ln+1});
+  }
+  return ins;
+}
+function ilToRungs(ins){
+  const rungs=[];let cur={outs:[]},st=[],mps=[],pend=false;
+  const fin=()=>{if(cur.outs.length)rungs.push(cur);cur={outs:[]}};
+  for(const I of ins){
+    const {op,args}=I;
+    try{
+      if(op==='END'||op==='FEND')break;
+      if(op==='NOP')continue;
+      const top=()=>{if(!st.length)throw 'ต้องเริ่มด้วยคำสั่ง LD';return st[st.length-1]};
+      const setTop=v=>{st[st.length-1]=v};
+      if(op==='ANB'||op==='ORB'){if(st.length<2)throw `${op} ไม่มีบล็อกให้รวม`;if(pend&&st.length===2)pend=false;const b=st.pop(),a=st.pop();st.push(op==='ANB'?mkAnd(a,b):mkOr([a,b]));continue}
+      if(op==='MPS'){mps.push(top());continue}
+      if(op==='MRD'){if(!mps.length)throw 'MRD ไม่มี MPS';setTop(mps[mps.length-1]);continue}
+      if(op==='MPP'){if(!mps.length)throw 'MPP ไม่มี MPS';setTop(mps.pop());continue}
+      const pc=parseCmd([op,...args].join(' '),'LD');
+      if(pc.kind==='c'){
+        const pos=/^LD/.test(op)?'LD':/^(AND|ANI)/.test(op)?'AND':'OR';
+        if(pos==='LD'){if(cur.outs.length&&st.length===1&&!mps.length)pend=true;st.push(pc.el)}
+        else if(pos==='AND')setTop(mkAnd(top(),pc.el));
+        else setTop(mkOr([top(),pc.el]));
+      }else{
+        if(pend){if(st.length!==2)throw 'โครงสร้างวงจรไม่สมบูรณ์ (ขาด ANB/ORB?)';fin();st=[st[1]];pend=false}
+        cur.outs.push({expr:top(),el:pc.el});
+      }
+    }catch(e){throw `บรรทัด ${I.line} (${op}): ${e.message||e}`}
+  }
+  fin();
+  return rungs;
+}
+function layBlock(e){
+  if(!e||e.t==='TRUE')return {w:0,h:1,cells:[],v:[]};
+  if(isLeaf(e)){const {t,dev,op,a,b}=e.el||e;const el=t==='CMP'?{t,op,a,b}:{t,dev};return {w:1,h:1,cells:[[0,0,el]],v:[]}}
+  if(e.t==='AND'){let x=0,h=1;const cells=[],v=[];for(const ch of e.ch){const b=layBlock(ch);for(const [r,c,el] of b.cells)cells.push([r,c+x,el]);for(const [r,c] of b.v)v.push([r,c+x]);x+=b.w;h=Math.max(h,b.h)}return {w:x,h,cells,v}}
+  const bs=e.ch.map(layBlock),w=Math.max(1,...bs.map(b=>b.w)),cells=[],v=[],tops=[];let top=0;
+  for(const b of bs){tops.push(top);for(const [r,c,el] of b.cells)cells.push([r+top,c,el]);for(const [r,c] of b.v)v.push([r+top,c]);for(let c=b.w;c<w;c++)cells.push([top,c,{t:'H'}]);top+=b.h}
+  for(let r=0;r<tops[tops.length-1];r++){v.push([r,0]);v.push([r,w])}
+  return {w,h:top,cells,v};
+}
+function layRung(rg){
+  let common,rests;
+  if(rg.outs.length===1){common=rg.outs[0].expr;rests=[null]}
+  else{
+    const {k,lists}=splitCommon(rg.outs);
+    if(k===0)return rg.outs.flatMap(o=>layRung({outs:[o]}));
+    common=andOf(lists[0].slice(0,k));rests=lists.map(l=>l.slice(k)).map(l=>l.length?andOf(l):null);
+  }
+  const cb=layBlock(common),wc=cb.w,cells=[...cb.cells],v=[...cb.v],outs=[],tops=[];let top=0,w=wc;
+  rests.forEach((re,i)=>{
+    if(i===1)top=Math.max(top,cb.h);
+    const b=layBlock(re);tops.push(top);
+    for(const [r,c,el] of b.cells)cells.push([r+top,c+wc,el]);
+    for(const [r,c] of b.v)v.push([r+top,c+wc]);
+    outs.push([top,rg.outs[i].el]);w=Math.max(w,wc+b.w);top+=b.h;
+  });
+  if(wc>0)for(let r=0;r<tops[tops.length-1];r++)v.push([r,wc]);
+  return [{h:Math.max(cb.h,top),cells,v,outs,w}];
+}
+function rungsToProgram(rungs){
+  const chunks=rungs.flatMap(layRung);
+  const C=Math.max(LADC,...chunks.map(c=>c.w)),rows=[];
+  for(const ch of chunks){
+    const base=rows.length;for(let i=0;i<ch.h;i++)rows.push(newRow(C));
+    for(const [r,c,el] of ch.cells)rows[base+r].c[c]=el;
+    for(const [r,b] of ch.v)if(b>0&&b<=C)rows[base+r].v[b]=true;
+    for(const [r,el] of ch.outs)rows[base+r].o=el;
+  }
+  rows.push(newRow(C));
+  return {C,rows};
+}
+function ilToProgram(text){
+  const ins=ilLines(text);
+  if(!ins.length)throw 'ไม่พบคำสั่งในข้อความหรือไฟล์นี้';
+  return rungsToProgram(ilToRungs(ins));
+}
+
+/* ================= Ladder examples (written as MELSEC IL) ================= */
+const LAD_EXAMPLES=[
+{name:'แบบฝึก 1 · Start/Stop แบบรักษาสภาวะ',il:`LD X0
+OR M0
+ANI X1
+OUT M0
+LD M0
+OUT Y3
+OUT Y0
+LDI M0
+OUT Y2
+END`},
+{name:'แบบฝึก 2 · เจอชิ้นงานแล้วหยุด 2 วินาที (T0)',il:`LD X0
+OR M0
+ANI X1
+OUT M0
+LD M0
+AND X2
+ANI M1
+OUT T0 K20
+LD T0
+OR M1
+AND X2
+OUT M1
+LD M0
+LDI X2
+OR M1
+ANB
+OUT Y3
+LD M0
+OUT Y0
+LDI M0
+OUT Y2
+LD M0
+AND X2
+ANI M1
+AND M8013
+OUT Y1
+END`},
+{name:'แบบฝึก 3 · คัดแยกโลหะด้วยตัวคีบ (SET/RST)',il:`LD X0
+OR M0
+ANI X1
+OUT M0
+LD M21
+OR M22
+OR M23
+OR M24
+OR M25
+OR M26
+OUT M20
+LD M0
+AND X2
+ANI M20
+ANI M30
+OUT T0 K3
+LD T0
+AND X3
+SET M21
+LD T0
+ANI X3
+SET M30
+LDI X2
+RST M30
+LD M21
+AND X5
+SET M22
+RST M21
+LD M22
+OUT T1 K3
+LD T1
+SET M23
+RST M22
+LD M23
+AND X4
+SET M24
+RST M23
+LD M24
+AND X7
+SET M25
+RST M24
+LD M25
+OUT T2 K3
+LD T2
+SET M26
+RST M25
+LD M26
+AND X6
+RST M26
+LD M0
+ANI M20
+LDI X2
+OR M30
+ANB
+OUT Y3
+LD M21
+OR M22
+OUT Y4
+LD M22
+OR M23
+OR M24
+OUT Y5
+LD M24
+OR M25
+OUT Y6
+LD M0
+OUT Y0
+LDI M0
+OUT Y2
+LD M20
+OUT Y1
+LD M25
+OUT Y7
+OUT C0 K999
+LD M30
+OUT C1 K999
+END`},
+{name:'โปรแกรมว่าง',il:''}];
+
+/* ================= Ladder editor (GX Works2 style) ================= */
+const LG={CW:54,RH:50,RX:34,OW:142};
+const SHORT={X0:'START',X1:'STOP',X2:'PHOTO',X3:'METAL',X4:'CYL UP',X5:'CYL DN',X6:'SLD HOME',X7:'SLD END',Y0:'GREEN',Y1:'YELLOW',Y2:'RED',Y3:'MOTOR',Y4:'CYL DOWN',Y5:'GRIP',Y6:'SLIDE',Y7:'BUZZER'};
+const lad=$('lad'),ladwrap=$('ladwrap'),pop=$('pop'),popIn=$('popIn'),popHint=$('popHint');
+let cur={r:0,c:0};const undoS=[];
+const yc=r=>r*LG.RH+28;
+const cellX=c=>LG.RX+c*LG.CW;
+function svgEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function renderLad(){
+  const C=P.C,R=P.rows.length,{CW,RH,RX,OW}=LG,xo=cellX(C),rail2=xo+OW,W=rail2+14,H=R*RH+12;
+  const mon=lang==='LD'&&running&&source==='sim';
+  const S='stroke="var(--ink)" stroke-width="1.6"';
+  let s='';
+  // cursor
+  const cx0=cur.c>=C?xo:cellX(cur.c),cw=cur.c>=C?OW:CW;
+  s+=`<rect x="${cx0+1}" y="${cur.r*RH+3}" width="${cw-2}" height="${RH-6}" rx="3" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2"/>`;
+  // guides
+  s+='<g fill="var(--line)">';
+  for(let r=0;r<R;r++)for(let b=1;b<=C;b++)s+=`<circle cx="${cellX(b)}" cy="${yc(r)}" r="1.4"/>`;
+  s+='</g>';
+  // rails
+  s+=`<line x1="${RX}" y1="2" x2="${RX}" y2="${H-4}" stroke="var(--ink)" stroke-width="2.4"/><line x1="${rail2}" y1="2" x2="${rail2}" y2="${H-4}" stroke="var(--ink)" stroke-width="2.4"/>`;
+  // step numbers
+  for(const rg of LAD.rungs)s+=`<text x="${RX-6}" y="${yc(rg.s)+4}" text-anchor="end" font-size="10.5" font-family="var(--f-code)" fill="var(--muted)">${rg.step}</text>`;
+  const pw=new Map();for(const rg of LAD.rungs)for(const o of rg.outs)pw.set(o.row,o.x);
+  for(let r=0;r<R;r++){
+    const row=P.rows[r],y=yc(r),as=autoStart(r);
+    for(let c=0;c<C;c++){
+      const el=row.c[c],x=cellX(c);
+      if(!el){if(as!=null&&c>=as)s+=`<line x1="${x}" y1="${y}" x2="${x+CW}" y2="${y}" ${S}/>`;continue}
+      if(el.t==='H'){s+=`<line x1="${x}" y1="${y}" x2="${x+CW}" y2="${y}" ${S}/>`;continue}
+      let lf=LAD.mon.get(r+','+c);if(lf&&lf.el!==el)lf=null;
+      let on=false;
+      if(mon&&lf){on=(el.t==='P'||el.t==='F')?!!getBit(lf.d):el.t==='CMP'?!!lf._v:(el.t==='NC'?!getBit(lf.d):!!getBit(lf.d))}
+      const m=x+CW/2;
+      if(el.t==='CMP'){
+        s+=`<line x1="${x}" y1="${y}" x2="${x+3}" y2="${y}" ${S}/><line x1="${x+CW-3}" y1="${y}" x2="${x+CW}" y2="${y}" ${S}/>`;
+        s+=`<rect x="${x+3}" y="${y-12}" width="${CW-6}" height="24" rx="3" fill="${on?'var(--mon-soft)':'var(--code-bg)'}" ${S}/>`;
+        s+=`<text x="${m}" y="${y-2}" text-anchor="middle" font-size="9.5" font-weight="700" font-family="var(--f-code)" fill="var(--ink)">${svgEsc(el.op)}</text>`;
+        s+=`<text x="${m}" y="${y+9}" text-anchor="middle" font-size="8.5" font-family="var(--f-code)" fill="var(--c-io)">${svgEsc(el.a+' '+el.b)}</text>`;
+        if(mon&&lf)s+=`<text x="${m}" y="${y+24}" text-anchor="middle" font-size="8.5" font-family="var(--f-code)" fill="var(--mon)">${getWord(lf.a)}:${getWord(lf.b)}</text>`;
+        continue;
+      }
+      s+=`<line x1="${x}" y1="${y}" x2="${m-7}" y2="${y}" ${S}/><line x1="${m+7}" y1="${y}" x2="${x+CW}" y2="${y}" ${S}/>`;
+      if(on)s+=`<rect x="${m-7}" y="${y-10}" width="14" height="20" fill="var(--mon)"/>`;
+      s+=`<line x1="${m-7}" y1="${y-10}" x2="${m-7}" y2="${y+10}" ${S}/><line x1="${m+7}" y1="${y-10}" x2="${m+7}" y2="${y+10}" ${S}/>`;
+      if(el.t==='NC')s+=`<line x1="${m-10}" y1="${y+10}" x2="${m+10}" y2="${y-10}" stroke="${on?'#fff':'var(--ink)'}" stroke-width="1.6"/>`;
+      if(el.t==='P'||el.t==='F'){const a=el.t==='P'?-1:1,tip=y+6*a,col=on?'#fff':'var(--ink)';s+=`<path d="M${m} ${y-6*a} L${m} ${tip} M${m-3} ${tip-3*a} L${m} ${tip} L${m+3} ${tip-3*a}" fill="none" stroke="${col}" stroke-width="1.5"/>`}
+      s+=`<text x="${m}" y="${y-15}" text-anchor="middle" font-size="11" font-weight="700" font-family="var(--f-code)" fill="var(--c-io)">${svgEsc(el.dev)}</text>`;
+      if(SHORT[el.dev])s+=`<text x="${m}" y="${y+22}" text-anchor="middle" font-size="8.5" font-family="var(--f-code)" fill="var(--muted)">${SHORT[el.dev]}</text>`;
+    }
+    // output
+    if(row.o){
+      const o=row.o,ox=pw.get(r),on=mon&&ox&&ox.pw,m=xo+OW/2;
+      const dev=o.args[0];
+      if(o.t==='OUT'){
+        s+=`<line x1="${xo}" y1="${y}" x2="${m-11}" y2="${y}" ${S}/><line x1="${m+11}" y1="${y}" x2="${rail2}" y2="${y}" ${S}/>`;
+        if(on)s+=`<ellipse cx="${m}" cy="${y}" rx="10" ry="11" fill="var(--mon)"/>`;
+        s+=`<path d="M${m-6} ${y-11} Q${m-15} ${y} ${m-6} ${y+11} M${m+6} ${y-11} Q${m+15} ${y} ${m+6} ${y+11}" fill="none" ${S}/>`;
+        s+=`<text x="${m}" y="${y-16}" text-anchor="middle" font-size="11" font-weight="700" font-family="var(--f-code)" fill="var(--c-io)">${svgEsc(o.args.join(' '))}</text>`;
+        if(mon&&/^[TC]/.test(dev)){const d=parseDev(dev);s+=`<text x="${m}" y="${y+24}" text-anchor="middle" font-size="9" font-family="var(--f-code)" fill="var(--mon)">= ${getWord(d)}</text>`}
+        else if(SHORT[dev])s+=`<text x="${m}" y="${y+24}" text-anchor="middle" font-size="8.5" font-family="var(--f-code)" fill="var(--muted)">${SHORT[dev]}</text>`;
+      }else{
+        const bx=xo+12,bw=OW-24;
+        s+=`<line x1="${xo}" y1="${y}" x2="${bx}" y2="${y}" ${S}/><line x1="${bx+bw}" y1="${y}" x2="${rail2}" y2="${y}" ${S}/>`;
+        s+=`<rect x="${bx}" y="${y-11}" width="${bw}" height="22" fill="${on?'var(--mon-soft)':'var(--code-bg)'}" ${S}/>`;
+        s+=`<line x1="${bx+5}" y1="${y-11}" x2="${bx+5}" y2="${y+11}" stroke="var(--ink)" stroke-width="1"/><line x1="${bx+bw-5}" y1="${y-11}" x2="${bx+bw-5}" y2="${y+11}" stroke="var(--ink)" stroke-width="1"/>`;
+        s+=`<text x="${m}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" font-family="var(--f-code)" fill="var(--ink)">${svgEsc(o.t)} <tspan fill="var(--c-io)">${svgEsc(o.args.join(' '))}</tspan></text>`;
+        if(mon&&o.t.startsWith('MOV')||mon&&/^(INC|DEC)/.test(o.t)){const d=parseDev(o.args[o.args.length-1]);s+=`<text x="${m}" y="${y+24}" text-anchor="middle" font-size="9" font-family="var(--f-code)" fill="var(--mon)">${d.s} = ${getWord(d)}</text>`}
+      }
+    }
+    // vertical links to the row below
+    for(let b=1;b<=C;b++)if(row.v[b]&&r<R-1)s+=`<line x1="${cellX(b)}" y1="${y}" x2="${cellX(b)}" y2="${yc(r+1)}" ${S}/>`;
+  }
+  lad.setAttribute('width',W);lad.setAttribute('height',H);lad.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  lad.innerHTML=s;
+}
+function scrollToCur(){
+  const x=cur.c>=P.C?cellX(P.C):cellX(cur.c),y=cur.r*LG.RH;
+  if(y<ladwrap.scrollTop)ladwrap.scrollTop=y-10;else if(y+LG.RH>ladwrap.scrollTop+ladwrap.clientHeight)ladwrap.scrollTop=y+LG.RH-ladwrap.clientHeight+10;
+  if(x<ladwrap.scrollLeft)ladwrap.scrollLeft=x-20;else if(x+LG.OW>ladwrap.scrollLeft+ladwrap.clientWidth)ladwrap.scrollLeft=x+LG.OW-ladwrap.clientWidth+20;
+}
+let ladSaveT=0;
+function changed(){
+  trimRows();LAD=compileLadder();
+  if(cur.r>=P.rows.length)cur.r=P.rows.length-1;
+  renderLad();refreshIL();
+  clearTimeout(ladSaveT);ladSaveT=setTimeout(()=>store.set('plcsim.lad',JSON.stringify(P)),300);
+  if(running&&lang==='LD'&&source==='sim')setConsole('ok',`Online change · ${LAD.rungs.length} rung · ${LAD.steps} สเต็ป · ยังอยู่ในโหมด RUN`);
+}
+function snap(){undoS.push(JSON.stringify(P));if(undoS.length>80)undoS.shift()}
+function loadProgram(p){P=p;cur={r:0,c:0};undoS.length=0;changed();ladwrap.scrollTop=0;ladwrap.scrollLeft=0}
+function commit(text,def){
+  const pc=parseCmd(text,def);if(!pc)return;
+  const {r,c}=cur;
+  if(pc.kind==='c'){
+    if(c>=P.C)throw 'คอนแทคต้องวางในช่องด้านซ้ายของคอยล์';
+    if(pc.branch&&r===0)throw 'คำสั่ง OR ต้องวางในแถวใต้วงจรหลัก';
+    snap();ensureRows(r+2);P.rows[r].c[c]=pc.el;
+    if(pc.branch){P.rows[r-1].v[c+1]=true;if(c>0)P.rows[r-1].v[c]=true}
+    cur={r,c:Math.min(c+1,P.C)};
+  }else{
+    snap();ensureRows(r+2);P.rows[r].o=pc.el;cur={r:r+1,c:0};
+  }
+  changed();scrollToCur();
+}
+function openPop(prefill,def){
+  const x=cur.c>=P.C?cellX(P.C):cellX(cur.c);
+  pop.style.left=Math.max(4,Math.min(x,lad.width.baseVal.value-290))+'px';
+  pop.style.top=((cur.r+1)*LG.RH+2)+'px';
+  pop.dataset.def=def||(cur.c>=P.C?'OUT':'LD');
+  popHint.className='h';popHint.innerHTML='เช่น <b>LD X0</b>, <b>ANI X1</b>, <b>OR M0</b>, <b>OUT Y3</b>, <b>OUT T0 K20</b>, <b>SET M10</b>, <b>MOV K5 D0</b>, <b>LD= D0 K5</b>';
+  pop.hidden=false;popIn.value=prefill||'';popIn.focus();popIn.setSelectionRange(popIn.value.length,popIn.value.length);
+}
+function closePop(){pop.hidden=true;ladwrap.focus({preventScroll:true})}
+popIn.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();try{commit(popIn.value,pop.dataset.def);closePop()}catch(err){popHint.className='h bad';popHint.textContent=String(err.message||err)}}
+  else if(e.key==='Escape'){e.preventDefault();closePop()}
+  e.stopPropagation();
+});
+popIn.addEventListener('blur',()=>setTimeout(()=>{if(document.activeElement!==popIn)pop.hidden=true},150));
+function curEl(){return cur.c>=P.C?P.rows[cur.r].o:P.rows[cur.r].c[cur.c]}
+function ladAction(k){
+  const {r,c}=cur;
+  switch(k){
+    case 'F5':openPop('LD ','LD');break;
+    case 'sF5':openPop('OR ','OR');break;
+    case 'F6':openPop('LDI ','LDI');break;
+    case 'sF6':openPop('ORI ','ORI');break;
+    case 'P':openPop('LDP ','LDP');break;
+    case 'Fe':openPop('LDF ','LDF');break;
+    case 'F7':openPop('OUT ','OUT');break;
+    case 'F8':openPop('','OUT');break;
+    case 'F9':if(c>=P.C)return;snap();ensureRows(r+2);P.rows[r].c[c]={t:'H'};cur.c=Math.min(c+1,P.C);changed();break;
+    case 'F10':if(r===0||c===0||c>P.C){toast('เส้นตั้งวางที่ขอบซ้ายของช่อง และต้องอยู่แถวที่ 2 ขึ้นไป','warn');return}snap();P.rows[r-1].v[c]=!P.rows[r-1].v[c];changed();break;
+    case 'Del':snap();if(c>=P.C)P.rows[r].o=null;else P.rows[r].c[c]=null;changed();break;
+    case 'insRow':{snap();const nr=newRow(P.C);if(r>0)nr.v=[...P.rows[r-1].v];P.rows.splice(r,0,nr);changed();break}
+    case 'delRow':snap();if(r>0&&P.rows[r].v.every(x=>!x))P.rows[r-1].v.fill(false);P.rows.splice(r,1);if(!P.rows.length)P.rows.push(newRow(P.C));changed();break;
+    case 'undo':if(undoS.length){P=JSON.parse(undoS.pop());changed()}else toast('ไม่มีขั้นตอนให้ย้อนกลับ','warn');break;
+  }
+}
+document.querySelectorAll('#ltools button').forEach(b=>b.addEventListener('click',()=>{ladAction(b.dataset.k);if(pop.hidden)ladwrap.focus({preventScroll:true})}));
+ladwrap.addEventListener('keydown',e=>{
+  if(!pop.hidden)return;
+  const k=e.key;let mv=null;
+  if(k==='ArrowUp')mv=[-1,0];else if(k==='ArrowDown')mv=[1,0];else if(k==='ArrowLeft')mv=[0,-1];else if(k==='ArrowRight')mv=[0,1];
+  if(mv){e.preventDefault();cur.r=Math.max(0,Math.min(P.rows.length-1,cur.r+mv[0]));cur.c=Math.max(0,Math.min(P.C,cur.c+mv[1]));renderLad();scrollToCur();return}
+  if(k==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();startPLC();return}
+  if(k==='Enter'){e.preventDefault();openPop(elText(curEl()));return}
+  if(k==='Home'){e.preventDefault();cur.c=0;renderLad();scrollToCur();return}
+  if(k==='End'){e.preventDefault();cur.c=P.C;renderLad();scrollToCur();return}
+  if(k==='F5'||k==='F6'||k==='F7'||k==='F8'||k==='F9'||k==='F10'){e.preventDefault();ladAction(e.shiftKey&&(k==='F5'||k==='F6')?'s'+k:k);return}
+  if(k==='Delete'||k==='Backspace'){e.preventDefault();ladAction(e.shiftKey&&k==='Delete'?'delRow':'Del');return}
+  if(k==='Insert'&&e.shiftKey){e.preventDefault();ladAction('insRow');return}
+  if((k==='z'||k==='Z')&&(e.ctrlKey||e.metaKey)){e.preventDefault();ladAction('undo');return}
+  if(k.length===1&&/[A-Za-z0-9=<>]/.test(k)&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();openPop(k)}
+});
+lad.addEventListener('mousedown',e=>{
+  const rc=lad.getBoundingClientRect(),x=e.clientX-rc.left,y=e.clientY-rc.top;
+  const r=Math.max(0,Math.min(P.rows.length-1,Math.floor(y/LG.RH)));
+  let c=x<LG.RX?0:Math.floor((x-LG.RX)/LG.CW);c=Math.max(0,Math.min(P.C,c));
+  cur={r,c};renderLad();if(!pop.hidden)pop.hidden=true;
+  setTimeout(()=>ladwrap.focus({preventScroll:true}),0);
+});
+lad.addEventListener('dblclick',e=>{e.preventDefault();openPop(elText(curEl()))});
+
+/* ================= IL panel & files ================= */
+const ilBox=$('il');
+function refreshIL(){
+  if(document.activeElement===ilBox)return;
+  const L=ilList();ilBox.value=ilText(L);
+  $('ilInfo').textContent=`${L.length} คำสั่ง · ${LAD.steps+1} สเต็ป`;
+}
+async function saveFile(filename,data){
+  try{
+    const dl=window.claude&&typeof window.claude.use==='function'?await window.claude.use('downloads'):null;
+    if(dl){await dl.save({filename,data});toast('บันทึกไฟล์แล้ว','ok');return}
+  }catch(e){if(e&&e.code==='declined')return;if(e&&e.code&&e.code!=='unavailable'&&e.code!=='not_granted'){toast('บันทึกไฟล์ไม่สำเร็จ: '+(e.message||e.code),'bad');return}}
+  try{
+    const url=URL.createObjectURL(new Blob([data]));const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+  }catch(e){toast('เบราว์เซอร์นี้บันทึกไฟล์ไม่ได้ ใช้ปุ่ม “คัดลอก IL” แทน','bad')}
+}
+$('saveCsv').addEventListener('click',()=>{if(lang!=='LD'){toast('สลับเป็น Ladder ก่อนส่งออก','warn');return}saveFile('plc_program.csv',utf16(ilCsv(ilList())))});
+$('copyIl').addEventListener('click',()=>{
+  const t=ilBox.value;
+  const fall=()=>{ilBox.focus();ilBox.select();toast('เลือกข้อความไว้แล้ว กด Ctrl+C เพื่อคัดลอก','warn')};
+  try{navigator.clipboard.writeText(t).then(()=>toast('คัดลอก IL แล้ว','ok'),fall)}catch(e){fall()}
+});
+function importText(text,label){
+  try{const p=ilToProgram(text);setLang('LD',true);snap();loadProgram(p);toast(`${label}: ได้ ${LAD.rungs.length} rung`,'ok');if(running)startPLC()}
+  catch(e){toast('นำเข้าไม่สำเร็จ · '+(e.message||e),'bad')}
+}
+$('ilToLad').addEventListener('click',()=>{const t=ilBox.value;ilBox.blur();importText(t,'แปลง IL เป็น Ladder')});
+$('openFile').addEventListener('click',()=>$('fileIn').click());
+$('fileIn').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const buf=await f.arrayBuffer();importText(decodeFile(buf),'นำเข้า '+f.name);e.target.value=''});
+
+/* ================= Bridge to GX Simulator2 / real PLC ================= */
+let ws=null,linkY=Array(8).fill(false),lastSentX='',lastSendT=0;
+function setLink(cls,msg){const el=$('linkSt');el.className='linkst '+(cls||'');el.textContent=msg}
+function linkConnect(){
+  if(ws){try{ws.close()}catch(e){}return}
+  const url=$('wsUrl').value.trim();
+  try{ws=new WebSocket(url)}catch(e){ws=null;setLink('bad','เปิดการเชื่อมต่อไม่ได้: '+(e.message||e)+(inFrame?' · หน้าออนไลน์ไม่อนุญาตให้ต่อ localhost ให้เปิดไฟล์ .html จากเครื่อง':''));return}
+  setLink('','กำลังเชื่อมต่อ '+url+' …');$('btnLink').textContent='ยกเลิก';
+  const to=setTimeout(()=>{if(ws&&ws.readyState!==1)try{ws.close()}catch(e){}},4000);
+  ws.onopen=()=>{clearTimeout(to);stopPLC(true);source='bridge';linkOk=true;lastSentX='';ws.send(JSON.stringify({type:'hello',client:'plc-training-kit-sim'}));setLink('ok','เชื่อมต่อ Bridge แล้ว · รอสถานะจาก PLC…');$('btnLink').textContent='ตัดการเชื่อมต่อ';renderLad()};
+  ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}
+    if(m.type==='outputs'&&Array.isArray(m.y)){linkY=Array.from({length:8},(_,i)=>!!m.y[i])}
+    else if(m.type==='status')setLink(m.ok?'ok':'bad',(m.ok?'เชื่อมต่อแล้ว · ':'Bridge แจ้งปัญหา · ')+(m.msg||''));
+  };
+  ws.onclose=()=>{clearTimeout(to);const was=linkOk;ws=null;linkOk=false;source='sim';linkY=Array(8).fill(false);$('btnLink').textContent='เชื่อมต่อ';
+    setLink(was?'':'bad',was?'ตัดการเชื่อมต่อแล้ว · กด Run เพื่อกลับมาใช้โปรแกรมในเว็บ':'เชื่อมต่อไม่ได้ · ตรวจว่า gx_bridge.py กำลังรันอยู่'+(inFrame?' และเปิดหน้านี้จากไฟล์ .html ในเครื่อง (หน้าออนไลน์ไม่อนุญาตให้ต่อ localhost)':''))};
+  ws.onerror=()=>{};
+}
+function linkTick(){
+  if(!ws||ws.readyState!==1)return;
+  const x=IO_X.map(d=>lastIn[d.n]?1:0),k=x.join(''),now=performance.now();
+  if(k!==lastSentX||now-lastSendT>500){try{ws.send(JSON.stringify({type:'inputs',x}))}catch(e){}lastSentX=k;lastSendT=now}
+}
+$('btnLink').addEventListener('click',linkConnect);
+
+/* ================= Run / Stop ================= */
+let stRt=null;
+function showErr(e,kind){plcErr=true;errLine=e.line||null;setConsole('bad',`${kind} บรรทัด ${e.line??'?'}: ${e.message}`);renderEditor()}
+function startPLC(){
+  if(source==='bridge'){toast('ตอนนี้ GX Works2 ควบคุมเครื่องผ่าน Bridge อยู่ · ตัดการเชื่อมต่อก่อนถ้าจะรันโปรแกรมในเว็บ','warn');return false}
+  if(lang==='LD'){
+    try{LAD=compileLadder()}catch(e){plcErr=true;running=false;setConsole('bad','Ladder ผิดพลาด: '+(e.message||e));return false}
+    resetLadMem();stRt=null;plcErr=false;running=true;plcTime=0;scanCount=0;
+    setConsole('ok',LAD.rungs.length?`Ladder พร้อมรัน · ${LAD.rungs.length} rung · ${LAD.steps} สเต็ป · PLC อยู่ในโหมด RUN`:'PLC RUN · ยังไม่มี rung ที่มีคอยล์ ลองกด F5 แล้วพิมพ์ X0');
+    renderLad();renderWatch(true);return true;
+  }
+  let prog;
+  try{prog=parse(ed.value)}catch(e){running=false;stRt=null;showErr(e instanceof StErr?e:new StErr(String(e.message||e),null),'คอมไพล์ไม่ผ่าน ·');return false}
+  try{stRt=makeRuntime(prog)}catch(e){running=false;stRt=null;showErr(e,'ค่าเริ่มต้นผิด ·');return false}
+  plcErr=false;errLine=null;running=true;plcTime=0;scanCount=0;
+  const nv=[...prog.sym.values()].filter(s=>s.kind==='var'||s.kind==='fb').length;
+  setConsole('ok',`คอมไพล์ผ่าน · ตัวแปร ${nv} ตัว · PLC อยู่ในโหมด RUN`);
+  renderEditor();renderWatch(true);return true;
+}
+function stopPLC(silent){
+  running=false;
+  if(stRt)for(const y of IO_Y)stRt.mem[y.n]=false;
+  LM.Y.fill(0);
+  if(!silent&&!plcErr)setConsole('info','PLC หยุดทำงาน (STOP) · เอาต์พุตทั้งหมดดับ');
+  if(lang==='LD')renderLad();
+}
+function tick(dt){
+  lastIn=simInputs();
+  let Y=Array(8).fill(false);
+  if(source==='bridge'){linkTick();Y=linkY.slice()}
+  else if(running){
+    try{
+      if(lang==='LD')Y=scanLadder(lastIn,dt);
+      else{for(const x of IO_X)stRt.mem[x.n]=lastIn[x.n];stRt.scan(plcTime);Y=IO_Y.map(y=>!!stRt.mem[y.n])}
+    }catch(e){running=false;Y=Array(8).fill(false);if(lang==='ST'){for(const y of IO_Y)stRt.mem[y.n]=false;showErr(e,'Runtime error ·')}else{plcErr=true;setConsole('bad','Runtime error: '+(e.message||e))}}
+    plcTime+=dt;scanCount++;
+  }
+  simStep(dt,Y);
+}
+
+/* ================= Language switch & examples ================= */
+const exSel=$('ex');
+function fillExamples(){
+  exSel.innerHTML='';
+  const list=lang==='LD'?LAD_EXAMPLES:ST_EXAMPLES;
+  const o0=document.createElement('option');o0.value='';o0.textContent='— เลือกแบบฝึก —';exSel.appendChild(o0);
+  list.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=e.name;exSel.appendChild(o)});
+  exSel.value=store.get('plcsim.ex.'+lang)??'';
+}
+function setLang(l,keepRun){
+  if(l===lang)return;
+  if(running&&!keepRun)stopPLC(true);
+  lang=l;store.set('plcsim.lang',l);
+  $('langLD').setAttribute('aria-pressed',l==='LD');$('langST').setAttribute('aria-pressed',l==='ST');
+  $('ladView').hidden=l!=='LD';$('stView').hidden=l!=='ST';
+  fillExamples();errLine=null;plcErr=false;
+  if(l==='LD'){renderLad();setConsole('info','Ladder · คลิกช่องแล้วกด F5 / F7 หรือพิมพ์คำสั่งได้เลย · Ctrl+Enter เพื่อ Run')}
+  else{renderEditor();syncScroll();setConsole('info','Structured Text · กด Run (Ctrl+Enter) เพื่อคอมไพล์และรัน')}
+  renderWatch(true);
+}
+$('langLD').addEventListener('click',()=>setLang('LD'));
+$('langST').addEventListener('click',()=>setLang('ST'));
+exSel.addEventListener('change',()=>{
+  if(exSel.value==='')return;
+  store.set('plcsim.ex.'+lang,exSel.value);
+  if(lang==='LD'){try{snap();loadProgram(ilToProgram(LAD_EXAMPLES[exSel.value].il||'NOP'))}catch(e){if(!LAD_EXAMPLES[exSel.value].il){loadProgram({C:LADC,rows:[newRow(LADC)]})}else toast(String(e),'bad')}}
+  else{ed.value=ST_EXAMPLES[exSel.value].code;errLine=null;renderEditor();ed.scrollTop=0;syncScroll();store.set('plcsim.code',ed.value)}
+  if(running)startPLC();
+});
+$('btnRun').addEventListener('click',startPLC);
+$('btnStop').addEventListener('click',()=>stopPLC(false));
+
+/* ================= I/O panel & device monitor ================= */
+const ioEls={};
+function buildIO(){
+  for(const d of IO_X){
+    const isBtn=d.n==='X0'||d.n==='X1';
+    const el=document.createElement(isBtn?'button':'div');
+    el.className='iorow';el.innerHTML=`<span class="led"></span><b>${d.n}</b><span class="d">${d.d}</span>`;
+    if(isBtn){
+      el.type='button';el.title='กดค้างเพื่อจ่ายสัญญาณ';
+      const on=()=>{sim.btn[d.n]=true},off=()=>{sim.btn[d.n]=false};
+      el.addEventListener('pointerdown',e=>{e.preventDefault();el.setPointerCapture?.(e.pointerId);on()});
+      ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,off));
+      el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();on()}});
+      el.addEventListener('keyup',off);el.addEventListener('blur',off);
+    }
+    $('ioX').appendChild(el);ioEls[d.n]=el;
+  }
+  for(const d of IO_Y){
+    const el=document.createElement('div');el.className='iorow y';
+    el.innerHTML=`<span class="led"></span><b>${d.n}</b><span class="d">${d.d}</span>`;
+    $('ioY').appendChild(el);ioEls[d.n]=el;
+  }
+  $('ioRef').innerHTML=[...IO_X,...IO_Y].map(d=>`<tr><td>${d.n}</td><td>${d.d}</td></tr>`).join('');
+}
+const fmt=(ty,v)=>{
+  if(ty==='BOOL')return `<span class="tbool ${v?'t':'f'}">${v?'TRUE':'FALSE'}</span>`;
+  if(ty==='TIME')return `T#${v}ms`;
+  if(ty==='REAL'||ty==='LREAL')return (+v).toFixed(3);
+  return String(v);
+};
+const onoff=v=>`<span class="tbool ${v?'t':'f'}">${v?'ON':'OFF'}</span>`;
+let watchKey='';
+function ladDevices(){
+  const set=new Map(),pre={};
+  const add=s=>{if(!s)return;const d=parseDev(s);if(d.t==='K'||d.t==='X'||d.t==='Y')return;if(d.t==='M'&&d.n>=8000)return;set.set(d.s,d)};
+  for(const R of P.rows){for(const el of R.c){if(!el||el.t==='H')continue;add(el.dev);add(el.a);add(el.b)}
+    if(R.o){R.o.args.forEach(add);if(R.o.t==='OUT'&&R.o.args[1])pre[R.o.args[0]]=R.o.args[1]}}
+  const ord={M:0,T:1,C:2,D:3};
+  return {list:[...set.values()].sort((a,b)=>ord[a.t]-ord[b.t]||a.n-b.n),pre};
+}
+function renderWatch(force){
+  const tb=$('watch');let html;
+  if(lang==='LD'){
+    const {list,pre}=ladDevices();
+    if(!list.length)html='<tr><td colspan="3" class="empty">ยังไม่มี M / T / C / D ในโปรแกรม</td></tr>';
+    else html=list.slice(0,60).map(d=>{
+      let ty,v;
+      if(d.t==='M'){ty='Bit';v=onoff(getBit(d))}
+      else if(d.t==='T'){ty=`Timer ${tBase(d.n)}ms`;v=`${onoff(getBit(d))} ${getWord(d)} / ${pre[d.s]||'-'}`}
+      else if(d.t==='C'){ty='Counter';v=`${onoff(getBit(d))} ${getWord(d)} / ${pre[d.s]||'-'}`}
+      else{ty='Word';v=String(getWord(d))}
+      return `<tr><td>${d.s}</td><td style="color:var(--c-ty)">${ty}</td><td class="v">${v}</td></tr>`}).join('');
+  }else if(!stRt)html='<tr><td colspan="3" class="empty">กด Run เพื่อดูค่าตัวแปรขณะโปรแกรมทำงาน</td></tr>';
+  else{
+    const rows=[];
+    for(const [n,s] of stRt.prog.sym){
+      if(s.kind==='var')rows.push([s.decl,s.type,fmt(s.type,stRt.mem[n])]);
+      else if(s.kind==='fb'){const d=FBDEF[s.type],o=stRt.mem[n];const parts=Object.keys(d.out).map(k=>`${k}=${fmt(d.out[k],o[k])}`);if('PT' in d.in)parts.push(`PT=${fmt('TIME',o.PT)}`);if('PV' in d.in)parts.push(`PV=${o.PV}`);rows.push([s.decl,s.type,parts.join(' ')])}
+    }
+    html=rows.length?rows.map(r=>`<tr><td>${r[0]}</td><td style="color:var(--c-ty)">${r[1]}</td><td class="v">${r[2]}</td></tr>`).join(''):'<tr><td colspan="3" class="empty">โปรแกรมนี้ยังไม่มีตัวแปรใน VAR</td></tr>';
+  }
+  if(force||html!==watchKey){tb.innerHTML=html;watchKey=html}
+}
+$('addM').addEventListener('click',()=>spawn(true,true));
+$('addP').addEventListener('click',()=>spawn(false,true));
+$('auto').addEventListener('change',e=>{sim.auto=e.target.checked;sim.feedT=2600});
+$('resetSim').addEventListener('click',()=>{resetSim();toast('รีเซ็ตเครื่องแล้ว','ok')});
+let lastUI='';
+function updateUI(){
+  for(const x of IO_X)ioEls[x.n].classList.toggle('on',!!lastIn[x.n]);
+  IO_Y.forEach((y,i)=>ioEls[y.n].classList.toggle('on',!!sim.Y[i]));
+  const st=source==='bridge'?'link':plcErr&&!running?'err':running?'run':'stop';
+  if(st!==lastUI){$('pill').className='pill'+(st==='stop'?'':' '+st);$('pillTxt').textContent={link:'LINK · GX',err:'ERROR',run:'RUN',stop:'STOP'}[st];lastUI=st}
+  $('scanInfo').textContent=source==='bridge'?'ควบคุมโดย GX Simulator2 / PLC':`scan ${scanCount.toLocaleString()} · ${(plcTime/1000).toFixed(1)} s`;
+  $('sOk').textContent=sim.stats.ok;$('sNg').textContent=sim.stats.ng;$('sDrop').textContent=sim.stats.drop;
+}
+
+/* ================= Drawing ================= */
+const cv=$('sim'),c=cv.getContext('2d');
+function fit(){const r=cv.getBoundingClientRect();const dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.max(300,Math.round(r.width*dpr));cv.height=Math.round(cv.width*G.H/G.W)}
+new ResizeObserver(fit).observe(cv);fit();
+let simBg='#d9dfe6',bgN=0;
+function rr(x,y,w,h,r){c.beginPath();if(c.roundRect)c.roundRect(x,y,w,h,r);else c.rect(x,y,w,h)}
+const MONO='"JetBrains Mono", ui-monospace, monospace', THAI='"IBM Plex Sans Thai", system-ui, sans-serif';
+function txt(s,x,y,col,size=10,align='center',weight=600,font=MONO){c.fillStyle=col;c.font=`${weight} ${size}px ${font}`;c.textAlign=align;c.textBaseline='middle';c.fillText(s,x,y)}
+function dot(x,y,r,on,colOn,colOff,glow){
+  c.save();if(on&&glow){c.shadowColor=colOn;c.shadowBlur=glow}
+  c.fillStyle=on?colOn:colOff;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();c.restore();
+}
+function lamp(x,y,r,on,col,off){
+  c.fillStyle='#d5d9dd';c.beginPath();c.arc(x,y,r+4,0,Math.PI*2);c.fill();
+  dot(x,y,r,on,col,off,on?22:0);
+  if(on){c.fillStyle='rgba(255,255,255,.55)';c.beginPath();c.arc(x-r*.35,y-r*.35,r*.3,0,Math.PI*2);c.fill()}
+  c.strokeStyle='rgba(0,0,0,.35)';c.lineWidth=1.2;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();
+}
+function drawPart(p){
+  const x=p.x-G.pw/2,y=p.y-G.ph;
+  c.save();if(p.st==='floor')c.globalAlpha=Math.max(0,1-p.t/2500);
+  let g;
+  if(p.metal){g=c.createLinearGradient(x,y,x+G.pw,y+G.ph);g.addColorStop(0,'#f3f5f7');g.addColorStop(.45,'#98a2ad');g.addColorStop(1,'#d8dde2')}
+  else{g=c.createLinearGradient(x,y,x,y+G.ph);g.addColorStop(0,'#5d9be0');g.addColorStop(1,'#2f6db3')}
+  c.fillStyle=g;rr(x,y,G.pw,G.ph,4);c.fill();
+  c.strokeStyle='rgba(0,0,0,.4)';c.lineWidth=1;c.stroke();
+  txt(p.metal?'Fe':'PL',p.x,p.y-G.ph/2,p.metal?'#38414b':'#eef5ff',11,'center',700);
+  c.restore();
+}
+const stickerTag=(s,x,y)=>{c.fillStyle='#ffffff';rr(x-11,y-7,22,14,2);c.fill();c.strokeStyle='#9aa3ab';c.lineWidth=.8;c.stroke();txt(s,x,y,'#2b333c',9,'center',700)};
+function draw(){
+  const running=plcActive();
+  if(bgN--<=0){simBg=getComputedStyle(document.documentElement).getPropertyValue('--sim-bg').trim()||simBg;bgN=60}
+  const Y=sim.Y,I=lastIn,X=cX(),F=fB(),w=gW();
+  c.setTransform(cv.width/G.W,0,0,cv.height/G.H,0,0);
+  c.fillStyle=simBg;c.fillRect(0,0,G.W,G.H);
+  // bench (green mat)
+  c.fillStyle='#1f5b45';c.fillRect(0,420,G.W,80);c.fillStyle='rgba(255,255,255,.1)';c.fillRect(0,420,G.W,2);
+  // back panel
+  c.fillStyle='#c4cad0';rr(40,28,820,380,6);c.fill();c.strokeStyle='#959ea8';c.lineWidth=2;c.stroke();
+  c.fillStyle='#a9b1b9';c.fillRect(41,29,818,12);
+  c.strokeStyle='rgba(0,0,0,.05)';c.lineWidth=1;for(let y=62;y<400;y+=22){c.beginPath();c.moveTo(48,y);c.lineTo(852,y);c.stroke()}
+  c.fillStyle='#e3e6e9';c.fillRect(41,138,818,8);c.fillStyle='#8f98a2';c.fillRect(41,146,818,2);
+  // PLC
+  c.fillStyle='#f1f2ef';rr(60,50,180,84,4);c.fill();c.strokeStyle='#b4b9b3';c.lineWidth=1;c.stroke();
+  c.fillStyle='#3a3f45';c.fillRect(60,50,180,10);c.fillRect(60,124,180,10);
+  c.fillStyle='#8b939b';for(let i=0;i<16;i++){c.fillRect(65+i*10.9,53,6,4);c.fillRect(65+i*10.9,127,6,4)}
+  txt('PLC',70,72,'#2a3038',12,'left',700);txt('ST-SIM',70,86,'#7a828b',8.5,'left',600);
+  [['POW',true,'#39d36b'],['RUN',running,'#39d36b'],['ERR',plcErr&&!running,'#ff4b4b']].forEach((L,i)=>{dot(73,100+i*9,2.6,L[1],L[2],'#b9c0bb',L[1]?6:0);txt(L[0],79,100+i*9,'#59616a',7,'left',600)});
+  txt('IN',140,74,'#59616a',7.5,'left',700);txt('OUT',140,100,'#59616a',7.5,'left',700);
+  for(let i=0;i<8;i++){
+    dot(146+i*11,85,3,!!I['X'+i],'#39d36b','#c3c9c4',I['X'+i]?6:0);txt(String(i),146+i*11,92.5,'#868e96',6.5);
+    dot(146+i*11,111,3,!!Y[i],'#39d36b','#c3c9c4',Y[i]?6:0);txt(String(i),146+i*11,118.5,'#868e96',6.5);
+  }
+  // HMI
+  c.fillStyle='#2a2e35';rr(290,52,144,80,5);c.fill();
+  c.fillStyle=running?'#cfe6c0':'#c4ccc0';c.fillRect(298,59,128,58);
+  txt(running?(source==='bridge'?'◆ LINK GX':'● RUN'):'■ STOP',304,69,running?'#1f6b2c':'#5b2b2b',9.5,'left',700);
+  txt(`OK   ${sim.stats.ok}`,304,84,'#1f2a1c',9,'left',600);txt(`NG   ${sim.stats.ng}`,304,96,'#1f2a1c',9,'left',600);
+  txt(sim.auto?'AUTO FEED':'MANUAL',304,108,'#4a5646',8,'left',600);
+  c.fillStyle='#4b525b';for(let i=0;i<4;i++)c.fillRect(306+i*30,121,18,6);
+  // power supply
+  c.fillStyle='#d8dbde';rr(700,50,130,84,3);c.fill();c.strokeStyle='#a2a8af';c.stroke();
+  c.fillStyle='rgba(0,0,0,.2)';for(let y=60,r=0;y<128;y+=6,r++)for(let x=708+(r%2)*3;x<786;x+=6){c.beginPath();c.arc(x,y,1.5,0,Math.PI*2);c.fill()}
+  c.fillStyle='#e6c21b';c.beginPath();c.arc(808,72,9,0,Math.PI*2);c.fill();
+  txt('24VDC',808,96,'#3a4048',8,'center',700);dot(808,114,3,true,'#39d36b','#999',6);
+  // reject bin (back)
+  const B=G.bin,TR=G.tray;
+  c.fillStyle='#1d2126';c.beginPath();c.moveTo(B.l,B.t);c.lineTo(B.r,B.t);c.lineTo(B.r-8,B.b);c.lineTo(B.l+8,B.b);c.closePath();c.fill();
+  c.fillStyle='#2c3238';c.fillRect(B.l+4,B.t+2,B.r-B.l-8,10);
+  // OK tray (back)
+  c.fillStyle='#69737d';c.fillRect(TR.l,TR.t,TR.r-TR.l,TR.b-TR.t);
+  // base plate
+  c.fillStyle='#aeb6be';rr(40,404,820,16,2);c.fill();c.fillStyle='#8f98a1';c.fillRect(40,417,820,3);
+  // conveyor legs
+  c.fillStyle='#9aa3ad';c.fillRect(92,384,10,21);c.fillRect(556,384,10,21);
+  // belt loop
+  c.fillStyle='#2a7a52';rr(G.bx0-12,G.beltY-2,G.bx1-G.bx0+24,26,13);c.fill();
+  c.fillStyle='#1c5a3b';rr(G.bx0,G.beltY+4,G.bx1-G.bx0,14,7);c.fill();
+  c.strokeStyle='rgba(0,0,0,.22)';c.lineWidth=1.2;
+  for(let x=G.bx0+((sim.belt%28)+28)%28;x<G.bx1;x+=28){c.beginPath();c.moveTo(x,G.beltY-1);c.lineTo(x,G.beltY+3);c.stroke()}
+  for(const rx of [G.bx0,G.bx1]){
+    c.fillStyle='#e4e7ea';c.beginPath();c.arc(rx,G.beltY+11,11,0,Math.PI*2);c.fill();c.strokeStyle='#8f98a1';c.lineWidth=1;c.stroke();
+    const a=sim.belt/11;c.strokeStyle='#6b747d';c.lineWidth=1.5;c.beginPath();c.moveTo(rx-Math.cos(a)*8,G.beltY+11-Math.sin(a)*8);c.lineTo(rx+Math.cos(a)*8,G.beltY+11+Math.sin(a)*8);c.stroke();
+    c.fillStyle='#6b747d';c.beginPath();c.arc(rx,G.beltY+11,2.5,0,Math.PI*2);c.fill();
+  }
+  // parts (except held)
+  for(const p of sim.parts)if(p!==sim.held)drawPart(p);
+  // conveyor front rail
+  c.fillStyle='#d7dce1';rr(G.bx0+14,G.beltY+7,G.bx1-G.bx0-28,12,2);c.fill();c.strokeStyle='#a3abb3';c.lineWidth=1;c.stroke();
+  txt('CONVEYOR',G.bx0+60,G.beltY+13,'#7a838c',8,'center',700);
+  // bin & tray front
+  c.strokeStyle='#0f1215';c.lineWidth=3;c.beginPath();c.moveTo(B.l,B.t);c.lineTo(B.l+8,B.b);c.lineTo(B.r-8,B.b);c.lineTo(B.r,B.t);c.stroke();
+  c.fillStyle='rgba(30,34,39,.92)';c.fillRect(B.l+5,B.b-24,B.r-B.l-10,22);
+  c.fillStyle='#ffffff';rr(B.l+22,B.b-20,B.r-B.l-44,14,2);c.fill();txt('REJECT',(B.l+B.r)/2,B.b-13,'#b02a2a',8.5,'center',700);
+  c.fillStyle='rgba(120,130,140,.95)';c.fillRect(TR.l,TR.b-12,TR.r-TR.l,12);
+  c.strokeStyle='#4f5861';c.lineWidth=2;c.beginPath();c.moveTo(TR.l,TR.t);c.lineTo(TR.l,TR.b);c.lineTo(TR.r,TR.b);c.lineTo(TR.r,TR.t);c.stroke();
+  txt('OK',(TR.l+TR.r)/2,TR.b-6,'#ffffff',8.5,'center',700);
+  // motor
+  c.fillStyle='#4a5561';rr(506,386,48,18,3);c.fill();c.fillStyle='#39434e';c.fillRect(506,386,8,18);
+  txt('M · Y3',532,395,'#e5e9ed',8.5,'center',700);
+  dot(547,390,2.5,!!Y[3],'#39d36b','#26303a',Y[3]?6:0);
+  // metal (inductive) sensor under the belt
+  const mx=G.home;
+  c.fillStyle='#c9a54a';c.fillRect(mx-8,G.beltY+24,16,16);
+  c.strokeStyle='rgba(0,0,0,.25)';c.lineWidth=1;for(let y=G.beltY+27;y<G.beltY+40;y+=3){c.beginPath();c.moveTo(mx-8,y);c.lineTo(mx+8,y);c.stroke()}
+  c.fillStyle='#3a3f45';c.fillRect(mx-6,G.beltY+40,12,5);
+  dot(mx+12,G.beltY+30,3,!!I.X3,'#ff8a1f','#5d4a36',I.X3?10:0);
+  txt('PROX X3',mx-30,412,'#2f363e',8,'center',700);
+  // photo sensor (front post)
+  const px=G.photoX;
+  c.fillStyle='#59616b';c.fillRect(px-3,G.beltY-8,6,52);
+  c.fillStyle='#2b313a';rr(px-9,G.beltY-26,18,18,3);c.fill();
+  dot(px,G.beltY-17,3.2,!!I.X2,'#ff3b30','#7a2a26',I.X2?14:0);
+  dot(px+6,G.beltY-24,1.8,!!I.X2,'#ffb02e','#4a4038',I.X2?6:0);
+  txt('PHOTO X2',px+48,412,'#2f363e',8,'center',700);
+  // horizontal (slide) cylinder
+  c.fillStyle='#8e98a3';c.fillRect(420,186,410,5);
+  for(const [sx,on,lb] of [[G.home,I.X6,'X6'],[G.home+G.travel,I.X7,'X7']]){c.fillStyle='#4b525a';c.fillRect(sx-7,191,14,6);dot(sx,201,2.6,!!on,'#ff4b4b','#6b3a3a',on?8:0);txt(lb,sx+14,201,'#3b434c',7.5,'center',700)}
+  c.fillStyle='#d6dade';rr(300,154,110,30,4);c.fill();c.strokeStyle='#959ea7';c.lineWidth=1;c.stroke();
+  c.fillStyle='#aeb6bf';c.fillRect(300,154,10,30);c.fillRect(400,154,10,30);
+  stickerTag('Y6',355,169);
+  c.fillStyle='#eceff1';c.fillRect(410,165,Math.max(0,X-30-410),8);c.strokeStyle='#a8b0b8';c.strokeRect(410,165,Math.max(0,X-30-410),8);
+  c.fillStyle='#b4bcc4';rr(X-30,150,60,40,4);c.fill();c.strokeStyle='#8a939c';c.stroke();
+  // vertical cylinder
+  c.fillStyle='#dfe3e6';rr(X-13,190,26,42,3);c.fill();c.strokeStyle='#959ea7';c.stroke();
+  dot(X-17,197,2.4,!!I.X4,'#ff4b4b','#6b3a3a',I.X4?8:0);dot(X-17,226,2.4,!!I.X5,'#ff4b4b','#6b3a3a',I.X5?8:0);
+  txt('X4',X-28,197,'#3b434c',7,'center',700);txt('X5',X-28,226,'#3b434c',7,'center',700);
+  stickerTag('Y4',X+26,205);
+  c.fillStyle='#f0f2f4';c.fillRect(X-3,232,6,Math.max(0,F-40-232));c.strokeStyle='#a8b0b8';c.strokeRect(X-3,232,6,Math.max(0,F-40-232));
+  c.fillStyle='#5d6670';rr(X-36,F-40,72,14,3);c.fill();
+  txt('Y5',X,F-33,'#eef1f4',8,'center',700);
+  if(sim.held)drawPart(sim.held);
+  c.fillStyle='#7d8893';c.fillRect(X-w-6,F-28,6,28);c.fillRect(X+w,F-28,6,28);
+  c.fillStyle='#4f5861';c.fillRect(X-w-6,F-4,6,4);c.fillRect(X+w,F-4,6,4);
+  // lamp box Y2 Y1 Y0
+  c.fillStyle='#f1f3f4';rr(150,434,196,54,4);c.fill();c.strokeStyle='#b5bcc3';c.lineWidth=1;c.stroke();
+  [['Y2',2,'#ff3b30','#7a2c28'],['Y1',1,'#ffc21a','#7a6420'],['Y0',0,'#2fd35f','#23683a']].forEach((L,i)=>{const x=188+i*60;txt(L[0],x,443,'#3b434c',8.5,'center',700);lamp(x,466,12,!!Y[L[1]],L[2],L[3])});
+  // button box X1 X0
+  c.fillStyle='#f1f3f4';rr(560,434,140,54,4);c.fill();c.strokeStyle='#b5bcc3';c.stroke();
+  for(const [lb,key,cx,col,dk] of [['STOP X1','X1',598,'#e5322a','#a8231d'],['START X0','X0',662,'#2bb553','#1e7f3a']]){
+    const pr=sim.btn[key];
+    txt(lb,cx,443,'#3b434c',8,'center',700);
+    c.fillStyle='#c8cdd2';c.beginPath();c.arc(cx,467,15,0,Math.PI*2);c.fill();
+    c.fillStyle=pr?dk:col;c.beginPath();c.arc(cx,467+(pr?1:0),pr?11:12,0,Math.PI*2);c.fill();
+    if(!pr){c.fillStyle='rgba(255,255,255,.35)';c.beginPath();c.arc(cx-4,463,4,0,Math.PI*2);c.fill()}
+  }
+  // buzzer Y7
+  c.fillStyle='#22262b';c.beginPath();c.arc(760,466,13,0,Math.PI*2);c.fill();c.fillStyle='#444b53';c.beginPath();c.arc(760,466,4,0,Math.PI*2);c.fill();
+  txt('BZ Y7',760,443,'#e3e8ec',8,'center',700);
+  if(Y[7]){c.strokeStyle='#ffc21a';c.lineWidth=2;const ph=(performance.now()/120)%1;for(let k=0;k<2;k++){c.beginPath();c.arc(760,466,17+k*6+ph*3,-0.6,0.6);c.stroke();c.beginPath();c.arc(760,466,17+k*6+ph*3,Math.PI-0.6,Math.PI+0.6);c.stroke()}}
+  // warnings
+  if(sim.jam&&Y[3]){c.fillStyle='rgba(201,138,0,.95)';rr(X-90,G.beltY-70,180,22,5);c.fill();txt('ชิ้นงานชนตัวคีบ! (สายพานติด)',X,G.beltY-59,'#1b1405',11,'center',600,THAI)}
+}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)*G.W/r.width,y=(e.clientY-r.top)*G.H/r.height;
+  for(const [key,bx] of [['X1',598],['X0',662]])if(Math.hypot(x-bx,y-467)<18){sim.btn[key]=true;cv.setPointerCapture?.(e.pointerId);e.preventDefault()}
+});
+const releaseBtns=()=>{sim.btn.X0=false;sim.btn.X1=false};
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>cv.addEventListener(ev,releaseBtns));
+cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)*G.W/r.width,y=(e.clientY-r.top)*G.H/r.height;cv.style.cursor=(Math.hypot(x-598,y-467)<18||Math.hypot(x-662,y-467)<18)?'pointer':'default'});
+
+/* ================= Main loop ================= */
+let last=performance.now(),acc=0,fN=0;
+function frame(t){
+  acc+=Math.min(50,t-last);last=t;
+  while(acc>=SCAN){acc-=SCAN;tick(SCAN)}
+  draw();updateUI();fN++;
+  if(fN%8===0)renderWatch(false);
+  if(fN%6===0&&lang==='LD'&&running&&source==='sim'&&pop.hidden)renderLad();
+  requestAnimationFrame(frame);
+}
+
+/* ================= Boot ================= */
+buildIO();
+ed.value=store.get('plcsim.code')||ST_EXAMPLES[2].code;
+const savedLang=store.get('plcsim.lang')==='ST'?'ST':'LD';
+let savedLad=null;try{savedLad=JSON.parse(store.get('plcsim.lad')||'null')}catch(e){}
+if(savedLad&&savedLad.rows&&savedLad.C)P=savedLad;
+else{P=ilToProgram(LAD_EXAMPLES[2].il);store.set('plcsim.ex.LD','2')}
+LAD=compileLadder();
+lang=savedLang==='LD'?'ST':'LD';setLang(savedLang);
+renderEditor();refreshIL();
+if(startPLC())setTimeout(()=>{sim.btn.X0=true;setTimeout(()=>{sim.btn.X0=false},200)},600);
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{renderEditor();renderLad()});
+window.__plcsim={ilToProgram,compileLadder:()=>compileLadder(),ilList:()=>ilList(),ilText,get P(){return P},set P(v){P=v},sim,LM};
+})();
+</script>

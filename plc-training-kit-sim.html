@@ -94,7 +94,7 @@ code,kbd{font-family:var(--font-code);font-size:.9em;color:inherit;background:va
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .wrap{max-width:var(--container);margin:0 auto}
 .icon{flex:none;display:block}
-.hl{display:inline;background:var(--color-hl);color:var(--color-hl-ink);border-radius:6px;padding:.08em .32em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hl{display:inline-block;background:var(--color-hl);color:var(--color-hl-ink);border-radius:12px;padding:.55em 1.15em;line-height:1.2;font-weight:500;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 
 /* nav */
 .nav{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-md) var(--space-xl);padding-block:var(--space-xl) var(--space-lg)}
@@ -127,11 +127,11 @@ body.is-run .art .coil{fill:var(--lime)}
 
 /* section head */
 .shead{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-md) var(--space-xl);margin-bottom:var(--space-xl)}
-.shead h2{font-size:1.625rem;line-height:1.35}
+.shead h2{font-size:1.125rem;line-height:1.2}
 .shead p{max-width:36rem;font-size:var(--text-md);line-height:1.55;color:var(--color-ink-2)}
 .shead .status{margin-left:auto}
 section.block{margin-bottom:var(--space-3xl)}
-@media (max-width:40rem){.shead h2{font-size:1.375rem}section.block{margin-bottom:var(--space-2xl)}}
+@media (max-width:40rem){.shead h2{font-size:1rem}section.block{margin-bottom:var(--space-2xl)}}
 
 /* status chip */
 .status{display:flex;align-items:center;gap:var(--space-sm) var(--space-lg);flex-wrap:wrap;padding:var(--space-sm) var(--space-lg);border-radius:var(--radius-btn);background:var(--color-dark);color:#F3F3F3;font-size:var(--text-sm);font-variant-numeric:tabular-nums}
@@ -153,11 +153,11 @@ section.block{margin-bottom:var(--space-3xl)}
 .panel.lime{background:var(--lime);--color-card-ink:#191A23;color:#191A23}
 .panel.dark{background:var(--color-dark);color:#F3F3F3}
 .phead{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-xs) var(--space-sm);min-height:56px;padding:var(--space-xs) 0}
-.phead h2{font-size:var(--text-lg);margin-right:auto;line-height:1.4}
+.phead h2{font-size:.875rem;margin-right:auto;line-height:1.2}
 .panel.lime .phead h2 .hl{background:#FFFFFF}
 .inner{background:var(--color-paper);color:var(--color-ink);border:var(--rule-hair) solid var(--color-edge);border-radius:var(--radius-inner);overflow:hidden;min-width:0}
 .panel.dark .inner{border-color:#33343E}
-@media (max-width:40rem){.panel{padding:var(--space-xs) var(--space-md) var(--space-md);border-radius:var(--radius-inner)}.phead h2{font-size:var(--text-md)}}
+@media (max-width:40rem){.panel{padding:var(--space-xs) var(--space-md) var(--space-md);border-radius:var(--radius-inner)}.phead h2{font-size:.875rem}}
 
 /* controls: eight states */
 [hidden]{display:none!important}
@@ -275,7 +275,7 @@ button.iorow span.d{color:#E4E4E7}
 .card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-md) var(--space-lg);align-items:end;min-height:260px;padding:var(--space-xl) 50px;border:var(--rule-hair) solid var(--color-edge);border-radius:var(--radius-card);box-shadow:var(--shadow-card);background:var(--color-grey);color:#191A23}
 .card.lime{background:var(--lime)}
 .card.dark{background:var(--color-dark);color:#F3F3F3}
-.card h3{align-self:start;font-size:var(--text-lg);line-height:1.6}
+.card h3{align-self:start;font-size:.9375rem;line-height:1.2}
 .card h3 .hl{background:var(--lime)}
 .card.lime h3 .hl{background:#FFFFFF}
 .card.dark h3 .hl{background:#FFFFFF;color:#191A23}
@@ -297,7 +297,7 @@ button.iorow span.d{color:#E4E4E7}
 .gx section+section{border-left:var(--rule-hair) solid #4A4B55}
 @media (max-width:62rem){.gx section+section{border-left:0;border-top:var(--rule-hair) solid #4A4B55}}
 @media (max-width:40rem){.gx{border-radius:var(--radius-panel)}.gx section{padding:var(--space-lg)}}
-.gx h3{font-size:var(--text-md);line-height:1.5}
+.gx h3{font-size:.875rem;line-height:1.2}
 .gx h4.sub{margin:var(--space-xs) 0 0;font-size:var(--text-md);font-weight:500}
 .gx h3 .hl{background:var(--lime)}
 .gx p{color:#D6D6DA;font-size:var(--text-ui);line-height:1.65;max-width:62ch}
@@ -350,7 +350,7 @@ button.iorow span.d{color:#E4E4E7}
 .foot ul a{display:inline-flex;min-height:44px;align-items:center;text-underline-offset:4px}
 .foot .mid{display:flex;flex-wrap:wrap;gap:var(--space-lg) var(--space-xl);align-items:flex-start}
 .foot .mid div{display:flex;flex-direction:column;gap:var(--space-sm);max-width:32rem;font-size:var(--text-ui);line-height:1.6;color:#D6D6DA}
-.foot .mid .hl{align-self:flex-start;font-size:var(--text-md)}
+.foot .mid .hl{align-self:flex-start;font-size:.875rem}
 .foot .bottom{border-top:var(--rule-hair) solid #F3F3F3;padding-top:var(--space-lg);font-size:var(--text-sm);color:#C9CAD1}
 .foot a:hover{color:var(--lime)}
 @media (max-width:40rem){.foot{padding:var(--space-xl) var(--space-lg);border-radius:var(--radius-panel) var(--radius-panel) 0 0}}
@@ -644,37 +644,37 @@ button.iorow span.d{color:#E4E4E7}
     </div>
     <div class="cards">
       <article class="card">
-        <h3><span class="hl">Ladder</span><br><span class="hl">Diagram</span></h3>
+        <h3><span class="hl">Ladder Diagram</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M10 10v90M140 10v90M10 35h32M58 35h54M124 35h16M42 20v30M58 20v30M112 22q-9 13 0 26M124 22q9 13 0 26M10 75h32M58 75h82M42 60v30M58 60v30M54 58l-20 34"/></svg>
         <p>Draw Ladder as in GX Works2 with F5 to F10; it converts to MELSEC Instruction List automatically.</p>
         <button class="go" data-go="LD"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card lime">
-        <h3><span class="hl">Instruction</span><br><span class="hl">List</span></h3>
+        <h3><span class="hl">Instruction List</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 18h24M50 18h50M12 42h24M50 42h70M12 66h24M50 66h40M12 90h24M50 90h60"/></svg>
         <p>MELSEC IL, Siemens STL and Allen-Bradley rung text, each convertible to Ladder.</p>
         <button class="go" data-go="IL"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card dark">
-        <h3><span class="hl">Structured</span><br><span class="hl">Text</span></h3>
+        <h3><span class="hl">Structured Text</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 16h40M28 36h70M28 56h50M44 76h60M12 96h30M108 36h28"/></svg>
         <p>CODESYS-style ST with TON, CTU and R_TRIG; address I/O as <code>X0</code> or <code>%IX0.0</code></p>
         <button class="go" data-go="ST"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card">
-        <h3><span class="hl">Sequential</span><br><span class="hl">Function Chart</span></h3>
+        <h3><span class="hl">Sequential Function Chart</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="50" y="6" width="50" height="24" rx="3"/><rect x="50" y="80" width="50" height="24" rx="3"/><path d="M75 30v50M60 55h30M100 92h30"/><rect x="130" y="82" width="16" height="20" rx="2"/></svg>
         <p>Steps and transitions, with step time usable in conditions such as <code>Check.T &gt;= T#2S</code></p>
         <button class="go" data-go="SFC"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card lime">
-        <h3><span class="hl">Function</span><br><span class="hl">Block Diagram</span></h3>
+        <h3><span class="hl">Function Block Diagram</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="40" y="20" width="50" height="70" rx="4"/><path d="M8 38h32M8 72h32M90 55h52"/><circle cx="142" cy="55" r="4" fill="currentColor"/></svg>
         <p>Wire AND, OR, SR, TON and CTU blocks by dragging, with live values on every wire.</p>
         <button class="go" data-go="FBD"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card dark">
-        <h3><span class="hl">Simulator</span><br><span class="hl">2D and 3D</span></h3>
+        <h3><span class="hl">Simulator 2D and 3D</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M75 8l60 30v40l-60 26-60-26V38z"/><path d="M15 38l60 28 60-28M75 66v38"/></svg>
         <p>The FX3U kit’s sorting machine in 2D or 3D; lamps and cylinders follow your program.</p>
         <button class="go" data-go="3D"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open the 3D view</button>

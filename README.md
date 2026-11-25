@@ -1,49 +1,49 @@
-# PLC Training Kit Sim
+# PLC Training
 
-เว็บฝึกเขียนโปรแกรม PLC พร้อมเครื่องจำลองชุดฝึก (FX3U-16M) แบบ 2D และ 3D ทำงานในเบราว์เซอร์ทั้งหมด ไม่ต้องติดตั้งอะไร
+A browser-based trainer for PLC programming, with a 2D and 3D simulator of a Mitsubishi FX3U training kit. Nothing to install.
 
-เปิดไฟล์ `plc-training-kit-sim.html` ด้วยเบราว์เซอร์ได้เลย หรือเปิดผ่าน GitHub Pages (ไฟล์ `index.html` จะพาไปหน้าหลักให้)
+Open `plc-training-kit-sim.html` in a browser, or use GitHub Pages (`index.html` redirects to the main page).
 
-## ภาษาที่รองรับ (IEC 61131-3)
+## Languages (IEC 61131-3)
 
-| แท็บ | ภาษา | รายละเอียด |
+| Tab | Language | Notes |
 |---|---|---|
-| LD | Ladder Diagram | แก้แบบ GX Works2: F5 คอนแทค, Shift+F5 ขนาน, F7 คอยล์, F8 คำสั่ง, Monitor สีน้ำเงินขณะ RUN |
-| IL | Instruction List | 3 แบบ: MELSEC IL, Siemens STL, Allen-Bradley rung text เปิดเป็น Ladder หรือส่งออก CSV ได้ |
-| ST | Structured Text | แบบ CODESYS ใช้ `X0` หรือ `%IX0.0` ก็ได้ |
-| SFC | Sequential Function Chart | ขั้นและทรานซิชัน Action แบบ N S R ใช้เวลาของขั้นในเงื่อนไขได้ เช่น `Check.T >= T#2S` |
-| FBD | Function Block Diagram | ลากบล็อก AND OR NOT SR RS TON TOF TP CTU และตัวเปรียบเทียบมาต่อสาย |
+| LD | Ladder Diagram | GX Works2-style editing: F5 contact, Shift+F5 parallel, F7 coil, F8 instruction; live monitor while running |
+| IL | Instruction List | MELSEC IL, Siemens STL and Allen-Bradley rung text; open as Ladder or export to CSV |
+| ST | Structured Text | CODESYS style; I/O as `X0` or `%IX0.0` |
+| SFC | Sequential Function Chart | Steps and transitions, N/S/R actions, step time in conditions such as `Check.T >= T#2S` |
+| FBD | Function Block Diagram | Drag AND, OR, NOT, SR, RS, TON, TOF, TP, CTU and comparators, then wire them |
 
-## I/O ของเครื่องจริง
+## Training kit I/O
 
-| อินพุต | หน้าที่ | เอาต์พุต | หน้าที่ |
+| Input | Function | Output | Function |
 |---|---|---|---|
-| X0 | ปุ่ม START สีเขียว | Y0 | ไฟเขียว |
-| X1 | ปุ่ม STOP สีแดง | Y1 | ไฟเหลือง |
-| X2 | เซนเซอร์ชิ้นงานที่จุดคีบ (ซ้าย) | Y2 | ไฟแดง |
-| X3 | เซนเซอร์โลหะ หัวสีเขียว | Y3 | กระบอกดีดชิ้นงาน (ขวา) |
-| X4 ถึง X7 | ว่าง | Y4 | กระบอกตัวคีบ |
-| | | Y5 | กระบอกซ้าย-ขวา |
-| | | Y6 | กระบอกขึ้น-ลง |
-| | | Y7 | มอเตอร์สายพาน (ไหลไปทางขวา) |
+| X0 | START button, green | Y0 | Green lamp |
+| X1 | STOP button, red | Y1 | Yellow lamp |
+| X2 | Part sensor at the pick point (left) | Y2 | Red lamp |
+| X3 | Metal sensor, green head | Y3 | Kicker cylinder (right) |
+| X4 to X7 | Spare | Y4 | Gripper cylinder |
+| | | Y5 | Left-right cylinder |
+| | | Y6 | Up-down cylinder |
+| | | Y7 | Conveyor motor (runs to the right) |
 
-การทำงาน: ชิ้นงานวางที่จุดคีบ (X2) ตัวคีบหยิบไปวางบนสายพาน สายพานพาผ่านเซนเซอร์โลหะ (X3) ถ้าเป็นโลหะ กระบอก Y3 ดีดลงกล่องดำ พลาสติกไหลไปปลายสายพาน
+A part waits at the pick point (X2). The gripper moves it to the conveyor, which carries it past the metal sensor (X3). Metal parts are kicked into the bin by Y3; plastic parts run to the end of the conveyor.
 
-เครื่องจริงไม่มีเซนเซอร์บอกตำแหน่งกระบอก โปรแกรมตัวอย่างจึงใช้เวลาหน่วงแทน ค่าเวลาเป็นค่าประมาณ อาจต้องปรับให้ตรงกับเครื่อง
+The real kit has no cylinder position sensors, so the example programs use timers. The times are estimates and may need tuning on the real machine.
 
-## เชื่อมกับ GX Works2
+## GX Works2
 
-- **แลกโปรแกรมผ่าน CSV:** ใน GX Works2 คลิกขวาที่ Ladder เลือก Read from CSV File หรือ Write to CSV File
-- **รันแบบเรียลไทม์กับ GX Simulator2:** ใช้ `gx_bridge.py` (ต้องมี MX Component)
+- **CSV exchange:** in GX Works2, right-click the Ladder window and choose Read from CSV File or Write to CSV File.
+- **Real time with GX Simulator2:** run `gx_bridge.py` (needs MX Component).
 
 ```
 pip install pywin32 websockets
 python gx_bridge.py --station 1
 ```
 
-จากนั้นเปิด `plc-training-kit-sim.html` จากเครื่อง (ไม่ใช่ผ่านเว็บออนไลน์) แล้วกด "เชื่อมต่อ"
+Then open `plc-training-kit-sim.html` from your computer (not the online page) and press Connect.
 
-## หมายเหตุ
+## Notes
 
-- มุมมอง 3D ดาวน์โหลด Three.js จาก CDN ครั้งแรกที่กดปุ่ม 3D จึงต้องต่ออินเทอร์เน็ต
-- โปรแกรมที่เขียนเก็บไว้ในเบราว์เซอร์ (localStorage) ของเครื่องที่ใช้งาน
+- The 3D view downloads Three.js from a CDN the first time, so it needs an internet connection.
+- Programs are saved in the browser's localStorage on the device you use.

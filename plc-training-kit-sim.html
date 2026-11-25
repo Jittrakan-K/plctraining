@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="ฝึกเขียน PLC แบบ Ladder (MELSEC FX) และ Structured Text พร้อมเครื่องจำลองชุดฝึก สายพาน ตัวคีบลม เซนเซอร์ และเชื่อมต่อ GX Works2">
+<meta name="description" content="Practise PLC programming in Ladder, IL, ST, SFC and FBD on a simulator of a Mitsubishi FX3U training kit, with GX Works2 export">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FBFBFC">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15171C">
-<title>PLC Training Kit Sim</title>
+<title>PLC Training</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iMTEiIGZpbGw9IiMxOTFBMjMiLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2LjYgNy4zKSBzY2FsZSguNykiPjxnIGZpbGw9IiNGQUZBRkMiPjxyZWN0IHg9IjYiIHk9IjUiIHdpZHRoPSIxMyIgaGVpZ2h0PSIzOCIvPjxwYXRoIGQ9Ik0yMyA1aDdhMTMgMTMgMCAwIDEgMCAyNmgtN3oiLz48L2c+PGcgZmlsbD0iI0I5RkY2NiI+PHJlY3QgeD0iMjMiIHk9IjM1IiB3aWR0aD0iOCIgaGVpZ2h0PSI4Ii8+PC9nPjwvZz48L3N2Zz4=">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC20lEQVR4AcSWXUhTYRjH/+/ZRRdlJaRug6g5L0rUuUDzohIhFOmiDCwjim4iM1qh9wnSlUEZddHHwJIuyshuREwIIgj8CJ1XIn5c6sUEmWUsN/f2PG86bOPdmqezDuf/nmfP87zP7884Z2cG/jxsBU63z+Eo7LM73bN2R2HM4XRLM+IZPItn8mzCCVL8jBvIz3cVUNMnSjyEEA3U5RZ0xDu3GdAIwbN4Js8mxiCzNsdRDsh3umoNm5ikpmObBcuuQigWM5mhDNik0SqEKOBENsQsQxq3mWXQV9IMgTr+kE0JgXpmGwRvziZ4K0sCVwxaDm5NZjm2GwJijw7a1XUP/f3vkuTxlKktjx89wJvXPUovup+jrfUWqquPq9rfLEIIu5GqsaioEKUlJUnKydmptnm9HlRVHVWqqTkBn68FPS/9eNv7Ci7XAdWTZtmR0kCazdpyZWUF3vf1wm5P/2BZYoCd5ebuRUfHHQ5TyjIDTK2rPYm8vH0camWpAaYe8ZbzRSvLDZTTjaqlU8FyA0NDHwmjPy01EIvFMDU1padTxVIDT576EQ7/JIz+tMzAwMAHdHbe15M3KqYMSElvko1BfIlGoxgfn0Bj40Vcb/Ehsc49iTJl4KavDeebLimdPnMOh4u9aDjbhNGxr4kc7WdTBiYmAhgeHlUKBCaxtramBekKpgz4ukvRPlihxLEOkipvysD+Q7vgKt2txHEqkK5myoBuaCb5lAa+f1tFKLSSpEhkXTF+rESxGooocaySGS5kQE7r9jRduIwyT0WSRkZG1Zb2ujHcKP6sxLFKZrTIafpPKAIZ7fmHzRIiQAbkfzQgA4YNYT8gZ5DlQwKzNmIbCwsLS9EITkFiKWseiLUeQT2z6SYEgsH5mXBYFpGJZ/T7TeassaJmS/iZFQzOzTJFGeBgeXk+tLg4d00AlTGJu1LKEdLv540btil6X0UB+UVCdvBsYlxdJtbmuF8AAAD//5mMEDMAAAAGSURBVAMAqbgXLQ0QSqoAAAAASUVORK5CYII=">
 <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAQAElEQVR4AeydC3gU1RXHz53dABYIFbLJZD/RsItoq2219rMoyMMHqBUrBQzIQxBpxQcGBcVP2tIqKoigAqFasYqioqiAtchD0IrISyiKD5RgBEw2D2h5ySPZvT131+TbJLvJ7mZm596Zs9/c3Z2ZO/f+z//8uLl7ZxM0sPjh8XjaZHt9l+u6/0bd67s3J9c3MzfX95Lu9a/Rc/2f53p9B3K9fk5FBg98B0RORG5EjkSu8P09ut5phMihyKXFOIElQGdmntYeAR6pe33L3BmZlS5gq5gGzzFgj2iMjQfGhjCA3ozBTwDYqUAPSRxgpzLMicgNYI5ErvD9NKZpz4scilyKnArARY6tEJ02oHNy/Nm67rsVA373R61bliHA/2DA+mHQLbHQZg8HWoqcCsBFjjHXqzHnY0Xu0xWe6UDn5OR1xR9TazUXIMRsLgZ8Kf4rd6crQOrHGgdEjjHXlzGNFYrc6ziFzPb6u5mtxjSgdf30n+pe31uay/URBtfL7ECofbkdYDiFdAGsE0zgiH2uWWoNB9rr9Z2OI/ICYO5PGbBrzBJO7SbrgBz1BRNM49sFI7qel2e0KsOA9nq9Wbm5nZ7gwL7GEXk4Y8ywto0Omtqz1gHBBmMwnGmunYIZXe/sMUqRIdChqB4cWu0Epo1DYS2w0EYOJOJAC8EMjthf6Lq/dyIXNFWnuUAz3eu/B0flNQCsPdCDHEjNgQ7A+Cpd7zQBL2dYUt5SBlosouu5/rex92mMMZzvp6yBLiQHQDDENO1R3etblpWV1TZVS1ICWnxKdWe03coYXJVqx3QdORDLAYYLCRktMjdnZfm6xDrf1LGkgc7N9Q3QXHwTADsTbPKgMGRzgJ3lzmCbcQpyfbLKkgIaOxiIPxsWA7BTgB7kgIkO4E//TJyCLELmkoI6YaCzszv9gmlsgYkxUNPkQAMHmMae83jyzmtwIs6BhIAWa8wut/YW0MgM9Ei3A+wUd4ZrmWAwkZ4TADqvFa4xL8HGOmKhjRywwoGOnLd6Eztu8jtATQKtezWcZjDTv1SCYmkjB+I7wFj3nFzfnPgVImcaBTrH65uEyyiDIlXpmRyw1gGNsT/gKltBYyriAp2b2+kMxuHBxi6mc+RAuh3gADP0Rr7UFBdozjS6A5jubFF/TTrAGN6V1lyPxKsYE2hd73wOA8iPdxEdJwesdECwKe5Wx9IQE2jG+GOxKtMxckAWBzQNZsTS0gBonJ/0AgZ9Y1WmYzZ2QLXQkNEwq/V0NwCaaa6p9erQLjkgpQOMaQ/UF1YH6ByvfzBWuBgLbeSA/A7g2nS2139dtNBooDXG+cPRJ+k9OSC7Axrnf0WNtRzXvvF687rgkkgenqSNHFDGAWT2Z4LdGsG1QAdBqzN011SgV3JAdgei2dVqxOJdQQK6xoy6r7QnuQPR7IaB9njydNR8IRbayAEVHbgwK+uMXCE8DLTbrV2HcxG8ASMOUSEH1HJAsOt2u8P3TrSIdEbTjYgR9KyqAxpcKaQLoDOAgSF/5EM0SIUcsMYBLoDO0HD+fA4KaIGFNnJAWQcYsHYeT945Gstwpb72DPQgB+RxQLCsuTgXKxzyqCIl5ECKDgiWNc6AgE7RQLpMLgcEy/ihkNGUQ668kJoUHeAcdA3vstAInaKBdJlcDmjAdCw0h5YrLXKqUUIV43kaB5B6ytG164VQUHC75aVvn8sh0cfom240RO+4cbfC4PxB0LNHd+jcuTOc0qpVohIcWS8y5cD1O5mjF0CPL7gDrC59kgB61KgRhui9+647Ydq0B2HBgvnw7uq34csvt8Mn2zfDineWwZzZsyD/+oHg8WTJnL60asNb4D/W0tqjQzpDY02LtF27TDj77LOgX7+rYfr0qbBl84ewauU/YfL994ZHcoeP4i0JaNPQS1/DXbqcCWPG3BQeybds+TA83WndunX6BEjUEwEtUTKMkNKmTZvwdOeDf6+GUSOHQ0ZGhhHNKtMGAd3sVMnZQIcO7WHKlMmwds070L//b8HMaZBMDhDQMmXDBC0dO54Gj8+aDi++8Cy0aWP/aQgBbQJEMjbZvfvFsHTpYvD7O8kozzBNBLRhVsrfUGe/D5YuWQzdul0kv9gUFRLQKRqn6mVt27aBF3Bde+hQ8TeFVI0ivm4COr43tj3jcrngoal/galTp9huFcRUoG1LhE0CGzZ0CIy5eZRNoomEQUBHfHDs88SJ46FXz0tsEz8BbZtUphaIpmkwe/Ys8PnssfpBQKfGga2uysxsC8/8vRDEB0bVAyOgVc+gQfr9uKQnRmq3u8n/CtCgHs1phoA2x1clW+3dqwfk5w9MRbs01xDQ0qRCDiEFBbdDy5bq/pkWAloOjqRRke3xgFjOk0ZQkkII6CQNc0L1W8aOUfYDIgHtBEKTjFGM0qNHj0zyKjmqE9By5EE6FaNvGqnkKE1Am42Sou2LteleuOqhmnwCWrWMpVFv3z5XpLE3Y7oioI3x0Zat9FTwOx4EtC1RNCYoMe04//zzjGksTa0Q0GkyWtVu+vS5TCnpBLRS6Uq/2GT+YlT61TXs0UqgG6qhI9I5IH4PUaVb4QS0dAjJJ8iDt8PlUxVbEQEd2xc6GuUAAR1lBr1V34Fshf7CKY3Q6vNmegRZBLTpHlMHaXTA02yg0yeWRuj0ea1sT9n0oVDZ3JHwGA4cP3EixlE5D9EILWdepFL13b7vpNLTmBgCujF36FzYgfKKivCrCk8EtApZslhjRUWlxQoS756ATtwrU2qq0GglAa1Cmkhjog7QlCNRp6ie9A7sKtoNhw4dll5njUCactQ4Qa8xHXj//Q9iHpf1IAEta2Yk0UVAS5IIktF8B8RUY/36Dc1vKI0tSDxCp9EF6iqmAx9t2AhVVVUxz8l6kICWNTMS6FJtuiEsI6CFC1QaOMA5h1Wr1jQ4LvsBAlr2DFmk7/XXl0B5eblFvafeLQGdune2vVJ8u27W47OVjI+AVjJt5opeuPAV2JfOb9gZGA4BbaCZdmjq8OEjMHfu35QNhYBWNnXmCC8sfAr27z9gTuNpaJWAToPJqnRRWbkf5j/7nCpyY+okoGPa4ryD4gbKnQUT4MSJk0oHT0ArnT7jxP95yoOwbt164xq0qCUC2iLjE+w2LdXmP/s8iJWNtHRmcicEtMkGy9788uUr4IEHHpZdZsL6COiErbJfxY+3boM7CyaCuM1tl+gIaLtkMsk4Vq58F264YSR+CFTnb24kEiIBnYhLNqojRuMZjz0BY35/Kxw/ftxGkUVCIaAjPjji+dixY2GQZ88utG286gJt25SYE9jefftgwIAhSn4lNBlHCOhk3FKw7jGcVsyZMw/69r0WPvv8CwUjSE4yAZ2cX8rUDoVC8Nprb0DPnlfAozMeh6NHj4ITHgS0DbMs7vj1vfJamDDxPigrK7dhhPFDIqDje5PyGbGSkPLFKV4YCJTBiy++DIMGDYWhw0bBV199nWJLal9GQJuQP8aYCa02bHLnzq/gyScL4ZprBsCvu/aA+ydPgU2btzSsqPiRZOQT0Mm4lWDdbdu2w4YNG5td1q/fCMuXr4SXXl4EcwufgqkPTQ9PI0bffAtc0uNy6NO3Hzw28wn4dMeOBJXZvxoBbUKOb79jPOQPHtHsMuSGEXDL2Dvgvvv+BNOnz4Snn54P4oPe6tVrYc+evSYoV79JAlr9HFIEUQ4Q0FFm0Fv1HSCg1c8hRRDlAAEdZYZ6b0lxfQcI6PqO0L7SDhDQSqePxNd3gICu7wjtK+0AAa10+kh8fQcI6PqO0L7SDtgWaCuzMrbwXJi0+HxDSztPhpUhKdM3AW1CqvwXZMLZF7U3tLhbukxQar8mCWj75dTRERHQjk6//YInoO2XU0dHREA7Ov22CL5OEAR0HTtoR3UHCGjVM0j66zhAQNexg3ZUd4CAVj2DpL+OAwR0HTtoR3UHCGjVM9iYfgeeI6AdmHQ7h0xA2zm7DoyNgHZg0u0cMgFt5+w6MDYC2oFJt3PITgXazjl1dGwEtKPTb7/gCWj75dTREWkc+EFHO0DB28YBwbLGAAIyR7R48ZuQP3i45WXevKcTtmne2B3w8MCPDS2HKuz1H2QmbGYSFZHlYo1zJjXQ+/Z9Bxs2bLK87CranbC1RVsPwc6P/mdoqTrBE+7fsRWRZQ0YFEP0g96TA4o6wBkENAhxqUdoRb0l2VY4gCxrDKm2om/qkxww2gHBshZijEZoo52l9ixxQLCssVCQgLbEfurUaAcEy9rJk+6t2PBJLLQ5zAGbhXuyuvrIx9qBA7sOAYe1NguOwnGaA8hwZWXlYS0SN18SeaVnckBVByIMh4Guqgou5fhQNRTS7WwHEF1eXR0KD8phoCsrvy1FSzZhoY0cUNGBTRUVxeHFjTDQIgK8yxImXLynQg6o5EA0u7VAuyAyZKsUiHlaqWWVHIhmtxbokpLiLwH4TpUCIa3kgGA2wm7Ei1qgxW4I2BTxSoUcUMWBILBJ0VrrAF1WUvQKcL4uugK9JwckdmB9eUlRnc9+dYAWwjkP/VG8UiEHZHeAh4L319fYAOhAoPg94LCifkXaJwekcgAZDbNaT1QDoMX5UAgmiNdYhY6RAzI4wDm7O5aOmECXlRXt4ACLYl1Ax8gBqx0QbAYCuz6LpSMm0OGKoeAkznkw/J6eyAFJHBBMMh66N56cuEDj/KQY78BMjnchHScHrHBAMFla+s238fqOC7S4oKxk9yP4ATHx398XF1EhB8xygMMzYSYbab9RoMV1paVFt9HatHDCcUWygPmHyOLYpkQ1CTQ2UM3Y8f74uhcLbeSAFQ7sZXD8Ouy4GkujWyJAQ0lJSWV1VfBavG9+rNHW6CQ5YLgD/FiwOtRPMJhI0wkBLRqqqCj+Dw/xkeI9FXIgHQ7gikYImRtRXv7N9kT7Sxho0WAg8M2rIeBDcU79vdinQg6Y5wA/hpwNQeYWJ9NHUkCLhvFT5kvV1aFuHKBE7FMhB4x2gAMvDVbzrgjzq8m2nTTQogMx/ag+Wf0rfL8ei/M2itg0B3Cg3BCsCv0SpxmfpNJJSkCLjsTvIZaWFPXCHwsLxT4VcqC5DiDMiwIlRT1wwAz/fmAq7aUM9A+dVZWW7h4WAhiHE3i6Tf6DKfSSnANhdji/C2EejFdWYUl5ay7Q4Y7LSopmA6/+OQp7Awv+QwsfpidyoFEHwqxw/qZgBwfGWY1WTvCkIUCLvgKBPZ8HSncPCLLgBSj0X+IYFXIgngOcw3LBCoL8O8FOvHrJHjcM6JqOK0q+3YZg/yYUDHZF0e/VHKdXckA4IJgQbARKi64WrIhjRhajga7VVlZWvBFF9+ahYG+cg6ytPUFvnOkA56sEC4IJwYZZJpgGdI3gQKD4PZzsX/r90ar2PAQjcTqC82w4UnOeXu3pAK4lH8SB7NUg58NE7nFq0UewYHa0pgNdE8DBg3v+GwgUPY/TkQH4r7QD8OCVGHQhnqcvPaEJNtn2hnPKg1cFjf02RQAAAGZJREFUSnZ7cCDLLy/dvVDkPl3xpQ3oegGdLC0tXoFB34Zr2acfYcezqnj1Bbju1z/EeQGO4jOxvI5lM5byetfSrkUOiFxgETkRuZkpciVyJnIncihyGc5pafE7KLFZy294fUrb/wEAAP//3bvRGAAAAAZJREFUAwDHzyktxpKvMgAAAABJRU5ErkJggg==">
@@ -15,10 +15,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Anuphan:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* PLC Training Kit Sim · look: Positivus-style (Space Grotesk, lime #B9FF66, dark #191A23, grey #F3F3F3, outlined cards with a 5px hard shadow) · all PLC functions kept */
+/* PLC Training · look: Positivus-style (Space Grotesk, lime #B9FF66, dark #191A23, grey #F3F3F3, outlined cards with a 5px hard shadow) · all PLC functions kept */
 :root{
   --space-3xs:2px;--space-2xs:4px;--space-xs:8px;--space-sm:12px;--space-md:16px;--space-lg:24px;--space-xl:40px;--space-2xl:64px;--space-3xl:100px;
-  --text-xs:.75rem;--text-sm:.8125rem;--text-ui:.9375rem;--text-md:1.125rem;--text-lg:1.25rem;--text-xl:1.875rem;--text-2xl:2.5rem;--text-hero:clamp(2.25rem,1.2rem + 3.2vw,3.75rem);
+  --text-xs:.75rem;--text-sm:.8125rem;--text-ui:.875rem;--text-md:1rem;--text-lg:1.125rem;--text-xl:1.5rem;--text-2xl:2rem;--text-hero:clamp(2rem,1.1rem + 2.6vw,3.25rem);
   --ease-out:cubic-bezier(.16,1,.3,1);--dur-micro:120ms;--dur-short:220ms;
   --radius:10px;--radius-btn:14px;--radius-card:45px;--radius-panel:32px;--radius-inner:20px;--radius-pill:999px;
   --rule-hair:1px;--rule-ink:1px;--control-h:40px;--shadow-card:0 5px 0 0 var(--color-dark);
@@ -254,7 +254,7 @@ input[type=text]:invalid{border-color:var(--color-error)}
 .iorow span.d{color:#C9CAD1;min-width:0;line-height:1.35}
 .led{flex:none;width:12px;height:12px;border-radius:50%;background:#3A3B45}
 .iorow.on .led{background:var(--lime);box-shadow:0 0 0 3px rgb(185 255 102 / .22)}
-button.iorow{cursor:pointer;transform:none}
+button.iorow{cursor:pointer;transform:none;white-space:normal}
 button.iorow:hover{background:#2B2C36;color:#F3F3F3}
 button.iorow:active{background:#33343E}
 button.iorow span.d{color:#E4E4E7}
@@ -307,7 +307,7 @@ button.iorow span.d{color:#E4E4E7}
 .gx button:hover{background:var(--lime);color:#191A23;border-color:var(--lime)}
 .gx button.primary{background:var(--lime);color:#191A23;border-color:var(--lime)}
 .gx button.primary:hover{background:#FFFFFF;border-color:#FFFFFF}
-#il{width:100%;min-height:220px;resize:vertical;font:var(--text-sm)/1.6 var(--font-code);padding:var(--space-sm) var(--space-md);border:var(--rule-hair) solid #4A4B55;border-radius:var(--radius-btn);background:#22232D;color:#F3F3F3;white-space:pre;tab-size:8}
+#il{width:100%;min-height:220px;resize:vertical;font:var(--text-sm)/1.6 var(--font-code);padding:var(--space-sm) var(--space-md);border:var(--rule-hair) solid #8C8D96;border-radius:var(--radius-btn);background:#22232D;color:#F3F3F3;white-space:pre;tab-size:8}
 #il:hover{border-color:#8C8D96}
 #wsUrl{flex:1 1 220px;min-width:0;font-family:var(--font-code);background:#22232D;color:#F3F3F3;border-color:#8C8D96}
 #wsUrl:hover{background:#2B2C36}
@@ -356,7 +356,8 @@ button.iorow span.d{color:#E4E4E7}
 @media (max-width:40rem){.foot{padding:var(--space-xl) var(--space-lg);border-radius:var(--radius-panel) var(--radius-panel) 0 0}}
 
 .toast{position:fixed;z-index:var(--z-toast);bottom:calc(var(--space-lg) + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);max-width:min(560px,calc(100vw - 32px));padding:var(--space-sm) var(--space-lg);font-size:var(--text-ui);font-weight:500;background:#191A23;color:#FFFFFF;border:var(--rule-hair) solid var(--lime);border-radius:var(--radius-btn);box-shadow:var(--shadow-float)}
-.toast.bad{background:var(--color-error);color:#FFFFFF;border-color:var(--color-error)}
+.toast.bad{background:#C62B2F;color:#FFFFFF;border-color:#C62B2F}
+.panel.dark :focus-visible,.gx :focus-visible,.card.dark :focus-visible,.foot :focus-visible,.dock :focus-visible,.status :focus-visible{outline-color:var(--lime)}
 .brief{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-2xs) var(--space-md);margin-bottom:var(--space-sm);padding:var(--space-sm) var(--space-md);border-radius:var(--radius-btn);background:var(--color-paper);border:var(--rule-hair) dashed var(--color-dark);font-size:var(--text-ui);line-height:1.5}
 .brief p:first-child{flex:1 1 280px;color:var(--color-ink)}
 .brief .goal{color:var(--color-muted);font-variant-numeric:tabular-nums}
@@ -418,32 +419,32 @@ button.iorow span.d{color:#E4E4E7}
 
 <div class="wrap">
   <header class="nav">
-    <a class="brand" href="#top" id="top" aria-label="PLC Training Kit Sim">
+    <a class="brand" href="#top" id="top" aria-label="PLC Training">
       <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
         <g fill="currentColor"><rect x="6" y="5" width="13" height="38"/><path d="M23 5h7a13 13 0 0 1 0 26h-7z"/></g>
         <rect x="23" y="35" width="8" height="8" fill="#B9FF66" stroke="currentColor" stroke-width="1.5"/>
       </svg>
-      <b>PLC Training Kit Sim</b>
+      <b>PLC Training</b>
     </a>
-    <nav aria-label="เมนูหลัก">
+    <nav aria-label="Main menu">
       <ul class="navlinks">
         <li><a href="#work">Workspace</a></li>
-        <li><a href="#langs">ภาษาที่รองรับ</a></li>
+        <li><a href="#langs">Languages</a></li>
         <li><a href="#gx">GX Works2</a></li>
-        <li><a href="#how">คู่มือการใช้งาน</a></li>
+        <li><a href="#how">User guide</a></li>
       </ul>
     </nav>
-    <a class="btn ghost" href="#work">เข้าสู่ Workspace</a>
+    <a class="btn ghost" href="#work">Open Workspace</a>
   </header>
 
   <main>
   <section class="hero" aria-labelledby="hHero">
     <div>
-      <h1 id="hHero">ระบบฝึกเขียนโปรแกรม PLC ด้วยเครื่องจำลองชุดฝึกจริง</h1>
-      <p>เขียนโปรแกรมด้วยภาษา Ladder, IL, ST, SFC หรือ FBD และทดสอบกับเครื่องจำลองชุดฝึก Mitsubishi FX3U ซึ่งมีสายพาน หัวจับ และเซนเซอร์ตามอุปกรณ์จริง พร้อมส่งออกโปรแกรมไปยัง GX Works2</p>
+      <h1 id="hHero">PLC programming practice on a real training kit</h1>
+      <p>Write Ladder, IL, ST, SFC or FBD and test it on a simulated Mitsubishi FX3U kit with its real conveyor, gripper and sensors, then export to GX Works2.</p>
       <div class="acts">
-        <a class="btn primary" href="#work">เริ่มแบบฝึกหัด</a>
-        <a class="btn ghost" href="#how">คู่มือการใช้งาน</a>
+        <a class="btn primary" href="#work">Start an exercise</a>
+        <a class="btn ghost" href="#how">User guide</a>
       </div>
     </div>
     <div class="art" aria-hidden="true">
@@ -468,26 +469,26 @@ button.iorow span.d{color:#E4E4E7}
     </div>
   </section>
 
-  <ul class="strip" aria-label="ภาษาและมาตรฐานที่รองรับ">
+  <ul class="strip" aria-label="Supported languages and dialects">
     <li>Ladder</li><li>IL</li><li>ST</li><li>SFC</li><li>FBD</li><li>MELSEC FX</li><li>Siemens STL</li><li>Allen-Bradley</li>
   </ul>
 
   <section class="block" id="work" aria-labelledby="hWork">
     <div class="shead">
       <h2 id="hWork"><span class="hl">Workspace</span></h2>
-      <p>เลือกแบบฝึกหัด เขียนโปรแกรม และกด Run เพื่อตรวจสอบการทำงาน</p>
+      <p>Choose an exercise, write the program and press Run to test it.</p>
       <div class="status">
         <span class="pill" id="pill"><i></i><span id="pillTxt">STOP</span></span>
-        <div class="score" role="status" aria-label="ผลการคัดแยก">
-          <span class="ok">ถูกต้อง <b id="sOk">0</b></span>
-          <span class="ng">ผิดพลาด <b id="sNg">0</b></span>
-          <span class="dr">ตกหล่น <b id="sDrop">0</b></span>
+        <div class="score" role="status" aria-label="Sorting result">
+          <span class="ok">Correct <b id="sOk">0</b></span>
+          <span class="ng">Wrong <b id="sNg">0</b></span>
+          <span class="dr">Dropped <b id="sDrop">0</b></span>
         </div>
         <span id="scanInfo">scan 0</span>
       </div>
     </div>
 
-    <nav class="mtabs" aria-label="สลับมุมมอง"><div class="mtl" role="tablist" aria-label="สลับมุมมอง">
+    <nav class="mtabs" aria-label="Switch view"><div class="mtl" role="tablist" aria-label="Switch view">
       <button role="tab" id="tabProg" aria-controls="paneProg" aria-selected="true">Program</button>
       <button role="tab" id="tabMach" aria-controls="paneMach" aria-selected="false">Machine</button>
     </div></nav>
@@ -496,7 +497,7 @@ button.iorow span.d{color:#E4E4E7}
       <section class="panel" id="paneProg" aria-labelledby="hProg">
         <div class="phead">
           <h2 id="hProg"><span class="hl">Program</span></h2>
-          <div class="seg" role="group" aria-label="ภาษา">
+          <div class="seg" role="group" aria-label="Language">
             <button id="langLD" aria-pressed="true" title="Ladder Diagram">LD</button>
             <button id="langIL" aria-pressed="false" title="Instruction List / STL / Rung text">IL</button>
             <button id="langST" aria-pressed="false" title="Structured Text">ST</button>
@@ -505,7 +506,7 @@ button.iorow span.d{color:#E4E4E7}
           </div>
         </div>
         <div class="phead">
-          <select id="ex" aria-label="แบบฝึกหัดหรือโปรแกรม"></select>
+          <select id="ex" aria-label="Exercise or program"></select>
           <button class="primary" id="btnRun" title="Ctrl+Enter"><svg class="icon" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>Run</button>
           <button class="stop" id="btnStop"><svg class="icon" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" fill="currentColor"/></svg>Stop</button>
         </div>
@@ -517,28 +518,28 @@ button.iorow span.d{color:#E4E4E7}
         <div class="inner">
         <div id="ladView">
           <div class="ltools" id="ltools">
-            <button data-k="F5" title="คอนแทค NO (F5)" aria-label="คอนแทค NO, F5"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F5</small></button>
-            <button data-k="sF5" title="คอนแทค NO ขนาน หรือ OR (Shift+F5)" aria-label="คอนแทค NO ขนาน, Shift F5"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M2 1v9h8M18 10h8V1M10 4v12M18 4v12" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧F5</small></button>
-            <button data-k="F6" title="คอนแทค NC (F6)" aria-label="คอนแทค NC, F6"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12M8 14L20 2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F6</small></button>
-            <button data-k="sF6" title="คอนแทค NC ขนาน หรือ ORI (Shift+F6)" aria-label="คอนแทค NC ขนาน, Shift F6"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M2 1v9h8M18 10h8V1M10 4v12M18 4v12M8 16L20 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧F6</small></button>
-            <button data-k="P" title="คอนแทคขอบขาขึ้น LDP" aria-label="คอนแทคขอบขาขึ้น LDP"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12M14 13V4M11 7l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>LDP</small></button>
-            <button data-k="Fe" title="คอนแทคขอบขาลง LDF" aria-label="คอนแทคขอบขาลง LDF"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12M14 3v9M11 9l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>LDF</small></button>
+            <button data-k="F5" title="NO contact (F5)" aria-label="NO contact, F5"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F5</small></button>
+            <button data-k="sF5" title="Parallel NO contact, OR (Shift+F5)" aria-label="Parallel NO contact, Shift F5"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M2 1v9h8M18 10h8V1M10 4v12M18 4v12" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧F5</small></button>
+            <button data-k="F6" title="NC contact (F6)" aria-label="NC contact, F6"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12M8 14L20 2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F6</small></button>
+            <button data-k="sF6" title="Parallel NC contact, ORI (Shift+F6)" aria-label="Parallel NC contact, Shift F6"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M2 1v9h8M18 10h8V1M10 4v12M18 4v12M8 16L20 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧F6</small></button>
+            <button data-k="P" title="Rising-edge contact LDP" aria-label="Rising-edge contact LDP"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12M14 13V4M11 7l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>LDP</small></button>
+            <button data-k="Fe" title="Falling-edge contact LDF" aria-label="Falling-edge contact LDF"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h10M18 8h10M10 2v12M18 2v12M14 3v9M11 9l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>LDF</small></button>
             <span class="sep"></span>
-            <button data-k="F7" title="คอยล์ OUT (F7)" aria-label="คอยล์ OUT, F7"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h8M20 8h8M11 2Q6 8 11 14M17 2Q22 8 17 14" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F7</small></button>
-            <button data-k="F8" title="คำสั่ง SET RST MOV (F8)" aria-label="คำสั่ง, F8"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h5M23 8h5M5 3h18v10H5z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F8</small></button>
+            <button data-k="F7" title="Coil OUT (F7)" aria-label="Coil OUT, F7"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h8M20 8h8M11 2Q6 8 11 14M17 2Q22 8 17 14" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F7</small></button>
+            <button data-k="F8" title="Instruction SET RST MOV (F8)" aria-label="Instruction, F8"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M0 8h5M23 8h5M5 3h18v10H5z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F8</small></button>
             <span class="sep"></span>
-            <button data-k="F9" title="เส้นนอน (F9)" aria-label="เส้นนอน, F9"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M2 8h24" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F9</small></button>
-            <button data-k="F10" title="เส้นตั้งที่ขอบซ้ายของช่อง เชื่อมขึ้นแถวบน (F10)" aria-label="เส้นตั้ง, F10"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M14 1v14" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F10</small></button>
-            <button data-k="Del" title="ลบช่องที่เลือก (Delete)" aria-label="ลบช่อง, Delete"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M9 3l10 10M19 3L9 13" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>Del</small></button>
+            <button data-k="F9" title="Horizontal line (F9)" aria-label="Horizontal line, F9"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M2 8h24" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F9</small></button>
+            <button data-k="F10" title="Vertical line on the left edge of the cell, joining the row above (F10)" aria-label="Vertical line, F10"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M14 1v14" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>F10</small></button>
+            <button data-k="Del" title="Delete the selected cell (Delete)" aria-label="Delete cell, Delete"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M9 3l10 10M19 3L9 13" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>Del</small></button>
             <span class="sep"></span>
-            <button data-k="insRow" title="แทรกแถว (Shift+Insert)" aria-label="แทรกแถว, Shift Insert"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M3 3h22M3 13h22M14 5v6M11 8h6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧Ins</small></button>
-            <button data-k="delRow" title="ลบแถว (Shift+Delete)" aria-label="ลบแถว, Shift Delete"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M3 3h22M3 13h22M11 8h6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧Del</small></button>
-            <button data-k="undo" title="ย้อนกลับ (Ctrl+Z)" aria-label="ย้อนกลับ, Ctrl Z"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M11 2L7 6l4 4M7 6h10a4 4 0 0 1 0 8h-5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>Ctrl Z</small></button>
+            <button data-k="insRow" title="Insert row (Shift+Insert)" aria-label="Insert row, Shift Insert"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M3 3h22M3 13h22M14 5v6M11 8h6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧Ins</small></button>
+            <button data-k="delRow" title="Delete row (Shift+Delete)" aria-label="Delete row, Shift Delete"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M3 3h22M3 13h22M11 8h6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>⇧Del</small></button>
+            <button data-k="undo" title="Undo (Ctrl+Z)" aria-label="Undo, Ctrl Z"><svg class="icon" width="28" height="16" viewBox="0 0 28 16" aria-hidden="true"><path d="M11 2L7 6l4 4M7 6h10a4 4 0 0 1 0 8h-5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><small>Ctrl Z</small></button>
           </div>
-          <div class="ladwrap" id="ladwrap" tabindex="0" aria-label="ตัวแก้ไข Ladder: ใช้ลูกศรเลื่อน กด Enter เพื่อพิมพ์คำสั่ง">
+          <div class="ladwrap" id="ladwrap" tabindex="0" aria-label="Ladder editor: move with the arrow keys, press Enter to type an instruction">
             <svg id="lad"></svg>
             <div class="pop" id="pop" hidden>
-              <input id="popIn" type="text" spellcheck="false" autocomplete="off" maxlength="60" aria-label="พิมพ์คำสั่ง" aria-describedby="popHint">
+              <input id="popIn" type="text" spellcheck="false" autocomplete="off" maxlength="60" aria-label="Type an instruction" aria-describedby="popHint">
               <div class="h" id="popHint" aria-live="polite"></div>
             </div>
           </div>
@@ -547,8 +548,8 @@ button.iorow span.d{color:#E4E4E7}
 
         <div id="ilView" hidden>
           <div class="ilbar">
-            <label class="fld">ภาษา <select id="ilDialect"><option value="mel">MELSEC IL (Mitsubishi)</option><option value="stl">STL (Siemens S7)</option><option value="ab">Rung text (Allen-Bradley)</option></select></label>
-            <button id="ilOpenLad">เปิดเป็น Ladder</button>
+            <label class="fld">Language <select id="ilDialect"><option value="mel">MELSEC IL (Mitsubishi)</option><option value="stl">STL (Siemens S7)</option><option value="ab">Rung text (Allen-Bradley)</option></select></label>
+            <button id="ilOpenLad">Open as Ladder</button>
           </div>
           <p class="ilhelp" id="ilHelp"></p>
           <textarea id="ilEd" class="codearea" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off" aria-label="Instruction List"></textarea>
@@ -561,8 +562,8 @@ button.iorow span.d{color:#E4E4E7}
 
         <div id="fbdView" hidden>
           <div class="ltools ftools" id="ftools">
-            <button data-b="IN" title="อ่านตัวแปรหรือค่าคงที่">ตัวแปร</button>
-            <button data-b="OUT" title="เขียนค่าออก">เอาต์พุต</button>
+            <button data-b="IN" title="Read a variable or constant">Variable</button>
+            <button data-b="OUT" title="Write a value">Output</button>
             <span class="sep"></span>
             <button data-b="AND">AND</button><button data-b="OR">OR</button><button data-b="XOR">XOR</button><button data-b="NOT">NOT</button>
             <span class="sep"></span>
@@ -572,13 +573,13 @@ button.iorow span.d{color:#E4E4E7}
             <span class="sep"></span>
             <button data-b="GT">GT</button><button data-b="LT">LT</button><button data-b="EQ">EQ</button>
             <span class="sep"></span>
-            <button id="fbdDel" class="stop" title="ลบบล็อกหรือสายที่เลือก (Delete)">ลบ</button>
+            <button id="fbdDel" class="stop" title="Delete the selected block or wire (Delete)">Delete</button>
           </div>
-          <div class="fbdwrap" id="fbdwrap" tabindex="0" aria-label="ตัวแก้ไข FBD: คลิกเลือก กด Delete เพื่อลบ">
+          <div class="fbdwrap" id="fbdwrap" tabindex="0" aria-label="FBD editor: click to select, press Delete to remove">
             <svg id="fbd" role="img"></svg>
             <div class="pop" id="fbdEdit" hidden>
-              <input id="fbdEditIn" type="text" spellcheck="false" autocomplete="off" maxlength="30" aria-label="ชื่อตัวแปรหรือค่าคงที่" aria-describedby="fbdEditH">
-              <div class="h" id="fbdEditH">X0 ถึง X7, Y0 ถึง Y7, ชื่อแฟล็ก, TRUE, 5 หรือ T#2S แล้วกด Enter</div>
+              <input id="fbdEditIn" type="text" spellcheck="false" autocomplete="off" maxlength="30" aria-label="Variable name or constant" aria-describedby="fbdEditH">
+              <div class="h" id="fbdEditH">X0 to X7, Y0 to Y7, a flag name, TRUE, 5 or T#2S, then press Enter</div>
             </div>
           </div>
         </div>
@@ -588,48 +589,48 @@ button.iorow span.d{color:#E4E4E7}
             <div class="gutter"><div class="gutter-inner" id="gut">1</div></div>
             <div class="area">
               <div class="under" id="under"><div id="errMark"></div><pre id="hl"></pre></div>
-              <textarea id="ed" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="ตัวแก้ไขโค้ด Structured Text"></textarea>
+              <textarea id="ed" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Structured Text editor"></textarea>
             </div>
           </div>
         </div>
         </div>
-        <div class="console info" id="con" role="status">กด Run หรือ Ctrl+Enter เพื่อเริ่มการทำงานของโปรแกรม</div>
+        <div class="console info" id="con" role="status">Press Run or Ctrl+Enter to run the program</div>
       </section>
 
       <div class="col" id="paneMach">
         <section class="panel lime" aria-labelledby="hMach">
           <div class="phead">
             <h2 id="hMach"><span class="hl">Machine</span></h2>
-            <div class="seg" role="group" aria-label="มุมมองเครื่อง"><button id="v2d" aria-pressed="true">2D</button><button id="v3d" aria-pressed="false">3D</button></div>
+            <div class="seg" role="group" aria-label="Machine view"><button id="v2d" aria-pressed="true">2D</button><button id="v3d" aria-pressed="false">3D</button></div>
           </div>
           <div class="inner simwrap">
-            <canvas id="sim" aria-label="ภาพจำลองชุดฝึก PLC ประกอบด้วยสายพาน หัวจับลม เซนเซอร์ และไฟสถานะ สามารถกดปุ่ม START และ STOP บนภาพได้"></canvas>
+            <canvas id="sim" aria-label="Simulated PLC training kit with conveyor, pneumatic gripper, sensors and status lamps. The START and STOP buttons in the picture can be pressed"></canvas>
             <div id="sim3d" class="sim3d" hidden><div class="tip3d" id="tip3d" hidden></div></div>
           </div>
-          <div class="feed" role="group" aria-label="ชิ้นงาน">
-            <button id="addM">+ โลหะ</button>
-            <button id="addP">+ พลาสติก</button>
-            <label class="chk"><input type="checkbox" id="auto" checked> ป้อนอัตโนมัติ</label>
-            <label class="chk" title="วางชิ้นงานที่ต้นสายพานโดยตรงโดยไม่ผ่านหัวจับ สำหรับโปรแกรมที่ไม่มีขั้นตอนหยิบวาง"><input type="checkbox" id="direct"> วางบนสายพาน</label>
-            <button id="resetSim">รีเซ็ต</button>
+          <div class="feed" role="group" aria-label="Parts">
+            <button id="addM">+ Metal</button>
+            <button id="addP">+ Plastic</button>
+            <label class="chk"><input type="checkbox" id="auto" checked> Auto feed</label>
+            <label class="chk" title="Place parts straight on the conveyor, skipping the gripper, for programs without pick and place"><input type="checkbox" id="direct"> Skip gripper</label>
+            <button id="resetSim">Reset</button>
           </div>
-          <p class="hint3d" id="hint3d" hidden>ลากเพื่อหมุนมุมมอง เลื่อนล้อเมาส์หรือใช้สองนิ้วเพื่อซูม ดับเบิลคลิกเพื่อกลับสู่มุมมองเริ่มต้น และสามารถกดปุ่ม START และ STOP บนโต๊ะได้</p>
+          <p class="hint3d" id="hint3d" hidden>Drag to orbit, scroll or pinch to zoom, double-click to reset the view. The START and STOP buttons on the table can be pressed.</p>
         </section>
-        <section class="panel dark" aria-label="I/O และ Monitor">
+        <section class="panel dark" aria-label="I/O and Monitor">
           <div class="phead">
-            <div class="seg tabs" role="tablist" aria-label="I/O หรือ Monitor">
+            <div class="seg tabs" role="tablist" aria-label="I/O or Monitor">
               <button role="tab" id="tIO" aria-selected="true" aria-controls="pIO">I/O</button>
               <button role="tab" id="tMon" aria-selected="false" aria-controls="pMon" tabindex="-1">Monitor</button>
             </div>
-            <span class="phint" id="ioHint">กดค้างที่ X0 หรือ X1 เพื่อจำลองการกดปุ่ม</span>
+            <span class="phint" id="ioHint">Hold X0 or X1 to press the button</span>
           </div>
           <div id="pIO" role="tabpanel" aria-labelledby="tIO" class="iocols">
-            <div><div class="iohead">อินพุต X</div><div class="iogrid" id="ioX"></div></div>
-            <div><div class="iohead">เอาต์พุต Y</div><div class="iogrid" id="ioY"></div></div>
+            <div><div class="iohead">Inputs X</div><div class="iogrid" id="ioX"></div></div>
+            <div><div class="iohead">Outputs Y</div><div class="iogrid" id="ioY"></div></div>
           </div>
           <div id="pMon" role="tabpanel" aria-labelledby="tMon" class="inner" hidden>
-            <p class="monnote" id="monNote" hidden>PLC อยู่ในสถานะ STOP ค่าที่แสดงเป็นค่าล่าสุดก่อนหยุดทำงาน</p>
-            <div class="scroll" tabindex="0" role="region" aria-label="ค่าอุปกรณ์ในโปรแกรม"><table class="watch" id="watchT"><thead><tr><th scope="col">อุปกรณ์</th><th scope="col">ชนิด</th><th scope="col">ค่า</th></tr></thead><tbody id="watch"></tbody></table></div>
+            <p class="monnote" id="monNote" hidden>The PLC is in STOP. Values shown are the last ones before it stopped.</p>
+            <div class="scroll" tabindex="0" role="region" aria-label="Device values in the program"><table class="watch" id="watchT"><thead><tr><th scope="col">Device</th><th scope="col">Type</th><th scope="col">Value</th></tr></thead><tbody id="watch"></tbody></table></div>
           </div>
         </section>
       </div>
@@ -638,45 +639,45 @@ button.iorow span.d{color:#E4E4E7}
 
   <section class="block" id="langs" aria-labelledby="hLangs">
     <div class="shead">
-      <h2 id="hLangs"><span class="hl">ภาษาที่รองรับ</span></h2>
-      <p>ทุกภาษาควบคุมเครื่องจำลองชุดเดียวกัน เลือกภาษาที่ต้องการเพื่อเปิดใช้งานใน Workspace</p>
+      <h2 id="hLangs"><span class="hl">Languages</span></h2>
+      <p>Every language drives the same machine. Pick one to open it in the Workspace.</p>
     </div>
     <div class="cards">
       <article class="card">
         <h3><span class="hl">Ladder</span><br><span class="hl">Diagram</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M10 10v90M140 10v90M10 35h32M58 35h54M124 35h16M42 20v30M58 20v30M112 22q-9 13 0 26M124 22q9 13 0 26M10 75h32M58 75h82M42 60v30M58 60v30M54 58l-20 34"/></svg>
-        <p>เขียน Ladder แบบเดียวกับ GX Works2 ด้วยปุ่ม F5 ถึง F10 ระบบแปลงเป็น Instruction List ของ MELSEC โดยอัตโนมัติ</p>
-        <button class="go" data-go="LD"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>เปิดใน Workspace</button>
+        <p>Draw Ladder as in GX Works2 with F5 to F10; it converts to MELSEC Instruction List automatically.</p>
+        <button class="go" data-go="LD"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card lime">
         <h3><span class="hl">Instruction</span><br><span class="hl">List</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 18h24M50 18h50M12 42h24M50 42h70M12 66h24M50 66h40M12 90h24M50 90h60"/></svg>
-        <p>รองรับ MELSEC IL, Siemens STL และ Allen-Bradley rung text โดยทุกรูปแบบแปลงเป็น Ladder ได้</p>
-        <button class="go" data-go="IL"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>เปิดใน Workspace</button>
+        <p>MELSEC IL, Siemens STL and Allen-Bradley rung text, each convertible to Ladder.</p>
+        <button class="go" data-go="IL"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card dark">
         <h3><span class="hl">Structured</span><br><span class="hl">Text</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 16h40M28 36h70M28 56h50M44 76h60M12 96h30M108 36h28"/></svg>
-        <p>เขียนตามรูปแบบ CODESYS รองรับ TON, CTU และ R_TRIG อ้างอิง I/O ได้ทั้ง <code>X0</code> และ <code>%IX0.0</code></p>
-        <button class="go" data-go="ST"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>เปิดใน Workspace</button>
+        <p>CODESYS-style ST with TON, CTU and R_TRIG; address I/O as <code>X0</code> or <code>%IX0.0</code></p>
+        <button class="go" data-go="ST"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card">
         <h3><span class="hl">Sequential</span><br><span class="hl">Function Chart</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="50" y="6" width="50" height="24" rx="3"/><rect x="50" y="80" width="50" height="24" rx="3"/><path d="M75 30v50M60 55h30M100 92h30"/><rect x="130" y="82" width="16" height="20" rx="2"/></svg>
-        <p>แบ่งการทำงานเป็นขั้นและทรานซิชัน และใช้เวลาของขั้นเป็นเงื่อนไขได้ เช่น <code>Check.T &gt;= T#2S</code></p>
-        <button class="go" data-go="SFC"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>เปิดใน Workspace</button>
+        <p>Steps and transitions, with step time usable in conditions such as <code>Check.T &gt;= T#2S</code></p>
+        <button class="go" data-go="SFC"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card lime">
         <h3><span class="hl">Function</span><br><span class="hl">Block Diagram</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="40" y="20" width="50" height="70" rx="4"/><path d="M8 38h32M8 72h32M90 55h52"/><circle cx="142" cy="55" r="4" fill="currentColor"/></svg>
-        <p>ต่อบล็อก AND, OR, SR, TON และ CTU ด้วยการลากสาย พร้อมแสดงค่าในแต่ละเส้นขณะทำงาน</p>
-        <button class="go" data-go="FBD"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>เปิดใน Workspace</button>
+        <p>Wire AND, OR, SR, TON and CTU blocks by dragging, with live values on every wire.</p>
+        <button class="go" data-go="FBD"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open in Workspace</button>
       </article>
       <article class="card dark">
-        <h3><span class="hl">เครื่องจำลอง</span><br><span class="hl">2D และ 3D</span></h3>
+        <h3><span class="hl">Simulator</span><br><span class="hl">2D and 3D</span></h3>
         <svg class="pic" viewBox="0 0 150 110" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M75 8l60 30v40l-60 26-60-26V38z"/><path d="M15 38l60 28 60-28M75 66v38"/></svg>
-        <p>จำลองเครื่องคัดแยกชิ้นงานของชุดฝึก FX3U แสดงผลได้ทั้งแบบ 2D และ 3D โดยหลอดไฟและกระบอกสูบทำงานตามโปรแกรม</p>
-        <button class="go" data-go="3D"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>เปิดมุมมอง 3D</button>
+        <p>The FX3U kit’s sorting machine in 2D or 3D; lamps and cylinders follow your program.</p>
+        <button class="go" data-go="3D"><i><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 15L15 3M6 3h9v9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i>Open the 3D view</button>
       </article>
     </div>
   </section>
@@ -684,42 +685,42 @@ button.iorow span.d{color:#E4E4E7}
   <section class="block" id="gx" aria-labelledby="hGx">
     <div class="shead">
       <h2 id="hGx"><span class="hl">GX Works2</span></h2>
-      <p>ส่งออกโปรแกรมไปยัง GX Works2 หรือเชื่อมต่อกับ GX Simulator2 เพื่อควบคุมเครื่องจำลองแบบเรียลไทม์</p>
+      <p>Export programs to GX Works2, or let GX Simulator2 drive the machine in real time.</p>
     </div>
     <div class="gx">
       <section>
-        <h3><span class="hl">แลกเปลี่ยนโปรแกรมผ่านไฟล์ CSV</span></h3>
-        <p>ระบบแปลง Ladder เป็น Instruction List ของ MELSEC โดยอัตโนมัติ สามารถส่งออกเป็นไฟล์ CSV เพื่อเปิดใน GX Works2 หรือนำเข้าไฟล์ CSV จาก GX Works2 เพื่อแสดงเป็น Ladder</p>
+        <h3><span class="hl">Exchange programs by CSV</span></h3>
+        <p>Ladder converts to MELSEC Instruction List automatically. Export it as a CSV file for GX Works2, or import a GX Works2 CSV file as Ladder.</p>
         <div class="row">
-          <button class="primary" id="saveCsv">บันทึก CSV</button>
-          <button id="copyIl">คัดลอก IL</button>
-          <button id="openFile">นำเข้า CSV หรือ IL</button>
+          <button class="primary" id="saveCsv">Save CSV</button>
+          <button id="copyIl">Copy IL</button>
+          <button id="openFile">Import CSV or IL</button>
           <input type="file" id="fileIn" accept=".csv,.txt" hidden>
         </div>
         <textarea id="il" spellcheck="false" aria-label="Instruction List"></textarea>
         <div class="row">
-          <button id="ilToLad">แปลงเป็น Ladder</button>
+          <button id="ilToLad">Convert to Ladder</button>
           <span class="kbd" id="ilInfo"></span>
         </div>
         <ol class="steps">
-          <li><span>ส่งออกไปยัง GX Works2: คลิกขวาที่หน้าต่าง Ladder ใน GX Works2 เลือก <b>Read from CSV File</b> แล้วเปิดไฟล์ที่บันทึกจากเว็บ</span></li>
-          <li><span>นำเข้าจาก GX Works2: คลิกขวาที่หน้าต่าง Ladder เลือก <b>Write to CSV File</b> แล้วกด “นำเข้า CSV หรือ IL” ในหน้านี้</span></li>
+          <li><span>To GX Works2: right-click the Ladder window in GX Works2, choose <b>Read from CSV File</b> and open the saved file.</span></li>
+          <li><span>From GX Works2: right-click the Ladder window, choose <b>Write to CSV File</b> then press “Import CSV or IL” here.</span></li>
         </ol>
       </section>
       <section>
-        <h3><span class="hl">ควบคุมแบบเรียลไทม์</span></h3>
-        <p>ระบบส่งสถานะเซนเซอร์และปุ่ม X0 ถึง X7 ไปยังโปรแกรมที่ทำงานใน GX Simulator2 และอ่านค่า Y0 ถึง Y7 กลับมาควบคุมเครื่องจำลอง ผ่านโปรแกรมตัวกลาง <code>gx_bridge.py</code> บนคอมพิวเตอร์ของผู้ใช้</p>
+        <h3><span class="hl">Real-time control</span></h3>
+        <p>The page sends sensors and buttons X0 to X7 to the program in GX Simulator2 and reads Y0 to Y7 back to move the machine, through <code>gx_bridge.py</code> on your computer.</p>
         <div class="row">
-          <input type="text" id="wsUrl" value="ws://localhost:8765" aria-label="ที่อยู่ Bridge" pattern="wss?://\S+">
-          <button class="primary" id="btnLink">เชื่อมต่อ</button>
+          <input type="text" id="wsUrl" value="ws://localhost:8765" aria-label="Bridge address" pattern="wss?://\S+">
+          <button class="primary" id="btnLink">Connect</button>
         </div>
-        <div class="linkst" id="linkSt" role="status">ยังไม่ได้เชื่อมต่อ เครื่องจำลองใช้โปรแกรมในเว็บ</div>
-        <h4 class="sub">การตั้งค่าครั้งแรก</h4>
+        <div class="linkst" id="linkSt" role="status">Not connected. The machine runs the program in this page.</div>
+        <h4 class="sub">First-time setup</h4>
           <ol class="steps">
-            <li><span>GX Works2: เลือกเมนู Debug แล้วเลือก <b>Start/Stop Simulation</b> เพื่อให้ GX Simulator2 อยู่ในโหมด RUN</span></li>
-            <li><span>MX Component (Communication Setup Utility): สร้าง Logical Station No. 1 ชนิด <b>GX Simulator2</b></span></li>
-            <li><span>ติดตั้งด้วยคำสั่ง <code>pip install pywin32 websockets</code> แล้วเรียกใช้ <code>python gx_bridge.py --station 1</code></span></li>
-            <li><span>เปิดไฟล์ <code>plc-training-kit-sim.html</code> จากเครื่อง (หน้าเว็บออนไลน์ไม่สามารถเชื่อมต่อ localhost ได้) แล้วกด “เชื่อมต่อ”</span></li>
+            <li><span>GX Works2: choose Debug, then <b>Start/Stop Simulation</b> so GX Simulator2 is in RUN.</span></li>
+            <li><span>MX Component (Communication Setup Utility): create Logical Station No. 1 of type <b>GX Simulator2</b></span></li>
+            <li><span>Install with <code>pip install pywin32 websockets</code> then run <code>python gx_bridge.py --station 1</code></span></li>
+            <li><span>Open <code>plc-training-kit-sim.html</code> from your computer (the online page cannot reach localhost) and press “Connect”.</span></li>
           </ol>
       </section>
     </div>
@@ -727,59 +728,59 @@ button.iorow span.d{color:#E4E4E7}
 
   <section class="block" id="how" aria-labelledby="hHow">
     <div class="shead">
-      <h2 id="hHow"><span class="hl">คู่มือการใช้งาน</span></h2>
-      <p>ขั้นตอนตั้งแต่การเลือกแบบฝึกหัดจนถึงการส่งโปรแกรมไปยังเครื่องจริง</p>
+      <h2 id="hHow"><span class="hl">User guide</span></h2>
+      <p>From choosing an exercise to sending the program to a real PLC.</p>
     </div>
     <div class="acc">
       <details open>
-        <summary><span class="n">01</span><h3>เลือกแบบฝึกหัดและเริ่มการทำงาน</h3><span class="pm" aria-hidden="true"></span></summary>
+        <summary><span class="n">01</span><h3>Choose an exercise and run it</h3><span class="pm" aria-hidden="true"></span></summary>
         <div class="body">
-          <p>เลือกแบบฝึกหัดจากรายการในแผง Program แล้วกด Run หรือ <kbd>Ctrl</kbd>+<kbd>Enter</kbd> ระบบจะแสดงเป้าหมายของแบบฝึกหัดใต้รายการ เช่น คัดแยกถูกต้อง 5 ชิ้นโดยไม่มีข้อผิดพลาด และแจ้งผลเมื่อผ่านเกณฑ์ ผลการคัดแยกแสดงอยู่ด้านขวาของหัวข้อ Workspace</p>
+          <p>Choose an exercise from the list in the Program panel and press Run or <kbd>Ctrl</kbd>+<kbd>Enter</kbd>. The goal appears below the list, for example sort 5 parts with no errors, and is marked when you pass. The sorting result sits beside the Workspace heading.</p>
         </div>
       </details>
       <details>
-        <summary><span class="n">02</span><h3>การเขียน Ladder แบบ GX Works2</h3><span class="pm" aria-hidden="true"></span></summary>
+        <summary><span class="n">02</span><h3>Writing Ladder as in GX Works2</h3><span class="pm" aria-hidden="true"></span></summary>
         <div class="body">
-          <p>คลิกช่องในตาราง Ladder แล้วกด <kbd>F5</kbd> สำหรับคอนแทค NO, <kbd>F6</kbd> สำหรับคอนแทค NC, <kbd>Shift</kbd>+<kbd>F5</kbd> สำหรับต่อขนาน, <kbd>F7</kbd> สำหรับคอยล์ และ <kbd>F8</kbd> สำหรับคำสั่ง จากนั้นพิมพ์ชื่ออุปกรณ์แล้วกด Enter จุดที่ไม่ได้ต่อถึงคอยล์จะแสดงด้วยกรอบเส้นประสีแดง</p>
+          <p>Click a cell in the Ladder grid and press <kbd>F5</kbd> for an NO contact, <kbd>F6</kbd> for an NC contact, <kbd>Shift</kbd>+<kbd>F5</kbd> for a parallel branch, <kbd>F7</kbd> for a coil and <kbd>F8</kbd> for an instruction, then type the device and press Enter. Elements that do not reach a coil get a dashed red frame.</p>
         </div>
       </details>
       <details>
-        <summary><span class="n">03</span><h3>การทดสอบกับเครื่องจำลอง</h3><span class="pm" aria-hidden="true"></span></summary>
+        <summary><span class="n">03</span><h3>Testing on the machine</h3><span class="pm" aria-hidden="true"></span></summary>
         <div class="body">
-          <p>กดปุ่ม START และ STOP บนภาพเครื่องจำลองหรือในแท็บ I/O เพิ่มชิ้นงานโลหะหรือพลาสติกด้วยตนเอง หรือเปิดการป้อนชิ้นงานอัตโนมัติ หากโปรแกรมไม่มีขั้นตอนหยิบวาง ให้เลือก “วางบนสายพาน” เนื่องจากเครื่องจริงไม่มีเซนเซอร์ตรวจตำแหน่งกระบอกสูบ โปรแกรมตัวอย่างจึงใช้การหน่วงเวลาแทน</p>
-          <p>แท็บ Monitor แสดงค่าของอุปกรณ์ M, T, C และ D ในโปรแกรมขณะทำงาน</p>
+          <p>Press START and STOP on the machine picture or in the I/O tab. Add metal or plastic parts yourself or turn on auto feed. If your program has no pick and place, tick “Skip gripper”. The real kit has no cylinder position sensors, so the example programs use timers.</p>
+          <p>The Monitor tab shows the M, T, C and D devices in your program while it runs.</p>
         </div>
       </details>
       <details>
-        <summary><span class="n">04</span><h3>การส่งโปรแกรมไปยัง GX Works2</h3><span class="pm" aria-hidden="true"></span></summary>
+        <summary><span class="n">04</span><h3>Sending the program to GX Works2</h3><span class="pm" aria-hidden="true"></span></summary>
         <div class="body">
-          <p>กด “บันทึก CSV” ในส่วน GX Works2 จากนั้นใน GX Works2 คลิกขวาที่หน้าต่าง Ladder แล้วเลือก <b>Read from CSV File</b> หากต้องการนำโปรแกรมจาก GX Works2 กลับมา ให้เลือก <b>Write to CSV File</b> แล้วกด “นำเข้า CSV หรือ IL” ในหน้านี้</p>
+          <p>Press “Save CSV” in the GX Works2 section, then in GX Works2 right-click the Ladder window and choose <b>Read from CSV File</b>. To bring a program back, choose <b>Write to CSV File</b> then press “Import CSV or IL” here.</p>
         </div>
       </details>
       <details>
-        <summary><span class="n">05</span><h3>ชุดคำสั่งและภาษาที่รองรับ</h3><span class="pm" aria-hidden="true"></span></summary>
+        <summary><span class="n">05</span><h3>Instruction set and languages</h3><span class="pm" aria-hidden="true"></span></summary>
         <div class="body cols">
           <div>
-            <h4>คำสั่ง Ladder (FX)</h4>
+            <h4>Ladder instructions (FX)</h4>
             <ul>
-              <li>คอนแทค <code>LD LDI LDP LDF</code> <code>AND ANI ANDP ANDF</code> <code>OR ORI ORP ORF</code></li>
-              <li>เปรียบเทียบ <code>LD= LD&lt;&gt; LD&gt; LD&lt; LD&gt;= LD&lt;=</code> รวมถึงแบบ AND และ OR</li>
-              <li>เอาต์พุต <code>OUT SET RST PLS PLF</code></li>
-              <li>ไทเมอร์ <code>OUT T0 K20</code> (T0 ถึง T199 ฐาน 100 ms, T200 ถึง T245 ฐาน 10 ms)</li>
-              <li>เคาน์เตอร์ <code>OUT C0 K5</code> และรีเซ็ตด้วย <code>RST C0</code></li>
-              <li>ข้อมูล <code>MOV(P) INC(P) DEC(P)</code> กับ D0 ถึง D7999</li>
-              <li>รีเลย์พิเศษ <code>M8000</code> RUN, <code>M8002</code> พัลส์แรก, <code>M8012</code> 0.1 s, <code>M8013</code> 1 s</li>
+              <li>Contacts <code>LD LDI LDP LDF</code> <code>AND ANI ANDP ANDF</code> <code>OR ORI ORP ORF</code></li>
+              <li>Compare <code>LD= LD&lt;&gt; LD&gt; LD&lt; LD&gt;= LD&lt;=</code> with AND and OR forms</li>
+              <li>Output <code>OUT SET RST PLS PLF</code></li>
+              <li>Timers <code>OUT T0 K20</code> (T0 to T199 at 100 ms, T200 to T245 at 10 ms)</li>
+              <li>Counters <code>OUT C0 K5</code>, reset with <code>RST C0</code></li>
+              <li>Data <code>MOV(P) INC(P) DEC(P)</code> on D0 to D7999</li>
+              <li>Special relays <code>M8000</code> RUN, <code>M8002</code> first scan, <code>M8012</code> 0.1 s, <code>M8013</code> 1 s</li>
             </ul>
           </div>
           <div>
-            <h4>ภาษาที่รองรับ</h4>
+            <h4>Languages</h4>
             <ul>
-              <li><b>LD</b> Ladder แบบ GX Works2</li>
+              <li><b>LD</b> Ladder as in GX Works2</li>
               <li><b>IL</b> MELSEC IL, Siemens STL (<code>A I0.0</code> <code>= Q0.3</code>), Allen-Bradley (<code>XIC(I:0/0) OTE(O:0/3)</code>)</li>
-              <li><b>ST</b> ตามรูปแบบ CODESYS อ้างอิง I/O ได้ทั้ง <code>X0</code> และ <code>%IX0.0</code></li>
-              <li><b>SFC</b> รองรับ Action แบบ N, S และ R และใช้เวลาของขั้นได้ด้วย <code>Check.T &gt;= T#2S</code></li>
-              <li><b>FBD</b> ต่อบล็อก AND, OR, TON และ CTU ด้วยการลากสาย</li>
-              <li>มุมมอง 3D ต้องเชื่อมต่ออินเทอร์เน็ตในการใช้งานครั้งแรก</li>
+              <li><b>ST</b> CODESYS style, I/O as <code>X0</code> or <code>%IX0.0</code></li>
+              <li><b>SFC</b> N, S and R actions, step time with <code>Check.T &gt;= T#2S</code></li>
+              <li><b>FBD</b> AND, OR, TON and CTU blocks wired by dragging</li>
+              <li>The 3D view needs an internet connection the first time</li>
             </ul>
           </div>
         </div>
@@ -789,37 +790,37 @@ button.iorow span.d{color:#E4E4E7}
   </main>
 </div>
 
-<footer class="foot wrap" aria-label="ท้ายหน้า">
+<footer class="foot wrap" aria-label="Footer">
   <div class="top">
     <a class="brand" href="#top">
       <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
         <g fill="currentColor"><rect x="6" y="5" width="13" height="38"/><path d="M23 5h7a13 13 0 0 1 0 26h-7z"/></g>
         <rect x="23" y="35" width="8" height="8" fill="#B9FF66"/>
       </svg>
-      <b>PLC Training Kit Sim</b>
+      <b>PLC Training</b>
     </a>
     <ul>
       <li><a href="#work">Workspace</a></li>
-      <li><a href="#langs">ภาษาที่รองรับ</a></li>
+      <li><a href="#langs">Languages</a></li>
       <li><a href="#gx">GX Works2</a></li>
-      <li><a href="#how">คู่มือการใช้งาน</a></li>
+      <li><a href="#how">User guide</a></li>
     </ul>
   </div>
   <div class="mid">
     <div>
-      <span class="hl">เกี่ยวกับ</span>
-      <p>เครื่องจำลองชุดฝึก PLC Mitsubishi FX3U ที่จัด I/O ตามชุดฝึกจริง ทำงานบนเบราว์เซอร์ทั้งหมดโดยไม่ต้องติดตั้งโปรแกรมเพิ่มเติม</p>
+      <span class="hl">About</span>
+      <p>A simulator of a Mitsubishi FX3U training kit, wired like the real one. It runs entirely in the browser with nothing to install.</p>
     </div>
     <div>
-      <span class="hl">ซอร์สโค้ด</span>
+      <span class="hl">Source code</span>
       <p><a href="https://github.com/Jittrakan-K/plctraining">github.com/Jittrakan-K/plctraining</a></p>
     </div>
   </div>
-  <p class="bottom">PLC Training Kit Sim, IEC 61131-3, ชุดคำสั่ง MELSEC FX บางส่วน</p>
+  <p class="bottom">PLC Training. IEC 61131-3 languages and a subset of the MELSEC FX instruction set.</p>
 </footer>
-<aside class="dock" id="dock" aria-label="ควบคุม PLC">
+<aside class="dock" id="dock" aria-label="PLC controls">
   <span class="pill" id="dPill"><i></i><span id="dPillTxt">STOP</span></span>
-  <span class="score dscore" aria-label="ผลการคัดแยก: ถูกต้อง ผิดพลาด ตกหล่น"><span class="ok">ถูก <b id="dOk">0</b></span><span class="ng">ผิด <b id="dNg">0</b></span><span class="dr">หล่น <b id="dDrop">0</b></span></span>
+  <span class="score dscore" aria-label="Sorting result: correct, wrong, dropped"><span class="ok">OK <b id="dOk">0</b></span><span class="ng">Wrong <b id="dNg">0</b></span><span class="dr">Drop <b id="dDrop">0</b></span></span>
   <button class="primary" id="dRun"><svg class="icon" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>Run</button>
   <button class="stop" id="dStop" aria-label="Stop"><svg class="icon" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" fill="currentColor"/></svg>Stop</button>
 </aside>
@@ -846,30 +847,30 @@ let inFrame=false;try{inFrame=window.top!==window.self}catch(e){inFrame=true}
 
 /* ================= I/O map ================= */
 const IO_X=[
-  {n:'X0',d:'ปุ่ม START สีเขียว (ขวาล่าง)'},
-  {n:'X1',d:'ปุ่ม STOP สีแดง (ขวาล่าง)'},
-  {n:'X2',d:'เซนเซอร์ตรวจจับชิ้นงาน ณ จุดรับชิ้นงาน (ซ้าย)'},
-  {n:'X3',d:'เซนเซอร์ตรวจจับโลหะ (หัวสีเขียว)'},
-  {n:'X4',d:'สำรอง (ไม่ได้ต่อสาย)'},
-  {n:'X5',d:'สำรอง (ไม่ได้ต่อสาย)'},
-  {n:'X6',d:'สำรอง (ไม่ได้ต่อสาย)'},
-  {n:'X7',d:'สำรอง (ไม่ได้ต่อสาย)'}];
+  {n:'X0',d:'START button, green (bottom right)'},
+  {n:'X1',d:'STOP button, red (bottom right)'},
+  {n:'X2',d:'Part sensor at the pick point (left)'},
+  {n:'X3',d:'Metal sensor (green head)'},
+  {n:'X4',d:'Spare (not wired)'},
+  {n:'X5',d:'Spare (not wired)'},
+  {n:'X6',d:'Spare (not wired)'},
+  {n:'X7',d:'Spare (not wired)'}];
 const IO_Y=[
-  {n:'Y0',d:'หลอดไฟสีเขียว (ซ้ายล่าง)'},
-  {n:'Y1',d:'หลอดไฟสีเหลือง (ซ้ายล่าง)'},
-  {n:'Y2',d:'หลอดไฟสีแดง (ซ้ายล่าง)'},
-  {n:'Y3',d:'กระบอกสูบผลักชิ้นงาน (ขวา)'},
-  {n:'Y4',d:'กระบอกสูบหัวจับ (จับชิ้นงาน)'},
-  {n:'Y5',d:'กระบอกสูบแนวซ้าย-ขวา (เลื่อนไปขวา)'},
-  {n:'Y6',d:'กระบอกสูบแนวขึ้น-ลง (เลื่อนลง)'},
-  {n:'Y7',d:'มอเตอร์สายพาน (ลำเลียงไปทางขวา)'}];
+  {n:'Y0',d:'Green lamp (bottom left)'},
+  {n:'Y1',d:'Yellow lamp (bottom left)'},
+  {n:'Y2',d:'Red lamp (bottom left)'},
+  {n:'Y3',d:'Kicker cylinder (right)'},
+  {n:'Y4',d:'Gripper cylinder (close)'},
+  {n:'Y5',d:'Left-right cylinder (move right)'},
+  {n:'Y6',d:'Up-down cylinder (move down)'},
+  {n:'Y7',d:'Conveyor motor (runs to the right)'}];
 
 /* ================= Examples ================= */
 const ST_EXAMPLES=[
-{name:'แบบฝึกหัดที่ 1: วงจร Start/Stop แบบรักษาสภาวะ',code:
-`(* แบบฝึกหัดที่ 1: วงจรรักษาสภาวะ (Self-holding)
-   กด START (X0) -> สายพานหมุน (Y7) + ไฟเขียว (Y0)
-   กด STOP  (X1) -> หยุด + ไฟแดง (Y2)                *)
+{name:'Exercise 1: Start/Stop latching circuit',code:
+`(* Exercise 1: self-holding circuit
+   Press START (X0) -> conveyor runs (Y7) + green lamp (Y0)
+   Press STOP  (X1) -> stop + red lamp (Y2)              *)
 PROGRAM PLC_PRG
 VAR
     Run : BOOL;
@@ -877,12 +878,12 @@ END_VAR
 
 Run := (X0 OR Run) AND NOT X1;
 
-Y7 := Run;       (* มอเตอร์สายพาน *)
-Y0 := Run;       (* ไฟเขียว *)
-Y2 := NOT Run;   (* ไฟแดง *)
+Y7 := Run;       (* conveyor motor *)
+Y0 := Run;       (* green lamp *)
+Y2 := NOT Run;   (* red lamp *)
 `},
-{name:'แบบฝึกหัดที่ 2: ไฟสีเหลืองกะพริบเมื่อมีชิ้นงานรอ (TON)',code:
-`(* แบบฝึกหัดที่ 2: ถ้ามีชิ้นงานวางที่จุดรับชิ้นงาน (X2) ไฟเหลือง (Y1) กะพริบทุก 0.5 วินาที *)
+{name:'Exercise 2: Yellow lamp blinks while a part waits (TON)',code:
+`(* Exercise 2: while a part sits at the pick point (X2), the yellow lamp (Y1) blinks every 0.5 s *)
 PROGRAM PLC_PRG
 VAR
     Run    : BOOL;
@@ -902,10 +903,10 @@ Y0 := Run AND NOT X2;
 Y1 := Run AND X2 AND Blink;
 Y2 := NOT Run;
 `},
-{name:'แบบฝึกหัดที่ 3: หยิบวางและคัดแยกชิ้นงานโลหะ (CASE และ Timer)',code:
-`(* แบบฝึกหัดที่ 3: หยิบชิ้นงานจากจุดรับชิ้นงานวางบนสายพาน แล้วผลักชิ้นงานโลหะลงกล่อง
-   Y6 ลง, Y4 จับ, Y5 ไปขวา, Y7 สายพาน, Y3 ผลัก
-   เครื่องจริงไม่มีเซนเซอร์บอกตำแหน่งกระบอก จึงใช้เวลาแทน      *)
+{name:'Exercise 3: Pick, place and reject metal parts (CASE and Timer)',code:
+`(* Exercise 3: move parts from the pick point to the conveyor, then kick metal parts into the bin
+   Y6 down, Y4 grip, Y5 right, Y7 conveyor, Y3 kick
+   The real kit has no cylinder position sensors, so timers are used *)
 PROGRAM PLC_PRG
 VAR
     Run     : BOOL;
@@ -922,17 +923,17 @@ END_VAR
 
 Run := (X0 OR Run) AND NOT X1;
 
-(* ---- หยิบวาง: แต่ละสเต็ปใช้เวลาตาม Dur ---- *)
+(* ---- Pick and place: each step lasts Dur ---- *)
 CASE Step OF
-    0: Dur := T#500MS; Go := Run AND X2;   (* รอชิ้นงานที่จุดรับชิ้นงาน *)
-    1: Dur := T#600MS; Go := TRUE;         (* ลง *)
-    2: Dur := T#400MS;                     (* จับ *)
-    3: Dur := T#600MS;                     (* ยกขึ้น *)
-    4: Dur := T#800MS;                     (* เลื่อนไปขวา *)
-    5: Dur := T#600MS;                     (* ลง *)
-    6: Dur := T#400MS;                     (* ปล่อย *)
-    7: Dur := T#600MS;                     (* ยกขึ้น *)
-    8: Dur := T#800MS;                     (* กลับซ้าย *)
+    0: Dur := T#500MS; Go := Run AND X2;   (* wait for a part at the pick point *)
+    1: Dur := T#600MS; Go := TRUE;         (* down *)
+    2: Dur := T#400MS;                     (* grip *)
+    3: Dur := T#600MS;                     (* lift *)
+    4: Dur := T#800MS;                     (* move right *)
+    5: Dur := T#600MS;                     (* down *)
+    6: Dur := T#400MS;                     (* release *)
+    7: Dur := T#600MS;                     (* lift *)
+    8: Dur := T#800MS;                     (* move back left *)
 END_CASE
 
 tStep(IN := Go AND NOT tStep.Q, PT := Dur);
@@ -945,7 +946,7 @@ Y6 := (Step = 1) OR (Step = 2) OR (Step = 5) OR (Step = 6);
 Y4 := (Step >= 2) AND (Step <= 5);
 Y5 := (Step >= 4) AND (Step <= 7);
 
-(* ---- ผลักโลหะ: เจอโลหะที่ X3 แล้วรอให้ชิ้นงานวิ่งไปถึงกระบอกผลัก ---- *)
+(* ---- Kick metal: metal seen at X3, wait until the part reaches the kicker ---- *)
 rtX3(CLK := X3);
 IF rtX3.Q AND Run THEN Metal := TRUE; END_IF
 tTravel(IN := Metal, PT := T#1400MS);
@@ -954,12 +955,12 @@ Y3 := tTravel.Q AND NOT tKick.Q;
 IF tKick.Q THEN Metal := FALSE; END_IF
 ctMetal(CU := Y3, PV := 999);
 
-Y7 := Run;                    (* สายพาน *)
-Y0 := Run;                    (* ไฟเขียว *)
-Y1 := Step <> 0;              (* ไฟเหลือง: กำลังหยิบ *)
-Y2 := NOT Run;                (* ไฟแดง *)
+Y7 := Run;                    (* conveyor *)
+Y0 := Run;                    (* green lamp *)
+Y1 := Step <> 0;              (* yellow lamp: picking *)
+Y2 := NOT Run;                (* red lamp *)
 `},
-{name:'โปรแกรมใหม่ (ว่างเปล่า)',code:
+{name:'New program (empty)',code:
 `PROGRAM PLC_PRG
 VAR
 
@@ -980,7 +981,7 @@ function tokenize(src){
     if(c===' '||c==='\t'||c==='\r'){i++;continue}
     if(c==='('&&src[i+1]==='*'){
       const j=src.indexOf('*)',i+2);
-      if(j<0)throw new StErr('คอมเมนต์ (* ไม่ได้ปิดด้วย *)',line);
+      if(j<0)throw new StErr('Comment (* is not closed with *)',line);
       for(let k=i;k<j;k++)if(src[k]==='\n')line++;
       i=j+2;continue}
     if(c==='/'&&src[i+1]==='/'){while(i<n&&src[i]!=='\n')i++;continue}
@@ -994,7 +995,7 @@ function tokenize(src){
     const two=src.substr(i,2);
     if([':=','<=','>=','<>','..','=>'].includes(two)){out.push({t:'op',v:two,line,s:two});i+=2;continue}
     if(':;,()+-*/<>=.&'.includes(c)){out.push({t:'op',v:c,line,s:c});i++;continue}
-    throw new StErr(`ไม่รู้จักตัวอักษร '${c}'`,line);
+    throw new StErr(`Unknown character '${c}'`,line);
   }
   out.push({t:'eof',v:'',line,s:''});
   return out;
@@ -1029,12 +1030,12 @@ function parse(src){
   const pk=(o=0)=>T[Math.min(p+o,T.length-1)];
   const kw=(v,o=0)=>{const t=pk(o);return t.t==='kw'&&t.v===v};
   const op=(v,o=0)=>{const t=pk(o);return t.t==='op'&&t.v===v};
-  const show=t=>t.t==='eof'?'จุดจบโปรแกรม':`'${t.s}'`;
+  const show=t=>t.t==='eof'?'end of program':`'${t.s}'`;
   const fail=(msg,t)=>{throw new StErr(msg,(t||pk()).line)};
-  const eatKw=v=>{if(!kw(v))fail(`ต้องการ ${v} แต่พบ ${show(pk())}`);return T[p++]};
-  const eatOp=v=>{if(!op(v))fail(`ต้องการ '${v}' แต่พบ ${show(pk())}`);return T[p++]};
-  const eatSemi=()=>{if(!op(';'))fail(`ขาดเครื่องหมาย ; ท้ายคำสั่ง`,T[Math.max(0,p-1)]);p++};
-  const eatId=()=>{const t=pk();if(t.t!=='id')fail(`ต้องการชื่อตัวแปร แต่พบ ${show(t)}`);p++;return t};
+  const eatKw=v=>{if(!kw(v))fail(`Expected ${v} but found ${show(pk())}`);return T[p++]};
+  const eatOp=v=>{if(!op(v))fail(`Expected '${v}' but found ${show(pk())}`);return T[p++]};
+  const eatSemi=()=>{if(!op(';'))fail(`Missing ; at the end of the statement`,T[Math.max(0,p-1)]);p++};
+  const eatId=()=>{const t=pk();if(t.t!=='id')fail(`Expected a variable name but found ${show(t)}`);p++;return t};
 
   function expr(){return bin(0)}
   const LV=[['OR'],['XOR'],['AND','&'],['=','<>'],['<','>','<=','>='],['+','-'],['*','/','MOD']];
@@ -1058,29 +1059,29 @@ function parse(src){
     if(t.t==='id'){
       if(op('(',1)){
         const F=FUNCS[t.v];
-        if(!F){if(sym.get(t.v)?.kind==='fb')fail(`เรียก ${t.s}(...) ต้องเขียนเป็นคำสั่งแยก แล้วอ่านค่าผ่าน ${t.s}.Q`,t);fail(`ไม่รู้จักฟังก์ชัน '${t.s}'`,t)}
+        if(!F){if(sym.get(t.v)?.kind==='fb')fail(`Call ${t.s}(...) as its own statement, then read ${t.s}.Q`,t);fail(`Unknown function '${t.s}'`,t)}
         p+=2;const args=[];
         if(!op(')')){for(;;){args.push(expr());if(op(',')){p++;continue}break}}
         eatOp(')');
-        if(F.n!==undefined&&args.length!==F.n)fail(`${t.v} ต้องมี ${F.n} อาร์กิวเมนต์`,t);
+        if(F.n!==undefined&&args.length!==F.n)fail(`${t.v} takes ${F.n} argument(s)`,t);
         return {k:'fn',f:F.f,args,line:t.line};
       }
       p++;const s=sym.get(t.v);
-      if(!s)fail(`ไม่รู้จักตัวแปร '${t.s}' (ตรวจสอบว่าได้ประกาศไว้ใน VAR แล้ว)`,t);
+      if(!s)fail(`Unknown variable '${t.s}' (check that it is declared in VAR)`,t);
       if(op('.')){p++;const m=eatId();
-        if(s.kind!=='fb')fail(`'${t.s}' ไม่ใช่ Function Block`,m);
+        if(s.kind!=='fb')fail(`'${t.s}' is not a function block`,m);
         const d=FBDEF[s.type];
-        if(!(m.v in d.in)&&!(m.v in d.out))fail(`${s.type} ไม่มีสมาชิก '${m.s}' (มี ${[...Object.keys(d.out),...Object.keys(d.in)].join(', ')})`,m);
+        if(!(m.v in d.in)&&!(m.v in d.out))fail(`${s.type} has no member '${m.s}' (members: ${[...Object.keys(d.out),...Object.keys(d.in)].join(', ')})`,m);
         return {k:'mem',name:t.v,m:m.v}}
-      if(s.kind==='fb')fail(`'${t.s}' เป็น ${s.type} ต้องอ่านผ่านสมาชิก เช่น ${t.s}.Q`,t);
+      if(s.kind==='fb')fail(`'${t.s}' is a ${s.type}; read it through a member, for example ${t.s}.Q`,t);
       return {k:'var',name:t.v};
     }
-    fail(`ต้องการค่าหรือตัวแปร แต่พบ ${show(t)}`);
+    fail(`Expected a value or variable but found ${show(t)}`);
   }
   function stmts(stop){
     const list=[];
     while(!stop()){
-      if(pk().t==='eof')fail('โปรแกรมจบก่อนปิดบล็อก (ตรวจสอบ END_IF / END_CASE / END_FOR)');
+      if(pk().t==='eof')fail('The program ends before the block is closed (check END_IF / END_CASE / END_FOR)');
       const s=stmt();if(s)list.push(s);
     }
     return list;
@@ -1096,41 +1097,41 @@ function parse(src){
         case 'WHILE':return whileS();
         case 'EXIT':p++;eatSemi();return {k:'exit',line:t.line};
         case 'RETURN':p++;eatSemi();return {k:'ret',line:t.line};
-        case 'VAR':fail('ต้องประกาศ VAR ... END_VAR ไว้ก่อนคำสั่งแรก',t);
-        default:fail(`ไม่ควรพบ ${t.v} ตรงนี้`,t);
+        case 'VAR':fail('Declare VAR ... END_VAR before the first statement',t);
+        default:fail(`${t.v} is not expected here`,t);
       }
     }
     if(t.t==='id'){
       if(op('(',1))return callS();
       const lv=lval();
-      if(op('='))fail(`ใช้ := ในการกำหนดค่า (เครื่องหมาย = ใช้เปรียบเทียบ)`);
+      if(op('='))fail(`Use := for assignment (= compares)`);
       eatOp(':=');const e=expr();eatSemi();
       return {k:'set',lv,e,line:t.line};
     }
-    fail(`ไม่ควรพบ ${show(t)}`,t);
+    fail(`Unexpected ${show(t)}`,t);
   }
   function lval(){
     const t=eatId();const s=sym.get(t.v);
-    if(!s)fail(`ไม่รู้จักตัวแปร '${t.s}' (ตรวจสอบว่าได้ประกาศไว้ใน VAR แล้ว)`,t);
+    if(!s)fail(`Unknown variable '${t.s}' (check that it is declared in VAR)`,t);
     if(op('.')){p++;const m=eatId();
-      if(s.kind!=='fb')fail(`'${t.s}' ไม่ใช่ Function Block`,t);
+      if(s.kind!=='fb')fail(`'${t.s}' is not a function block`,t);
       const d=FBDEF[s.type];
-      if(!(m.v in d.in))fail(`กำหนดค่าได้เฉพาะอินพุตของ ${s.type} (${Object.keys(d.in).join(', ')})`,m);
+      if(!(m.v in d.in))fail(`Only the inputs of ${s.type} can be assigned (${Object.keys(d.in).join(', ')})`,m);
       return {name:t.v,mem:m.v,type:d.in[m.v]}}
-    if(s.kind==='in')fail(`${t.v} เป็นอินพุต (X) เขียนค่าทับไม่ได้`,t);
-    if(s.kind==='fb')fail(`'${t.s}' เป็น ${s.type} ให้เรียกแบบ ${t.s}(IN := ..., PT := ...);`,t);
+    if(s.kind==='in')fail(`${t.v} is an input (X) and cannot be written`,t);
+    if(s.kind==='fb')fail(`'${t.s}' is a ${s.type}; call it as ${t.s}(IN := ..., PT := ...);`,t);
     return {name:t.v,type:s.type};
   }
   function callS(){
     const t=eatId();const s=sym.get(t.v);
-    if(!s)fail(`ไม่รู้จัก '${t.s}' (ตรวจสอบว่าได้ประกาศไว้แล้ว เช่น ${t.s} : TON;)`,t);
-    if(s.kind!=='fb')fail(`'${t.s}' ไม่ใช่ Function Block จึงเรียกแบบมีวงเล็บไม่ได้`,t);
+    if(!s)fail(`Unknown '${t.s}' (check that it is declared, for example ${t.s} : TON;)`,t);
+    if(s.kind!=='fb')fail(`'${t.s}' is not a function block and cannot be called`,t);
     const d=FBDEF[s.type];eatOp('(');const args=[];
     if(!op(')')){
       for(;;){
         const a=eatId();
-        if(op('=>'))fail(`ยังไม่รองรับ => ให้อ่านค่าเอาต์พุตแบบ ${t.s}.${a.s} แทน`,a);
-        if(!(a.v in d.in))fail(`${s.type} ไม่มีอินพุต '${a.s}' (มี ${Object.keys(d.in).join(', ')})`,a);
+        if(op('=>'))fail(`Not supported: => Read the output as ${t.s}.${a.s} instead`,a);
+        if(!(a.v in d.in))fail(`${s.type} has no input '${a.s}' (inputs: ${Object.keys(d.in).join(', ')})`,a);
         eatOp(':=');args.push({n:a.v,e:expr(),type:d.in[a.v]});
         if(op(',')){p++;continue}break;
       }
@@ -1147,14 +1148,14 @@ function parse(src){
     eatKw('END_IF');if(op(';'))p++;
     return {k:'if',arms,els,line:t.line};
   }
-  function num(){let neg=false;if(op('-')){p++;neg=true}const t=pk();if(t.t!=='num')fail(`ต้องการตัวเลข แต่พบ ${show(t)}`);p++;return neg?-t.v:t.v}
+  function num(){let neg=false;if(op('-')){p++;neg=true}const t=pk();if(t.t!=='num')fail(`Expected a number but found ${show(t)}`);p++;return neg?-t.v:t.v}
   function caseS(){
     const t=T[p++];const sel=expr();eatKw('OF');const arms=[];let els=null;
     const isLabel=()=>{let o=0;if(op('-',o))o++;if(pk(o).t!=='num')return false;const b=pk(o+1);return b.t==='op'&&(b.v===':'||b.v===','||b.v==='..')};
     while(!kw('END_CASE')){
-      if(pk().t==='eof')fail('ไม่พบ END_CASE');
+      if(pk().t==='eof')fail('END_CASE not found');
       if(kw('ELSE')){p++;els=stmts(()=>kw('END_CASE'));continue}
-      if(!isLabel())fail(`ต้องการเลขสเต็ป เช่น 10: แต่พบ ${show(pk())}`);
+      if(!isLabel())fail(`Expected a step number such as 10: but found ${show(pk())}`);
       const labels=[];
       for(;;){const lo=num();let hi=lo;if(op('..')){p++;hi=num()}labels.push([lo,hi]);if(op(',')){p++;continue}break}
       eatOp(':');
@@ -1165,7 +1166,7 @@ function parse(src){
   }
   function forS(){
     const t=T[p++];const v=eatId();const s=sym.get(v.v);
-    if(!s||s.kind!=='var'||!INTS.has(s.type))fail(`ตัวแปรนับรอบ '${v.s}' ต้องประกาศเป็น INT`,v);
+    if(!s||s.kind!=='var'||!INTS.has(s.type))fail(`Loop variable '${v.s}' must be declared as INT`,v);
     eatOp(':=');const a=expr();eatKw('TO');const b=expr();let by=null;
     if(kw('BY')){p++;by=expr()}
     eatKw('DO');const body=stmts(()=>kw('END_FOR'));p++;if(op(';'))p++;
@@ -1180,17 +1181,17 @@ function parse(src){
   while(kw('VAR')){
     p++;
     while(!kw('END_VAR')){
-      if(pk().t==='eof')fail('ไม่พบ END_VAR');
+      if(pk().t==='eof')fail('END_VAR not found');
       const names=[eatId()];while(op(',')){p++;names.push(eatId())}
       eatOp(':');
       const tt=eatId();const ty=tt.v;
-      if(!(ty in BASIC)&&!(ty in FBDEF))fail(`ไม่รู้จักชนิดข้อมูล '${tt.s}'`,tt);
+      if(!(ty in BASIC)&&!(ty in FBDEF))fail(`Unknown data type '${tt.s}'`,tt);
       let init=null;
-      if(op(':=')){if(ty in FBDEF)fail('Function Block กำหนดค่าเริ่มต้นแบบนี้ไม่ได้');p++;init=expr()}
+      if(op(':=')){if(ty in FBDEF)fail('A function block cannot take an initial value');p++;init=expr()}
       eatSemi();
       for(const nm of names){
         const ex=sym.get(nm.v);
-        if(ex)fail(ex.kind==='in'||ex.kind==='out'?`'${nm.s}' เป็นชื่อ I/O ที่มีอยู่แล้ว ใช้งานได้โดยไม่ต้องประกาศ`:`ประกาศ '${nm.s}' ซ้ำ`,nm);
+        if(ex)fail(ex.kind==='in'||ex.kind==='out'?`'${nm.s}' is a built-in I/O name and needs no declaration`:`Declaration '${nm.s}' is duplicated`,nm);
         sym.set(nm.v,{type:ty,kind:ty in FBDEF?'fb':'var',init,decl:nm.s});
       }
     }
@@ -1198,7 +1199,7 @@ function parse(src){
   }
   const body=stmts(()=>pk().t==='eof'||kw('END_PROGRAM'));
   if(kw('END_PROGRAM')){p++;if(op(';'))p++}
-  if(pk().t!=='eof')fail(`มีโค้ดหลัง END_PROGRAM`);
+  if(pk().t!=='eof')fail(`Code found after END_PROGRAM`);
   return {sym,body};
 }
 
@@ -1242,8 +1243,8 @@ function makeRuntime(prog){
           case '+':return Number(a)+Number(b);
           case '-':return Number(a)-Number(b);
           case '*':return Number(a)*Number(b);
-          case '/':if(Number(b)===0)throw new StErr('หารด้วยศูนย์',n.line);return Number(a)/Number(b);
-          case 'MOD':if(Number(b)===0)throw new StErr('MOD ด้วยศูนย์',n.line);return Number(a)%Number(b);
+          case '/':if(Number(b)===0)throw new StErr('Division by zero',n.line);return Number(a)/Number(b);
+          case 'MOD':if(Number(b)===0)throw new StErr('MOD by zero',n.line);return Number(a)%Number(b);
         }
       }
     }
@@ -1258,14 +1259,14 @@ function makeRuntime(prog){
         case 'case':{const v=Number(ev(s.sel));for(const a of s.arms)for(const [lo,hi] of a.labels)if(v>=lo&&v<=hi)return run(a.b);if(s.els)return run(s.els);return}
         case 'for':{
           const ty=prog.sym.get(s.v).type;let i=coerce(ty,ev(s.a));const end=Number(ev(s.b));const by=s.by?Number(ev(s.by)):1;
-          if(by===0)throw new StErr('FOR ... BY 0 จะวนซ้ำไม่สิ้นสุด',s.line);
+          if(by===0)throw new StErr('FOR ... BY 0 never ends',s.line);
           let g=0;
           for(mem[s.v]=i;by>0?mem[s.v]<=end:mem[s.v]>=end;mem[s.v]=coerce(ty,mem[s.v]+by)){
-            if(++g>100000)throw new StErr('FOR วนเกิน 100000 รอบใน 1 สแกน',s.line);
+            if(++g>100000)throw new StErr('FOR ran more than 100000 times in one scan',s.line);
             const r=run(s.body);if(r==='exit')break;if(r==='ret')return r;
           }
           return}
-        case 'while':{let g=0;while(truthy(ev(s.c))){if(++g>100000)throw new StErr('WHILE วนซ้ำไม่สิ้นสุด (เกิน 100000 รอบใน 1 สแกน) PLC จะค้างอยู่ที่สแกนนี้',s.line);const r=run(s.body);if(r==='exit')break;if(r==='ret')return r}return}
+        case 'while':{let g=0;while(truthy(ev(s.c))){if(++g>100000)throw new StErr('WHILE never ends (more than 100000 loops in one scan); the PLC would hang in this scan',s.line);const r=run(s.body);if(r==='exit')break;if(r==='ret')return r}return}
         case 'exit':return 'exit';
         case 'ret':return 'ret';
       }
@@ -1295,7 +1296,7 @@ function canSpawn(){
   return !onJig()&&!(Math.abs(cX()-G.jig.x)<40&&sim.cyl>0.2);
 }
 function spawn(metal,manual){
-  if(!canSpawn()){if(manual)toast(sim.direct?'ยังมีชิ้นงานค้างอยู่ที่ต้นสายพาน':'ยังมีชิ้นงานค้างอยู่ที่แท่นรับชิ้นงาน หรือหัวจับกำลังเคลื่อนลง','warn');return false}
+  if(!canSpawn()){if(manual)toast(sim.direct?'A part is still at the start of the conveyor':'A part is still at the pick point, or the gripper is moving down','warn');return false}
   if(sim.direct)sim.parts.push({id:sim.nextId++,metal,x:G.bx0+30,y:G.beltY,st:'belt',vx:0,vy:0,t:0,k:0});
   else sim.parts.push({id:sim.nextId++,metal,x:G.jig.x,y:G.beltY,st:'jig',vx:0,vy:0,t:0,k:0});
   return true;
@@ -1309,10 +1310,10 @@ function simInputs(){
     X4:false,X5:false,X6:false,X7:false};
 }
 function result(p,where){
-  if(where==='floor'){sim.stats.drop++;toast('ชิ้นงานตกหล่นจากสายพาน','bad');return}
+  if(where==='floor'){sim.stats.drop++;toast('A part dropped off the conveyor','bad');return}
   const good=(where==='bin')===p.metal;
   if(good)sim.stats.ok++;
-  else{sim.stats.ng++;toast(where==='bin'?'คัดแยกผิด: ชิ้นงานพลาสติกถูกผลักลงกล่อง':'คัดแยกผิด: ชิ้นงานโลหะไหลไปถึงปลายสายพาน','bad')}
+  else{sim.stats.ng++;toast(where==='bin'?'Wrong sort: a plastic part was kicked into the bin':'Wrong sort: a metal part reached the end of the conveyor','bad')}
 }
 function simStep(dt,Y){
   sim.Y=Y;const s=dt/1000;
@@ -1409,11 +1410,11 @@ let lastIn=simInputs();
 const DEV_LIM={X:64,Y:64,M:8512,T:256,C:256,D:8000};
 function parseDev(s){
   s=String(s).trim().toUpperCase();let m;
-  if((m=/^K(-?\d+)$/.exec(s))){const v=parseInt(m[1],10);if(v<-32768||v>32767)throw `${s} เกินช่วง 16 บิต`;return {t:'K',v,s:'K'+v}}
+  if((m=/^K(-?\d+)$/.exec(s))){const v=parseInt(m[1],10);if(v<-32768||v>32767)throw `${s} is outside the 16-bit range`;return {t:'K',v,s:'K'+v}}
   if((m=/^H([0-9A-F]{1,4})$/.exec(s))){const v=parseInt(m[1],16);return {t:'K',v:v>32767?v-65536:v,s:'H'+m[1]}}
-  if((m=/^([XY])([0-9]+)$/.exec(s))){if(/[89]/.test(m[2]))throw `${m[1]} ใช้เลขฐาน 8 (0–7) เช่น ${m[1]}10 คือตัวที่ 8`;const n=parseInt(m[2],8);if(n>=DEV_LIM[m[1]])throw `${s} เกินช่วง`;return {t:m[1],n,s:m[1]+n.toString(8)}}
-  if((m=/^([MTCD])([0-9]+)$/.exec(s))){const n=parseInt(m[2],10);if(n>=DEV_LIM[m[1]])throw `${s} เกินช่วง`;return {t:m[1],n,s:m[1]+n}}
-  throw `อุปกรณ์ '${s.slice(0,24)}' ไม่ถูกต้อง (ใช้ X Y M T C D K H)`;
+  if((m=/^([XY])([0-9]+)$/.exec(s))){if(/[89]/.test(m[2]))throw `${m[1]} is numbered in octal (0 to 7); ${m[1]}10 is the eighth`;const n=parseInt(m[2],8);if(n>=DEV_LIM[m[1]])throw `${s} is out of range`;return {t:m[1],n,s:m[1]+n.toString(8)}}
+  if((m=/^([MTCD])([0-9]+)$/.exec(s))){const n=parseInt(m[2],10);if(n>=DEV_LIM[m[1]])throw `${s} is out of range`;return {t:m[1],n,s:m[1]+n}}
+  throw `Device '${s.slice(0,24)}' is not valid (use X Y M T C D K H)`;
 }
 const isBitDev=d=>'XYMTC'.includes(d.t);
 const isWordDev=d=>'KDTC'.includes(d.t);
@@ -1428,36 +1429,36 @@ function parseCmd(text,def){
   else if(/^[XYMTCDKH]-?[0-9A-F]+$/.test(tk[0])&&!CONTACT_OPS[tk[0]]&&!OUT_OPS.has(tk[0]))tk.unshift(def||'LD');
   const op=tk[0],a=tk.slice(1);
   if(CONTACT_OPS[op]){
-    if(a.length!==1)throw `${op} ต้องมีอุปกรณ์ 1 ตัว เช่น ${op} X0`;
-    const d=parseDev(a[0]);if(!isBitDev(d))throw `${op} ใช้กับ X Y M T C เท่านั้น`;
+    if(a.length!==1)throw `${op} takes one device, for example ${op} X0`;
+    const d=parseDev(a[0]);if(!isBitDev(d))throw `${op} works with X Y M T C only`;
     return {kind:'c',branch:!!CONTACT_OPS[op][1],el:{t:CONTACT_OPS[op][0],dev:d.s}};
   }
   const m=CMP_RE.exec(op);
   if(m){
-    if(a.length!==2)throw `${op} ต้องมี 2 ค่า เช่น ${op} D0 K5`;
+    if(a.length!==2)throw `${op} takes two values, for example ${op} D0 K5`;
     const x=parseDev(a[0]),y=parseDev(a[1]);
-    if(!isWordDev(x)||!isWordDev(y))throw 'การเปรียบเทียบใช้ K H D T C';
+    if(!isWordDev(x)||!isWordDev(y))throw 'Comparisons use K H D T C';
     return {kind:'c',branch:m[1]==='OR',el:{t:'CMP',op:m[2],a:x.s,b:y.s}};
   }
   if(OUT_OPS.has(op)){
     const ds=a.map(parseDev);
-    const need=n=>{if(ds.length!==n)throw `${op} ต้องมี ${n} ค่า`};
-    const wr=d=>{if(d.t==='M'&&d.n>=8000)throw `${d.s} เป็นรีเลย์พิเศษ เขียนไม่ได้`};
+    const need=n=>{if(ds.length!==n)throw `${op} takes ${n} value(s)`};
+    const wr=d=>{if(d.t==='M'&&d.n>=8000)throw `${d.s} is a special relay and cannot be written`};
     switch(op){
       case 'OUT':
-        if(!ds.length)throw 'OUT ต้องระบุอุปกรณ์ เช่น OUT Y0';
-        if(ds[0].t==='T'||ds[0].t==='C'){if(ds.length!==2||!(ds[1].t==='K'||ds[1].t==='D'))throw `ไทเมอร์/เคาน์เตอร์ต้องมีค่าตั้ง เช่น OUT ${ds[0].s} K20`;if(ds[1].t==='K'&&ds[1].v<0)throw 'ค่าตั้งต้องเป็นบวก'}
+        if(!ds.length)throw 'OUT needs a device, for example OUT Y0';
+        if(ds[0].t==='T'||ds[0].t==='C'){if(ds.length!==2||!(ds[1].t==='K'||ds[1].t==='D'))throw `Timers and counters need a set value, for example OUT ${ds[0].s} K20`;if(ds[1].t==='K'&&ds[1].v<0)throw 'The set value must be positive'}
         else if(ds[0].t==='Y'||ds[0].t==='M'){need(1);wr(ds[0])}
-        else throw 'OUT ใช้กับ Y M T C';
+        else throw 'OUT works with Y M T C';
         break;
-      case 'SET':case 'PLS':case 'PLF':need(1);if(!(ds[0].t==='Y'||ds[0].t==='M'))throw `${op} ใช้กับ Y M`;wr(ds[0]);break;
-      case 'RST':need(1);if(!'YMTCD'.includes(ds[0].t))throw 'RST ใช้กับ Y M T C D';wr(ds[0]);break;
-      case 'MOV':case 'MOVP':need(2);if(!isWordDev(ds[0]))throw 'ค่าต้นทางใช้ K H D T C';if(ds[1].t!=='D')throw 'ปลายทาง MOV ต้องเป็น D';break;
-      default:need(1);if(ds[0].t!=='D')throw `${op} ใช้กับ D`;
+      case 'SET':case 'PLS':case 'PLF':need(1);if(!(ds[0].t==='Y'||ds[0].t==='M'))throw `${op} works with Y M`;wr(ds[0]);break;
+      case 'RST':need(1);if(!'YMTCD'.includes(ds[0].t))throw 'RST works with Y M T C D';wr(ds[0]);break;
+      case 'MOV':case 'MOVP':need(2);if(!isWordDev(ds[0]))throw 'The source must be K H D T C';if(ds[1].t!=='D')throw 'The MOV destination must be D';break;
+      default:need(1);if(ds[0].t!=='D')throw `${op} works with D`;
     }
     return {kind:'o',el:{t:op,args:ds.map(d=>d.s)}};
   }
-  throw `ไม่รู้จักคำสั่ง '${op.slice(0,24)}'`;
+  throw `Unknown instruction '${op.slice(0,24)}'`;
 }
 function elText(el){
   if(!el||el.t==='H')return '';
@@ -1564,9 +1565,9 @@ function compileLadder(){
 function ladWarn(){
   const n=LAD.orphans.size+LAD.deadOut.size;if(!n)return '';
   let where='';
-  if(LAD.orphans.size){const [k,lf]=LAD.orphans.entries().next().value;const [r,c]=k.split(',').map(Number);where=`เช่น ${elText(lf.el)} ที่แถว ${r+1} ช่อง ${c+1}`}
-  else{const r=LAD.deadOut.values().next().value;where=`เช่น คอยล์ ${elText(P.rows[r].o)} ที่แถว ${r+1}`}
-  return `พบ ${n} จุดที่ไม่ได้ต่อถึงคอยล์หรือบัสซ้าย จึงไม่มีผลต่อวงจร (แสดงด้วยกรอบเส้นประสีแดง) ${where}`;
+  if(LAD.orphans.size){const [k,lf]=LAD.orphans.entries().next().value;const [r,c]=k.split(',').map(Number);where=`for example ${elText(lf.el)} at row ${r+1}, column ${c+1}`}
+  else{const r=LAD.deadOut.values().next().value;where=`for example coil ${elText(P.rows[r].o)} at row ${r+1}`}
+  return `${n} element(s) do not reach a coil or the left bus and have no effect (dashed red frame), ${where}`;
 }
 
 /* ================= Ladder: runtime (FX-like) ================= */
@@ -1722,12 +1723,12 @@ function ilToRungs(ins){
     try{
       if(op==='END'||op==='FEND')break;
       if(op==='NOP')continue;
-      const top=()=>{if(!st.length)throw 'ต้องเริ่มด้วยคำสั่ง LD';return st[st.length-1]};
+      const top=()=>{if(!st.length)throw 'Must start with an LD instruction';return st[st.length-1]};
       const setTop=v=>{st[st.length-1]=v};
-      if(op==='ANB'||op==='ORB'){if(st.length<2)throw `${op} ไม่มีบล็อกให้รวม`;if(pend&&st.length===2)pend=false;const b=st.pop(),a=st.pop();st.push(op==='ANB'?mkAnd(a,b):mkOr([a,b]));continue}
+      if(op==='ANB'||op==='ORB'){if(st.length<2)throw `${op} has no blocks to combine`;if(pend&&st.length===2)pend=false;const b=st.pop(),a=st.pop();st.push(op==='ANB'?mkAnd(a,b):mkOr([a,b]));continue}
       if(op==='MPS'){mps.push(top());continue}
-      if(op==='MRD'){if(!mps.length)throw 'MRD ไม่มี MPS';setTop(mps[mps.length-1]);continue}
-      if(op==='MPP'){if(!mps.length)throw 'MPP ไม่มี MPS';setTop(mps.pop());continue}
+      if(op==='MRD'){if(!mps.length)throw 'MRD without MPS';setTop(mps[mps.length-1]);continue}
+      if(op==='MPP'){if(!mps.length)throw 'MPP without MPS';setTop(mps.pop());continue}
       const pc=parseCmd([op,...args].join(' '),'LD');
       if(pc.kind==='c'){
         const pos=/^LD/.test(op)?'LD':/^(AND|ANI)/.test(op)?'AND':'OR';
@@ -1735,10 +1736,10 @@ function ilToRungs(ins){
         else if(pos==='AND')setTop(mkAnd(top(),pc.el));
         else setTop(mkOr([top(),pc.el]));
       }else{
-        if(pend){if(st.length!==2)throw 'โครงสร้างวงจรไม่สมบูรณ์ (ขาด ANB/ORB?)';fin();st=[st[1]];pend=false}
+        if(pend){if(st.length!==2)throw 'Incomplete circuit structure (missing ANB/ORB?)';fin();st=[st[1]];pend=false}
         cur.outs.push({expr:top(),el:pc.el});
       }
-    }catch(e){throw `บรรทัด ${I.line} (${op}): ${e.message||e}`}
+    }catch(e){throw `Line ${I.line} (${op}): ${e.message||e}`}
   }
   fin();
   return rungs;
@@ -1785,14 +1786,14 @@ function rungsToProgram(rungs){
 }
 function ilToProgram(text){
   const ins=ilLines(text);
-  if(!ins.length)throw 'ไม่พบคำสั่งในข้อความหรือไฟล์นี้';
-  if(ins.length>8000)throw `โปรแกรมยาว ${ins.length} คำสั่ง เกินที่รองรับ (8000)`;
+  if(!ins.length)throw 'No instructions found in this text or file';
+  if(ins.length>8000)throw `The program has ${ins.length} instructions, more than the 8000 supported`;
   return rungsToProgram(ilToRungs(ins));
 }
 
 /* ================= Ladder examples (written as MELSEC IL) ================= */
 const LAD_EXAMPLES=[
-{name:'แบบฝึกหัดที่ 1: วงจร Start/Stop แบบรักษาสภาวะ',il:`LD X0
+{name:'Exercise 1: Start/Stop latching circuit',il:`LD X0
 OR M0
 ANI X1
 OUT M0
@@ -1802,7 +1803,7 @@ OUT Y0
 LDI M0
 OUT Y2
 END`},
-{name:'แบบฝึกหัดที่ 2: หยิบชิ้นงานวางบนสายพาน (SET/RST และ Timer)',il:`LD X0
+{name:'Exercise 2: Pick a part and place it on the conveyor (SET/RST and Timer)',il:`LD X0
 OR M0
 ANI X1
 OUT M0
@@ -1883,7 +1884,7 @@ OUT Y2
 LD M20
 OUT Y1
 END`},
-{name:'แบบฝึกหัดที่ 3: หยิบวางและคัดแยกชิ้นงานโลหะ (SET/RST)',il:`LD X0
+{name:'Exercise 3: Pick, place and reject metal parts (SET/RST)',il:`LD X0
 OR M0
 ANI X1
 OUT M0
@@ -1978,7 +1979,7 @@ OUT Y1
 LD Y3
 OUT C0 K999
 END`},
-{name:'โปรแกรมใหม่ (ว่างเปล่า)',il:''}];
+{name:'New program (empty)',il:''}];
 
 /* ================= Ladder editor (GX Works2 style) ================= */
 const LG={CW:54,RH:50,RX:34,OW:142};let LZ=1;
@@ -2057,8 +2058,8 @@ function renderLad(){
   // vertical links to the row below
     for(let b=1;b<=C;b++)if(row.v[b]&&r<R-1)s+=`<line x1="${cellX(b)}" y1="${y}" x2="${cellX(b)}" y2="${yc(r+1)}" ${S}/>`;
   }
-  if(!LAD.rungs.length&&P.rows.every(rowEmpty)){s+=`<text x="${RX+14}" y="${yc(0)+RH+6}" font-size="13" font-family="var(--f-ui)" fill="var(--muted)">โปรแกรมว่าง: คลิกช่องแรก กด F5 พิมพ์ X0 แล้วกด Enter จากนั้นกด F7 และพิมพ์ Y7</text>`}
-  LZ=Math.min(1,Math.max(.72,(ladwrap.clientWidth-4)/W))||1;lad.setAttribute('width',Math.round(W*LZ));lad.setAttribute('height',Math.round(H*LZ));lad.setAttribute('role','img');lad.setAttribute('aria-label',`Ladder ${LAD.rungs.length} rung, ${P.rows.length} แถว, เคอร์เซอร์แถว ${cur.r+1} ช่อง ${cur.c>=C?'คอยล์':cur.c+1}`);lad.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  if(!LAD.rungs.length&&P.rows.every(rowEmpty)){s+=`<text x="${RX+14}" y="${yc(0)+RH+6}" font-size="13" font-family="var(--f-ui)" fill="var(--muted)">Empty program: click the first cell, press F5, type X0 and press Enter, then press F7 and type Y7</text>`}
+  LZ=Math.min(1,Math.max(.72,(ladwrap.clientWidth-4)/W))||1;lad.setAttribute('width',Math.round(W*LZ));lad.setAttribute('height',Math.round(H*LZ));lad.setAttribute('role','img');lad.setAttribute('aria-label',`Ladder, ${LAD.rungs.length} rungs, ${P.rows.length} rows, cursor at row ${cur.r+1} column ${cur.c>=C?'coil':cur.c+1}`);lad.setAttribute('viewBox',`0 0 ${W} ${H}`);
   lad.innerHTML=s;
 }
 function scrollToCur(){
@@ -2074,8 +2075,8 @@ function changed(){
   clearTimeout(ladSaveT);ladSaveT=setTimeout(()=>store.set('plcsim.lad',JSON.stringify(P)),300);
   if(lang==='LD'){const w=ladWarn();
     if(w){setConsole('warn',w);ladWarned=true}
-    else if(running&&source==='sim'){setConsole('ok',`แก้ไขระหว่าง RUN (Online change): ${LAD.rungs.length} rung, ${LAD.steps} สเต็ป`);ladWarned=false}
-    else if(ladWarned){setConsole('info','วงจรต่อครบทุกจุดแล้ว');ladWarned=false}}
+    else if(running&&source==='sim'){setConsole('ok',`Edited during RUN (online change): ${LAD.rungs.length} rungs, ${LAD.steps} steps`);ladWarned=false}
+    else if(ladWarned){setConsole('info','Every element is connected');ladWarned=false}}
 }
 let ladWarned=false,ladDirty=false,stDirty=false;
 function snap(){ladDirty=true;undoS.push(JSON.stringify(P));if(undoS.length>80)undoS.shift()}
@@ -2084,8 +2085,8 @@ function commit(text,def){
   const pc=parseCmd(text,def);if(!pc)return;
   const {r,c}=cur;
   if(pc.kind==='c'){
-    if(c>=P.C)throw 'คอนแทคต้องวางในช่องด้านซ้ายของคอยล์';
-    if(pc.branch&&r===0)throw 'คำสั่ง OR ต้องวางในแถวใต้วงจรหลัก';
+    if(c>=P.C)throw 'Contacts go in the cells left of the coil';
+    if(pc.branch&&r===0)throw 'An OR contact goes in a row below the main circuit';
     snap();ensureRows(r+2);P.rows[r].c[c]=pc.el;
     if(pc.branch){P.rows[r-1].v[c+1]=true;if(c>0)P.rows[r-1].v[c]=true}
     cur={r,c:Math.min(c+1,P.C)};
@@ -2102,9 +2103,9 @@ function openPop(prefill,def){
   popHint.className='h';popHint.innerHTML=POP_HINT;
   pop.hidden=false;popIn.value=prefill||'';popIn.focus();popIn.setSelectionRange(popIn.value.length,popIn.value.length);showDevHint();
 }
-const POP_HINT='เช่น <b>LD X0</b>, <b>ANI X1</b>, <b>OR M0</b>, <b>OUT Y3</b>, <b>OUT T0 K20</b>, <b>SET M10</b>, <b>MOV K5 D0</b>, <b>LD= D0 K5</b>';
+const POP_HINT='e.g. <b>LD X0</b>, <b>ANI X1</b>, <b>OR M0</b>, <b>OUT Y3</b>, <b>OUT T0 K20</b>, <b>SET M10</b>, <b>MOV K5 D0</b>, <b>LD= D0 K5</b>';
 const IOD=Object.fromEntries([...IO_X,...IO_Y].map(d=>[d.n,d.d]));
-function showDevHint(){const m=popIn.value.toUpperCase().match(/\b[XY][0-7]\b/g);popHint.className='h';if(m){const d=m[m.length-1];popHint.innerHTML=`<b>${d}</b> ต่อกับ ${IOD[d]}`}else popHint.innerHTML=POP_HINT}
+function showDevHint(){const m=popIn.value.toUpperCase().match(/\b[XY][0-7]\b/g);popHint.className='h';if(m){const d=m[m.length-1];popHint.innerHTML=`<b>${d}</b> is wired to ${IOD[d]}`}else popHint.innerHTML=POP_HINT}
 popIn.addEventListener('input',showDevHint);
 function closePop(){pop.hidden=true;ladwrap.focus({preventScroll:true})}
 popIn.addEventListener('keydown',e=>{
@@ -2114,7 +2115,7 @@ popIn.addEventListener('keydown',e=>{
 });
 popIn.addEventListener('blur',()=>setTimeout(()=>{if(document.activeElement!==popIn)pop.hidden=true},150));
 function curEl(){return cur.c>=P.C?P.rows[cur.r].o:P.rows[cur.r].c[cur.c]}
-function announce(){const el=$('sr');if(el)el.textContent=`แถว ${cur.r+1} ${cur.c>=P.C?'ช่องคอยล์':'ช่อง '+(cur.c+1)}: ${elText(curEl())||'ว่าง'}`}
+function announce(){const el=$('sr');if(el)el.textContent=`Row ${cur.r+1} ${cur.c>=P.C?'coil column':'column '+(cur.c+1)}: ${elText(curEl())||'empty'}`}
 function ladAction(k){
   const {r,c}=cur;
   switch(k){
@@ -2127,11 +2128,11 @@ function ladAction(k){
     case 'F7':openPop('OUT ','OUT');break;
     case 'F8':openPop('','OUT');break;
     case 'F9':if(c>=P.C)return;snap();ensureRows(r+2);P.rows[r].c[c]={t:'H'};cur.c=Math.min(c+1,P.C);changed();break;
-    case 'F10':if(r===0||c===0||c>P.C){toast('เส้นตั้งต้องวางที่ขอบซ้ายของช่อง และอยู่ตั้งแต่แถวที่ 2 ลงไป','warn');return}snap();P.rows[r-1].v[c]=!P.rows[r-1].v[c];changed();break;
+    case 'F10':if(r===0||c===0||c>P.C){toast('A vertical line sits on the left edge of a cell, from row 2 down','warn');return}snap();P.rows[r-1].v[c]=!P.rows[r-1].v[c];changed();break;
     case 'Del':snap();if(c>=P.C)P.rows[r].o=null;else P.rows[r].c[c]=null;changed();break;
     case 'insRow':{snap();const nr=newRow(P.C);if(r>0)nr.v=[...P.rows[r-1].v];P.rows.splice(r,0,nr);changed();break}
     case 'delRow':snap();if(r>0&&P.rows[r].v.every(x=>!x))P.rows[r-1].v.fill(false);P.rows.splice(r,1);if(!P.rows.length)P.rows.push(newRow(P.C));changed();break;
-    case 'undo':if(undoS.length){P=JSON.parse(undoS.pop());changed()}else toast('ไม่มีขั้นตอนที่ย้อนกลับได้','warn');break;
+    case 'undo':if(undoS.length){P=JSON.parse(undoS.pop());changed()}else toast('Nothing to undo','warn');break;
   }
 }
 document.querySelectorAll('#ltools button').forEach(b=>b.addEventListener('click',()=>{ladAction(b.dataset.k);if(pop.hidden)ladwrap.focus({preventScroll:true})}));
@@ -2167,30 +2168,30 @@ const ilBox=$('il');
 function refreshIL(){
   if(document.activeElement===ilBox)return;
   const L=ilList();ilBox.value=ilText(L);
-  $('ilInfo').textContent=`${L.length} คำสั่ง · ${LAD.steps+1} สเต็ป`;
+  $('ilInfo').textContent=`${L.length} instructions, ${LAD.steps+1} steps`;
 }
 async function saveFile(filename,data){
   try{
     const dl=window.claude&&typeof window.claude.use==='function'?await window.claude.use('downloads'):null;
-    if(dl){await dl.save({filename,data});toast('บันทึกไฟล์แล้ว','ok');return}
-  }catch(e){if(e&&e.code==='declined')return;if(e&&e.code&&e.code!=='unavailable'&&e.code!=='not_granted'){toast('บันทึกไฟล์ไม่สำเร็จ: '+(e.message||e.code),'bad');return}}
+    if(dl){await dl.save({filename,data});toast('File saved','ok');return}
+  }catch(e){if(e&&e.code==='declined')return;if(e&&e.code&&e.code!=='unavailable'&&e.code!=='not_granted'){toast('Could not save the file: '+(e.message||e.code),'bad');return}}
   try{
     const url=URL.createObjectURL(new Blob([data]));const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
-  }catch(e){toast('เบราว์เซอร์นี้ไม่รองรับการบันทึกไฟล์ กรุณาใช้ปุ่ม “คัดลอก IL” แทน','bad')}
+  }catch(e){toast('This browser cannot save files. Use “Copy IL” instead','bad')}
 }
-$('saveCsv').addEventListener('click',()=>{if(lang!=='LD'&&lang!=='IL'){toast('ส่งออก CSV ได้จากแท็บ Ladder หรือ IL','warn');return}let L;try{L=currentIL()}catch(e){toast('แปลงไม่สำเร็จ · '+(e.message||e),'bad');return}if(L.length<2){toast('ยังไม่มี rung ที่มีเอาต์พุตให้ส่งออก','warn');return}saveFile('plc_program.csv',utf16(ilCsv(L)))});
+$('saveCsv').addEventListener('click',()=>{if(lang!=='LD'&&lang!=='IL'){toast('CSV export is available from the LD or IL tab','warn');return}let L;try{L=currentIL()}catch(e){toast('Conversion failed: '+(e.message||e),'bad');return}if(L.length<2){toast('There is no rung with an output to export','warn');return}saveFile('plc_program.csv',utf16(ilCsv(L)))});
 $('copyIl').addEventListener('click',()=>{
   const t=ilBox.value;
-  const fall=()=>{ilBox.focus();ilBox.select();toast('เลือกข้อความไว้แล้ว กรุณากด Ctrl+C เพื่อคัดลอก','warn')};
-  try{navigator.clipboard.writeText(t).then(()=>toast('คัดลอก IL แล้ว','ok'),fall)}catch(e){fall()}
+  const fall=()=>{ilBox.focus();ilBox.select();toast('Text selected. Press Ctrl+C to copy','warn')};
+  try{navigator.clipboard.writeText(t).then(()=>toast('IL copied','ok'),fall)}catch(e){fall()}
 });
 function importText(text,label){
-  try{const p=ilToProgram(text);setLang('LD',true);snap();loadProgram(p);toast(`${label}: ได้ ${LAD.rungs.length} rung`,'ok');if(running)startPLC()}
-  catch(e){toast('นำเข้าไม่สำเร็จ · '+(e.message||e),'bad')}
+  try{const p=ilToProgram(text);setLang('LD',true);snap();loadProgram(p);toast(`${label}: ${LAD.rungs.length} rungs`,'ok');if(running)startPLC()}
+  catch(e){toast('Import failed: '+(e.message||e),'bad')}
 }
-$('ilToLad').addEventListener('click',()=>{const t=ilBox.value;ilBox.blur();importText(t,'แปลง IL เป็น Ladder')});
+$('ilToLad').addEventListener('click',()=>{const t=ilBox.value;ilBox.blur();importText(t,'IL converted to Ladder')});
 $('openFile').addEventListener('click',()=>$('fileIn').click());
-$('fileIn').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;if(f.size>2*1024*1024){toast(`ไฟล์ ${f.name} มีขนาดเกิน 2 MB ซึ่งไม่ใช่ขนาดปกติของไฟล์ CSV จาก GX Works2`,'bad');e.target.value='';return}const buf=await f.arrayBuffer();importText(decodeFile(buf),'นำเข้า '+f.name);e.target.value=''});
+$('fileIn').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;if(f.size>2*1024*1024){toast(`${f.name} is larger than 2 MB, which is too large for a GX Works2 CSV file`,'bad');e.target.value='';return}const buf=await f.arrayBuffer();importText(decodeFile(buf),'Imported '+f.name);e.target.value=''});
 
 /* ================= Bridge to GX Simulator2 / real PLC ================= */
 let ws=null,linkY=Array(8).fill(false),lastSentX='',lastSendT=0;
@@ -2198,17 +2199,17 @@ function setLink(cls,msg){const el=$('linkSt');el.className='linkst '+(cls||'');
 function linkConnect(){
   if(ws){try{ws.close()}catch(e){}return}
   const url=$('wsUrl').value.trim();
-  if(!/^wss?:\/\/[^\s]+$/i.test(url)){setLink('bad','ที่อยู่ Bridge ต้องขึ้นต้นด้วย ws:// เช่น ws://localhost:8765');return}
-  try{ws=new WebSocket(url)}catch(e){ws=null;setLink('bad','ไม่สามารถเปิดการเชื่อมต่อ: '+(e.message||e)+(inFrame?' หน้าเว็บออนไลน์ไม่อนุญาตให้เชื่อมต่อ localhost กรุณาเปิดไฟล์ .html จากเครื่องของคุณ':''));return}
-  setLink('','กำลังเชื่อมต่อ '+url+' …');$('btnLink').textContent='ยกเลิก';
+  if(!/^wss?:\/\/[^\s]+$/i.test(url)){setLink('bad','The Bridge address must start with ws://, for example ws://localhost:8765');return}
+  try{ws=new WebSocket(url)}catch(e){ws=null;setLink('bad','Could not open the connection: '+(e.message||e)+(inFrame?' The online page cannot reach localhost. Open the .html file from your computer':''));return}
+  setLink('','Connecting to '+url+' …');$('btnLink').textContent='Cancel';
   const to=setTimeout(()=>{if(ws&&ws.readyState!==1)try{ws.close()}catch(e){}},4000);
-  ws.onopen=()=>{clearTimeout(to);stopPLC(true);source='bridge';linkOk=true;lastSentX='';ws.send(JSON.stringify({type:'hello',client:'plc-training-kit-sim'}));setLink('ok','เชื่อมต่อ Bridge แล้ว กำลังรอสถานะจาก PLC…');$('btnLink').textContent='ตัดการเชื่อมต่อ';renderLad()};
+  ws.onopen=()=>{clearTimeout(to);stopPLC(true);source='bridge';linkOk=true;lastSentX='';ws.send(JSON.stringify({type:'hello',client:'plc-training-kit-sim'}));setLink('ok','Bridge connected. Waiting for the PLC status…');$('btnLink').textContent='Disconnect';renderLad()};
   ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}
     if(m.type==='outputs'&&Array.isArray(m.y)){linkY=Array.from({length:8},(_,i)=>!!m.y[i])}
-    else if(m.type==='status')setLink(m.ok?'ok':'bad',(m.ok?'เชื่อมต่อแล้ว · ':'Bridge แจ้งปัญหา · ')+(m.msg||''));
+    else if(m.type==='status')setLink(m.ok?'ok':'bad',(m.ok?'Connected: ':'Bridge reported a problem: ')+(m.msg||''));
   };
-  ws.onclose=()=>{clearTimeout(to);const was=linkOk;ws=null;linkOk=false;source='sim';linkY=Array(8).fill(false);$('btnLink').textContent='เชื่อมต่อ';
-    setLink(was?'':'bad',was?'ตัดการเชื่อมต่อแล้ว กด Run เพื่อกลับไปใช้โปรแกรมในเว็บ':'ไม่สามารถเชื่อมต่อได้ กรุณาตรวจสอบว่า gx_bridge.py กำลังทำงานอยู่'+(inFrame?' และเปิดหน้านี้จากไฟล์ .html ในเครื่อง (หน้าเว็บออนไลน์ไม่อนุญาตให้เชื่อมต่อ localhost)':''))};
+  ws.onclose=()=>{clearTimeout(to);const was=linkOk;ws=null;linkOk=false;source='sim';linkY=Array(8).fill(false);$('btnLink').textContent='Connect';
+    setLink(was?'':'bad',was?'Disconnected. Press Run to use the program in the page again':'Could not connect. Check that gx_bridge.py is running'+(inFrame?' and that this page is opened from the .html file on your computer (the online page cannot reach localhost)':''))};
   ws.onerror=()=>{};
 }
 function linkTick(){
@@ -2226,7 +2227,7 @@ function buildIO(){
     const el=document.createElement(isBtn?'button':'div');
     el.className='iorow';el.title=d.n+' · '+d.d;el.innerHTML=`<span class="led"></span><b>${d.n}</b><span class="d">${d.d}</span>`;
     if(isBtn){
-      el.type='button';el.title='กดค้างเพื่อจ่ายสัญญาณ';
+      el.type='button';el.title='Press and hold to apply the signal';
       const on=()=>{sim.btn[d.n]=true},off=()=>{sim.btn[d.n]=false};
       el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId)}catch(_){};on()});
       ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,off));
@@ -2251,8 +2252,8 @@ const onoff=v=>`<span class="tbool ${v?'t':'f'}">${v?'ON':'OFF'}</span>`;
 $('addM').addEventListener('click',()=>spawn(true,true));
 $('addP').addEventListener('click',()=>spawn(false,true));
 $('auto').addEventListener('change',e=>{sim.auto=e.target.checked;sim.feedT=2600});
-$('direct').addEventListener('change',e=>{sim.direct=e.target.checked;sim.feedT=2600;store.set('plcsim.direct',e.target.checked?'1':'');toast(e.target.checked?'ชิ้นงานใหม่จะวางที่ต้นสายพานโดยตรง (ไม่ผ่านหัวจับ)':'ชิ้นงานใหม่จะวางที่จุดรับชิ้นงาน (X2) เพื่อให้หัวจับหยิบ','ok')});
-$('resetSim').addEventListener('click',()=>{resetSim();toast('รีเซ็ตเครื่องจำลองแล้ว','ok')});
+$('direct').addEventListener('change',e=>{sim.direct=e.target.checked;sim.feedT=2600;store.set('plcsim.direct',e.target.checked?'1':'');toast(e.target.checked?'New parts are placed at the start of the conveyor (no gripper)':'New parts are placed at the pick point (X2) for the gripper','ok')});
+$('resetSim').addEventListener('click',()=>{resetSim();toast('Simulator reset','ok')});
 function setMTab(t){
   document.body.dataset.mtab=t;store.set('plcsim.mtab',t);
   $('tabProg').setAttribute('aria-selected',t==='prog');$('tabMach').setAttribute('aria-selected',t==='mach');
@@ -2267,7 +2268,7 @@ function updateUI(){
   IO_Y.forEach((y,i)=>ioEls[y.n].classList.toggle('on',!!sim.Y[i]));
   const st=source==='bridge'?'link':plcErr&&!running?'err':running?'run':'stop';
   if(st!==lastUI){$('pill').className='pill'+(st==='stop'?'':' '+st);$('pillTxt').textContent={link:'LINK · GX',err:'ERROR',run:'RUN',stop:'STOP'}[st];lastUI=st}
-  $('scanInfo').textContent=source==='bridge'?'ควบคุมโดย GX Simulator2 / PLC':`scan ${scanCount.toLocaleString()} · ${(plcTime/1000).toFixed(1)} s`;
+  $('scanInfo').textContent=source==='bridge'?'Controlled by GX Simulator2 / PLC':`scan ${scanCount.toLocaleString()} · ${(plcTime/1000).toFixed(1)} s`;
   $('sOk').textContent=sim.stats.ok;$('sNg').textContent=sim.stats.ng;$('sDrop').textContent=sim.stats.drop;
 }
 
@@ -2277,12 +2278,12 @@ function octStr(n){return n.toString(8)}
 /* ---- Siemens STL (S7-300/400 style) ---- */
 function stlAddr(tok){
   const s=tok.toUpperCase();let m;
-  if((m=/^%?[IE](\d+)\.([0-7])$/.exec(s))){const n=+m[1]*8+ +m[2];if(n>=64)throw `${tok} เกินช่วง`;return 'X'+octStr(n)}
-  if((m=/^%?[QA](\d+)\.([0-7])$/.exec(s))){const n=+m[1]*8+ +m[2];if(n>=64)throw `${tok} เกินช่วง`;return 'Y'+octStr(n)}
+  if((m=/^%?[IE](\d+)\.([0-7])$/.exec(s))){const n=+m[1]*8+ +m[2];if(n>=64)throw `${tok} is out of range`;return 'X'+octStr(n)}
+  if((m=/^%?[QA](\d+)\.([0-7])$/.exec(s))){const n=+m[1]*8+ +m[2];if(n>=64)throw `${tok} is out of range`;return 'Y'+octStr(n)}
   if((m=/^%?M(\d+)\.([0-7])$/.exec(s)))return 'M'+(+m[1]*8+ +m[2]);
   if((m=/^T(\d+)$/.exec(s)))return 'T'+m[1];
   if((m=/^[CZ](\d+)$/.exec(s)))return 'C'+m[1];
-  throw `ที่อยู่ '${tok.slice(0,20)}' ไม่รองรับ (ใช้ I0.0 Q0.0 M0.0 T1 C1)`;
+  throw `Address '${tok.slice(0,20)}' is not supported (use I0.0 Q0.0 M0.0 T1 C1)`;
 }
 function s5t(tok){
   const m=/^S5T#(.+)$/i.exec(tok);if(!m)return null;let ms=0,ok=false;
@@ -2301,7 +2302,7 @@ function stlToRungs(text){
     if(/^(NETWORK|TITLE|ORGANIZATION_BLOCK|END_ORGANIZATION_BLOCK|BEGIN)\b/i.test(raw)){if(/^NETWORK/i.test(raw)){fin();terms=[];chain=[];fc=true}continue}
     raw=raw.replace(/;$/,'').trim();
     const tk=raw.split(/\s+/),op=tk[0].toUpperCase(),arg=tk[1];
-    const err=m=>{throw `บรรทัด ${i+1} (${op}): ${m}`};
+    const err=m=>{throw `Line ${i+1} (${op}): ${m}`};
     try{
       const startLogic=()=>{if(fc){if(stack.length===0){fin()}terms=[];chain=[];fc=false}};
       if(['A','AN','O','ON'].includes(op)&&arg){
@@ -2311,31 +2312,31 @@ function stlToRungs(text){
         continue;
       }
       if(/^(A|AN|O|ON)\($/.test(op)||(['A','AN','O','ON'].includes(op)&&tk[1]==='(')){
-        const o=op.replace('(','');if(o.endsWith('N'))err('ยังไม่รองรับ AN( และ ON( ให้เขียนแยกเป็น AN / ON ทีละตัว');
+        const o=op.replace('(','');if(o.endsWith('N'))err('AN( and ON( are not supported; write separate AN / ON lines');
         startLogic();stack.push({terms,chain,o});terms=[];chain=[];continue;
       }
-      if(op===')'){if(!stack.length)err('วงเล็บปิดเกิน');const inner=expr();const s=stack.pop();terms=s.terms;chain=s.chain;
-        if(!inner)err('ในวงเล็บไม่มีเงื่อนไข');
+      if(op===')'){if(!stack.length)err('Too many closing brackets');const inner=expr();const s=stack.pop();terms=s.terms;chain=s.chain;
+        if(!inner)err('Empty brackets');
         if(s.o==='A')chain.push(inner);else{if(chain.length)terms.push(andOf(chain));chain=[inner]}continue}
       if(op==='O'&&!arg){if(chain.length)terms.push(andOf(chain));chain=[];continue}
       if(op==='L'){const ms=s5t(arg||'');if(ms!=null){preset='K'+Math.max(0,Math.round(ms/100));continue}
-        const m=/^C#(\d+)$/i.exec(arg||'')||/^(\d+)$/.exec(arg||'');if(m){preset='K'+m[1];continue}err('L ใช้กับ S5T#2S หรือ C#5')}
+        const m=/^C#(\d+)$/i.exec(arg||'')||/^(\d+)$/.exec(arg||'');if(m){preset='K'+m[1];continue}err('L works with S5T#2S or C#5')}
       if(['=','S','R','SD','CU'].includes(op)){
-        if(!arg)err('ต้องระบุที่อยู่');if(stack.length)err('ยังไม่ปิดวงเล็บ');
-        const e=expr();if(!e)err('ไม่มีเงื่อนไขก่อนหน้า');
+        if(!arg)err('An address is required');if(stack.length)err('Unclosed bracket');
+        const e=expr();if(!e)err('No condition before this instruction');
         const a=stlAddr(arg);let el;
         if(op==='=')el={t:'OUT',args:[a]};
         else if(op==='S')el={t:'SET',args:[a]};
         else if(op==='R')el={t:'RST',args:[a]};
-        else if(op==='SD'){if(a[0]!=='T')err('SD ใช้กับไทเมอร์ T');if(!preset)err('ต้อง L S5T#... ก่อน SD');el={t:'OUT',args:[a,preset]}}
-        else{if(a[0]!=='C')err('CU ใช้กับเคาน์เตอร์ C');if(!preset)err('ต้อง L C#... ก่อน CU');el={t:'OUT',args:[a,preset]}}
-        const chk=parseCmd(elText(el),'OUT');if(!chk||chk.kind!=='o')err('คำสั่งไม่ถูกต้อง');
+        else if(op==='SD'){if(a[0]!=='T')err('SD works with timers (T)');if(!preset)err('Load L S5T#... before SD');el={t:'OUT',args:[a,preset]}}
+        else{if(a[0]!=='C')err('CU works with counters (C)');if(!preset)err('Load L C#... before CU');el={t:'OUT',args:[a,preset]}}
+        const chk=parseCmd(elText(el),'OUT');if(!chk||chk.kind!=='o')err('Invalid instruction');
         cur.outs.push({expr:e,el});fc=true;continue;
       }
       if(['BE','BEU','BEC'].includes(op))break;
-      if(['FP','FN','NOT','X','XN','SET','CLR','SE','SS','SF','SP','CD'].includes(op))err('คำสั่งนี้ยังไม่รองรับในเครื่องจำลอง');
-      err('ไม่รู้จักคำสั่ง');
-    }catch(e){throw String(e).startsWith('บรรทัด')?e:`บรรทัด ${i+1} (${op}): ${e.message||e}`}
+      if(['FP','FN','NOT','X','XN','SET','CLR','SE','SS','SF','SP','CD'].includes(op))err('This instruction is not supported by the simulator');
+      err('Unknown instruction');
+    }catch(e){throw String(e).startsWith('Line')?e:`Line ${i+1} (${op}): ${e.message||e}`}
   }
   fin();
   return rungs;
@@ -2343,15 +2344,15 @@ function stlToRungs(text){
 /* ---- Allen-Bradley (RSLogix 500 neutral rung text) ---- */
 function abAddr(tok,want){
   const s=tok.trim().toUpperCase();let m;
-  if((m=/^I:\d+\/(\d+)$/.exec(s))){const n=+m[1];if(n>=64)throw `${tok} เกินช่วง`;return 'X'+octStr(n)}
-  if((m=/^O:\d+\/(\d+)$/.exec(s))){const n=+m[1];if(n>=64)throw `${tok} เกินช่วง`;return 'Y'+octStr(n)}
+  if((m=/^I:\d+\/(\d+)$/.exec(s))){const n=+m[1];if(n>=64)throw `${tok} is out of range`;return 'X'+octStr(n)}
+  if((m=/^O:\d+\/(\d+)$/.exec(s))){const n=+m[1];if(n>=64)throw `${tok} is out of range`;return 'Y'+octStr(n)}
   if((m=/^B3:(\d+)\/(\d+)$/.exec(s)))return 'M'+(+m[1]*16+ +m[2]);
   if((m=/^B3\/(\d+)$/.exec(s)))return 'M'+m[1];
-  if((m=/^T4:(\d+)(?:\.(DN|EN|TT))?$/.exec(s))){if(m[2]&&m[2]!=='DN')throw `${tok}: รองรับเฉพาะบิต .DN`;return 'T'+m[1]}
-  if((m=/^C5:(\d+)(?:\.(DN|CU))?$/.exec(s))){if(m[2]&&m[2]!=='DN')throw `${tok}: รองรับเฉพาะบิต .DN`;return 'C'+m[1]}
+  if((m=/^T4:(\d+)(?:\.(DN|EN|TT))?$/.exec(s))){if(m[2]&&m[2]!=='DN')throw `${tok}: only the .DN bit is supported`;return 'T'+m[1]}
+  if((m=/^C5:(\d+)(?:\.(DN|CU))?$/.exec(s))){if(m[2]&&m[2]!=='DN')throw `${tok}: only the .DN bit is supported`;return 'C'+m[1]}
   if((m=/^N7:(\d+)$/.exec(s)))return 'D'+m[1];
   if(want==='word'&&/^-?\d+$/.test(s))return 'K'+s;
-  throw `ที่อยู่ '${tok.slice(0,20)}' ไม่รองรับ (ใช้ I:0/0 O:0/0 B3:0/0 T4:0 C5:0 N7:0)`;
+  throw `Address '${tok.slice(0,20)}' is not supported (use I:0/0 O:0/0 B3:0/0 T4:0 C5:0 N7:0)`;
 }
 const AB_CMP={EQU:'=',NEQ:'<>',GRT:'>',LES:'<',GEQ:'>=',LEQ:'<='};
 function abToRungs(text){
@@ -2362,9 +2363,9 @@ function abToRungs(text){
     raw=raw.replace(/^SOR\b/i,'').replace(/\bEOR$/i,'').trim();if(!raw)continue;
     const toks=[...raw.matchAll(/([A-Za-z]{2,4})\s*(?:\(([^)]*)\))?/g)].map(m=>({op:m[1].toUpperCase(),args:m[2]!=null?m[2].split(',').map(x=>x.trim()):[]}));
     let p=0;const outs=[];
-    const err=m=>{throw `บรรทัด ${i+1}: ${m}`};
+    const err=m=>{throw `Line ${i+1}: ${m}`};
     function seq(){const items=[];while(p<toks.length&&toks[p].op!=='NXB'&&toks[p].op!=='BND'){const t=toks[p++];
-      if(t.op==='BST'){const legs=[seq()];while(p<toks.length&&toks[p].op==='NXB'){p++;legs.push(seq())}if(toks[p]?.op!=='BND')err('BST ไม่มี BND ปิด');p++;items.push({br:legs})}
+      if(t.op==='BST'){const legs=[seq()];while(p<toks.length&&toks[p].op==='NXB'){p++;legs.push(seq())}if(toks[p]?.op!=='BND')err('BST without a closing BND');p++;items.push({br:legs})}
       else items.push({ins:t})}return items}
     function run(items,start){
       let cur=start;
@@ -2372,26 +2373,26 @@ function abToRungs(text){
         if(it.br){const ends=it.br.map(l=>run(l,cur));cur=mkOrF(ends);continue}
         const {op,args}=it.ins;
         try{
-          if(op==='XIC'||op==='XIO'){if(args.length!==1)throw `${op} ต้องมี 1 ที่อยู่`;cur=mkAnd(cur||T_TRUE,leafEl(op==='XIC'?'NO':'NC',abAddr(args[0])));continue}
-          if(AB_CMP[op]){if(args.length!==2)throw `${op} ต้องมี 2 ค่า`;cur=mkAnd(cur||T_TRUE,{t:'CMP',op:AB_CMP[op],a:abAddr(args[0],'word'),b:abAddr(args[1],'word')});continue}
+          if(op==='XIC'||op==='XIO'){if(args.length!==1)throw `${op} takes one address`;cur=mkAnd(cur||T_TRUE,leafEl(op==='XIC'?'NO':'NC',abAddr(args[0])));continue}
+          if(AB_CMP[op]){if(args.length!==2)throw `${op} takes two values`;cur=mkAnd(cur||T_TRUE,{t:'CMP',op:AB_CMP[op],a:abAddr(args[0],'word'),b:abAddr(args[1],'word')});continue}
           let el=null;
           if(op==='OTE')el={t:'OUT',args:[abAddr(args[0])]};
           else if(op==='OTL')el={t:'SET',args:[abAddr(args[0])]};
           else if(op==='OTU')el={t:'RST',args:[abAddr(args[0])]};
           else if(op==='RES')el={t:'RST',args:[abAddr(args[0])]};
-          else if(op==='TON'){if(args.length<3)throw 'TON(T4:0,1.0,20,0)';const base=parseFloat(args[1]),pre=parseFloat(args[2]);if(!(base>0)||!(pre>=0))throw 'ค่า time base / preset ไม่ถูกต้อง';el={t:'OUT',args:[abAddr(args[0]),'K'+Math.round(pre*base/0.1)]}}
+          else if(op==='TON'){if(args.length<3)throw 'TON(T4:0,1.0,20,0)';const base=parseFloat(args[1]),pre=parseFloat(args[2]);if(!(base>0)||!(pre>=0))throw 'Invalid time base or preset';el={t:'OUT',args:[abAddr(args[0]),'K'+Math.round(pre*base/0.1)]}}
           else if(op==='CTU'){if(args.length<2)throw 'CTU(C5:0,10,0)';el={t:'OUT',args:[abAddr(args[0]),'K'+parseInt(args[1],10)]}}
-          else if(op==='MOV'){if(args.length!==2)throw 'MOV(ต้นทาง,N7:0)';el={t:'MOV',args:[abAddr(args[0],'word'),abAddr(args[1],'word')]}}
-          else throw `ยังไม่รองรับคำสั่ง ${op}`;
-          const chk=parseCmd(elText(el),'OUT');if(!chk||chk.kind!=='o')throw 'คำสั่งไม่ถูกต้อง';
+          else if(op==='MOV'){if(args.length!==2)throw 'MOV(source,N7:0)';el={t:'MOV',args:[abAddr(args[0],'word'),abAddr(args[1],'word')]}}
+          else throw `${op} is not supported`;
+          const chk=parseCmd(elText(el),'OUT');if(!chk||chk.kind!=='o')throw 'Invalid instruction';
           outs.push({expr:cur||T_TRUE,el});
         }catch(e){err(`${op}: ${e.message||e}`)}
       }
       return cur;
     }
-    const items=seq();if(p<toks.length)err('มี NXB หรือ BND เกิน');
+    const items=seq();if(p<toks.length)err('Too many NXB or BND');
     run(items,null);
-    if(!outs.length)err('rung นี้ไม่มีเอาต์พุต (OTE OTL OTU TON CTU MOV RES)');
+    if(!outs.length)err('This rung has no output (OTE OTL OTU TON CTU MOV RES)');
     rungs.push({outs});
   }
   return rungs;
@@ -2400,7 +2401,7 @@ function dialectRungs(text,dialect){
   if(dialect==='stl')return stlToRungs(text);
   if(dialect==='ab')return abToRungs(text);
   const ins=ilLines(text);if(!ins.length)return [];
-  if(ins.length>8000)throw `โปรแกรมยาว ${ins.length} คำสั่ง เกินที่รองรับ`;
+  if(ins.length>8000)throw `The program has ${ins.length} instructions, more than supported`;
   return ilToRungs(ins);
 }
 /* el-tree rungs -> runnable rungs for the ladder engine */
@@ -2411,9 +2412,9 @@ function runnableRungs(rungs){
 }
 let ILC={rungs:[],src:[]};
 const IL_EXAMPLES=[
-{name:'MELSEC IL: วงจร Start/Stop แบบรักษาสภาวะ',dialect:'mel',text:LAD_EXAMPLES[0].il},
-{name:'MELSEC IL: หยิบวางและคัดแยกชิ้นงานโลหะ',dialect:'mel',text:LAD_EXAMPLES[2].il},
-{name:'Siemens STL: Start/Stop และคัดแยกชิ้นงานโลหะ',dialect:'stl',text:`NETWORK 1 // Start/Stop latch -> M0.0
+{name:'MELSEC IL: Start/Stop latching circuit',dialect:'mel',text:LAD_EXAMPLES[0].il},
+{name:'MELSEC IL: Pick, place and reject metal parts',dialect:'mel',text:LAD_EXAMPLES[2].il},
+{name:'Siemens STL: Start/Stop and reject metal parts',dialect:'stl',text:`NETWORK 1 // Start/Stop latch -> M0.0
 A(
 O  I0.0      // START
 O  M0.0
@@ -2456,7 +2457,7 @@ AN T2
 NETWORK 8
 A  T2
 R  M1.0`},
-{name:'Allen-Bradley: Start/Stop และคัดแยกชิ้นงานโลหะ',dialect:'ab',text:`// RSLogix 500 rung text, one rung per line
+{name:'Allen-Bradley: Start/Stop and reject metal parts',dialect:'ab',text:`// RSLogix 500 rung text, one rung per line
 SOR BST XIC(I:0/0) NXB XIC(B3:0/0) BND XIO(I:0/1) OTE(B3:0/0) EOR
 SOR XIC(B3:0/0) BST OTE(O:0/7) NXB OTE(O:0/0) BND EOR
 SOR XIO(B3:0/0) OTE(O:0/2) EOR
@@ -2466,16 +2467,16 @@ SOR XIC(B3:0/1) TON(T4:0,0.1,14,0) EOR
 SOR XIC(T4:0.DN) TON(T4:1,0.1,4,0) EOR
 SOR XIC(T4:0.DN) XIO(T4:1.DN) OTE(O:0/3) EOR
 SOR XIC(T4:1.DN) OTU(B3:0/1) EOR`},
-{name:'โปรแกรมใหม่ (ว่างเปล่า)',dialect:'mel',text:''}];
+{name:'New program (empty)',dialect:'mel',text:''}];
 const IL_HELP={
-  mel:'MELSEC IL: LD X0 / ANI X1 / OUT Y3 / OUT T0 K20 / SET M10 (ใช้ X Y M T C D เหมือน GX Works2)',
-  stl:'Siemens STL: A I0.0 / AN I0.1 / O / A( ... ) / = Q0.3 / S / R / L S5T#2S แล้ว SD T1 · I0.0 = X0, Q0.3 = Y3, M0.0 = M0',
+  mel:'MELSEC IL: LD X0 / ANI X1 / OUT Y3 / OUT T0 K20 / SET M10 (X Y M T C D as in GX Works2)',
+  stl:'Siemens STL: A I0.0 / AN I0.1 / O / A( ... ) / = Q0.3 / S / R / L S5T#2S then SD T1. I0.0 = X0, Q0.3 = Y3, M0.0 = M0',
   ab:'Allen-Bradley: XIC(I:0/0) XIO(I:0/1) BST ... NXB ... BND OTE(O:0/3) OTL OTU TON(T4:0,1.0,2,0) CTU RES · I:0/0 = X0, O:0/3 = Y3, B3:0/0 = M0'
 };
 
 /* ================= SFC (Sequential Function Chart) ================= */
 const SFC_EXAMPLES=[
-{name:'SFC: หยิบวางและคัดแยกชิ้นงานโลหะ (3 ลำดับขนาน)',model:{steps:[
+{name:'SFC: Pick, place and reject metal parts (3 parallel sequences)',model:{steps:[
   {id:1,name:'Stopped',init:true,actions:[{q:'N',v:'Y2'}]},
   {id:2,name:'Running',actions:[{q:'N',v:'Y7'},{q:'N',v:'Y0'}]},
   {id:3,name:'Idle',init:true,actions:[]},
@@ -2505,7 +2506,7 @@ const SFC_EXAMPLES=[
   {id:12,from:12,to:13,cond:'Running.X AND X3'},
   {id:13,from:13,to:14,cond:'Travel.T >= T#1400MS'},
   {id:14,from:14,to:12,cond:'Kick.T >= T#400MS'}]}},
-{name:'SFC: ไฟวิ่ง 3 ดวง',model:{steps:[
+{name:'SFC: Running lights (3 lamps)',model:{steps:[
   {id:1,name:'Idle',init:true,actions:[]},
   {id:2,name:'Red',actions:[{q:'N',v:'Y2'}]},
   {id:3,name:'Yellow',actions:[{q:'N',v:'Y1'}]},
@@ -2516,7 +2517,7 @@ const SFC_EXAMPLES=[
   {id:3,from:3,to:4,cond:'Yellow.T >= T#1S'},
   {id:4,from:4,to:2,cond:'Green.T >= T#1S AND NOT X1'},
   {id:5,from:4,to:1,cond:'X1'}]}},
-{name:'โปรแกรมใหม่ (ว่างเปล่า)',model:{steps:[{id:1,name:'Init',init:true,actions:[]}],trans:[]}}];
+{name:'New program (empty)',model:{steps:[{id:1,name:'Init',init:true,actions:[]}],trans:[]}}];
 let SFC=JSON.parse(JSON.stringify(SFC_EXAMPLES[0].model));
 let sfcSel=null,sfcMap=[],sfcDirty=false;
 const sfcSvg=$('sfc'),sfcInsp=$('sfcInsp');
@@ -2536,17 +2537,17 @@ function sfcToST(m){
   const L=[],map=[];const push=(s,ref)=>{L.push(s);map.push(ref||null)};
   const names=new Set();
   for(const s of m.steps){
-    if(!/^[A-Za-z_][A-Za-z0-9_]{0,24}$/.test(s.name))throw {msg:`ชื่อขั้น '${s.name}' ต้องเป็นตัวอักษรอังกฤษ ตัวเลข หรือ _ และไม่ขึ้นต้นด้วยตัวเลข`,ref:{s:s.id}};
-    const u=s.name.toUpperCase();if(names.has(u))throw {msg:`ชื่อขั้น '${s.name}' ซ้ำ`,ref:{s:s.id}};names.add(u);
+    if(!/^[A-Za-z_][A-Za-z0-9_]{0,24}$/.test(s.name))throw {msg:`Step name '${s.name}' must use letters, digits or _ and must not start with a digit`,ref:{s:s.id}};
+    const u=s.name.toUpperCase();if(names.has(u))throw {msg:`Step name '${s.name}' is duplicated`,ref:{s:s.id}};names.add(u);
   }
-  if(!m.steps.some(s=>s.init))throw {msg:'ต้องมีขั้นเริ่มต้น (Initial step) อย่างน้อย 1 ขั้น',ref:{s:m.steps[0].id}};
+  if(!m.steps.some(s=>s.init))throw {msg:'At least one initial step is required',ref:{s:m.steps[0].id}};
   const flags=new Set();
   for(const s of m.steps)for(const a of s.actions){
     const v=String(a.v||'').trim().toUpperCase();
-    if(!v)throw {msg:`ขั้น ${s.name}: Action ยังไม่มีชื่อเอาต์พุต`,ref:{s:s.id}};
+    if(!v)throw {msg:`Step ${s.name}: an action has no output name`,ref:{s:s.id}};
     if(/^Y[0-7]$/.test(v))continue;
-    if(/^X[0-7]$/.test(v))throw {msg:`ขั้น ${s.name}: ${v} เป็นอินพุต สั่งไม่ได้`,ref:{s:s.id}};
-    if(!/^[A-Z_][A-Z0-9_]{0,24}$/.test(v))throw {msg:`ขั้น ${s.name}: ชื่อ '${a.v}' ไม่ถูกต้อง`,ref:{s:s.id}};
+    if(/^X[0-7]$/.test(v))throw {msg:`Step ${s.name}: ${v} is an input and cannot be set`,ref:{s:s.id}};
+    if(!/^[A-Z_][A-Z0-9_]{0,24}$/.test(v))throw {msg:`Step ${s.name}: name '${a.v}' is not valid`,ref:{s:s.id}};
     flags.add(v);
   }
   const byId=new Map(m.steps.map(s=>[s.id,s]));
@@ -2574,7 +2575,7 @@ function sfcToST(m){
   return {src:L.join('\n'),map};
 }
 function sfcSave(){store.set('plcsim.sfc',JSON.stringify(SFC))}
-function sfcChanged(){sfcDirty=true;sfcSave();renderSfc();renderSfcInsp();if(running&&lang==='SFC'){startPLC();setConsole('ok','แก้ไข SFC แล้ว เริ่มทำงานใหม่จากขั้นเริ่มต้น')}}
+function sfcChanged(){sfcDirty=true;sfcSave();renderSfc();renderSfcInsp();if(running&&lang==='SFC'){startPLC();setConsole('ok','SFC edited. Restarted from the initial step')}}
 function sfcActive(s){if(!(running&&lang==='SFC'&&stRt))return null;const n=sfcVar(s);return {x:!!stRt.mem[n+'_X'],t:stRt.mem[n+'_T']||0}}
 function renderSfc(){
   const order=SFC.steps,idx=new Map(order.map((s,i)=>[s.id,i]));
@@ -2610,14 +2611,14 @@ function renderSfc(){
       s+=`<line x1="${tx}" y1="${by+16}" x2="${tx}" y2="${ty+(next?SG.ROW-SG.H-44:22)}" ${S}/>`;
       s+=`<line x1="${tx-12}" y1="${ty}" x2="${tx+12}" y2="${ty}" stroke="var(--ink)" stroke-width="3"/>`;
       s+=`<text x="${tx+18}" y="${ty+4}" font-size="11.5" font-family="var(--f-code)" fill="var(--ink)">${svgEsc((()=>{const lim=outs.length>1?19:30;return t.cond.length>lim?t.cond.slice(0,lim-1)+'…':t.cond||'FALSE'})())}</text>`;
-      if(!next){s+=`<path d="M${tx-5} ${ty+16} L${tx} ${ty+24} L${tx+5} ${ty+16}" fill="var(--ink)"/><text x="${tx+10}" y="${ty+30}" font-size="11" font-weight="600" font-family="var(--f-code)" fill="var(--muted)">ไป ${svgEsc(sfcStepName(t.to))}</text>`}
+      if(!next){s+=`<path d="M${tx-5} ${ty+16} L${tx} ${ty+24} L${tx+5} ${ty+16}" fill="var(--ink)"/><text x="${tx+10}" y="${ty+30}" font-size="11" font-weight="600" font-family="var(--f-code)" fill="var(--muted)">to ${svgEsc(sfcStepName(t.to))}</text>`}
       if(selT)s+=`<rect x="${tx-18}" y="${ty-16}" width="${Math.min(SG.COL-8,184)}" height="32" fill="none" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 3"/>`;
       s+='</g>';
     });
   });
   const W=Math.max(560,SG.X+SG.W/2+(maxCols-1)*SG.COL+260),H=24+order.length*SG.ROW+20;
   sfcSvg.setAttribute('width',W);sfcSvg.setAttribute('height',H);sfcSvg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  sfcSvg.setAttribute('aria-label',`SFC ${SFC.steps.length} ขั้น ${SFC.trans.length} ทรานซิชัน`);
+  sfcSvg.setAttribute('aria-label',`SFC, ${SFC.steps.length} steps, ${SFC.trans.length} transitions`);
   sfcSvg.innerHTML=s;
 }
 const esc2=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
@@ -2625,17 +2626,17 @@ function renderSfcInsp(){
   let h='';
   if(sfcSel&&sfcSel.s!=null){
     const st=SFC.steps.find(s=>s.id===sfcSel.s);if(!st){sfcSel=null;return renderSfcInsp()}
-    h+=`<div class="insp-row"><label class="fld">ชื่อขั้น <input type="text" id="sfName" value="${esc2(st.name)}" maxlength="25" spellcheck="false"></label><label class="chk"><input type="checkbox" id="sfInit" ${st.init?'checked':''}> ขั้นเริ่มต้น</label></div>`;
-    h+=`<div class="insp-acts">${st.actions.map((a,i)=>`<div class="insp-act"><select data-ai="${i}" aria-label="ชนิด Action"><option ${a.q==='N'?'selected':''}>N</option><option ${a.q==='S'?'selected':''}>S</option><option ${a.q==='R'?'selected':''}>R</option></select><input type="text" data-av="${i}" value="${esc2(a.v)}" maxlength="25" spellcheck="false" aria-label="เอาต์พุต"><button data-ad="${i}" aria-label="ลบ Action">ลบ</button></div>`).join('')||'<p class="insp-note">ยังไม่มี Action</p>'}</div>`;
-    h+=`<div class="insp-row"><button id="sfAddAct">+ Action</button><button id="sfAddNext">+ ขั้นถัดไป</button><button id="sfAddBr">+ ทางแยก</button><button class="stop" id="sfDel">ลบขั้นนี้</button></div>`;
-    h+=`<p class="insp-note">N = ทำงานเฉพาะขณะอยู่ในขั้นนี้, S = สั่งค้างไว้, R = สั่งยกเลิก · ระบุ Y0 ถึง Y7 หรือชื่อแฟล็กที่กำหนดเอง</p>`;
+    h+=`<div class="insp-row"><label class="fld">Step name <input type="text" id="sfName" value="${esc2(st.name)}" maxlength="25" spellcheck="false"></label><label class="chk"><input type="checkbox" id="sfInit" ${st.init?'checked':''}> Initial step</label></div>`;
+    h+=`<div class="insp-acts">${st.actions.map((a,i)=>`<div class="insp-act"><select data-ai="${i}" aria-label="Action qualifier"><option ${a.q==='N'?'selected':''}>N</option><option ${a.q==='S'?'selected':''}>S</option><option ${a.q==='R'?'selected':''}>R</option></select><input type="text" data-av="${i}" value="${esc2(a.v)}" maxlength="25" spellcheck="false" aria-label="Output"><button data-ad="${i}" aria-label="Delete action">Delete</button></div>`).join('')||'<p class="insp-note">No actions yet</p>'}</div>`;
+    h+=`<div class="insp-row"><button id="sfAddAct">+ Action</button><button id="sfAddNext">+ Next step</button><button id="sfAddBr">+ Branch</button><button class="stop" id="sfDel">Delete step</button></div>`;
+    h+=`<p class="insp-note">N = on only while in this step, S = set, R = reset. Use Y0 to Y7 or your own flag name</p>`;
   }else if(sfcSel&&sfcSel.t!=null){
     const t=SFC.trans.find(x=>x.id===sfcSel.t);if(!t){sfcSel=null;return renderSfcInsp()}
-    h+=`<div class="insp-row"><label class="fld wide">เงื่อนไขจาก ${esc2(sfcStepName(t.from))} <input type="text" id="stCond" value="${esc2(t.cond)}" spellcheck="false" maxlength="200"></label></div>`;
-    h+=`<div class="insp-row"><label class="fld">ไปขั้น <select id="stTo">${SFC.steps.map(s=>`<option value="${s.id}" ${s.id===t.to?'selected':''}>${esc2(s.name)}</option>`).join('')}</select></label><button id="stUp">เลื่อนลำดับขึ้น</button><button class="stop" id="stDel">ลบทรานซิชัน</button></div>`;
-    h+=`<p class="insp-note">เขียนแบบ ST เช่น <code>X2 AND NOT X3</code> หรือ <code>Check.T &gt;= T#300MS</code> · หากมีหลายทางจากขั้นเดียวกัน ระบบจะตรวจสอบทางซ้ายสุดก่อน</p>`;
+    h+=`<div class="insp-row"><label class="fld wide">Condition from ${esc2(sfcStepName(t.from))} <input type="text" id="stCond" value="${esc2(t.cond)}" spellcheck="false" maxlength="200"></label></div>`;
+    h+=`<div class="insp-row"><label class="fld">Go to step <select id="stTo">${SFC.steps.map(s=>`<option value="${s.id}" ${s.id===t.to?'selected':''}>${esc2(s.name)}</option>`).join('')}</select></label><button id="stUp">Move up</button><button class="stop" id="stDel">Delete transition</button></div>`;
+    h+=`<p class="insp-note">Written in ST, for example <code>X2 AND NOT X3</code> or <code>Check.T &gt;= T#300MS</code>. When a step has several branches, the leftmost is checked first</p>`;
   }else{
-    h+=`<p class="insp-note">คลิกขั้น (กล่อง) หรือทรานซิชัน (ขีดหนา) เพื่อแก้ไข · ขั้นที่กำลังทำงานจะแสดงด้วยสีเน้นพร้อมเวลาที่อยู่ในขั้น</p><div class="insp-row"><button id="sfAppend">+ ขั้นใหม่ต่อท้าย</button></div>`;
+    h+=`<p class="insp-note">Click a step (box) or a transition (thick bar) to edit it. The active step is highlighted with its elapsed time</p><div class="insp-row"><button id="sfAppend">+ Append step</button></div>`;
   }
   sfcInsp.innerHTML=h;
 }
@@ -2645,9 +2646,9 @@ sfcSvg.addEventListener('click',e=>{const g=e.target.closest('[data-sel]');if(!g
 sfcInsp.addEventListener('change',e=>{
   const t=e.target;
   if(sfcSel?.s!=null){const st=SFC.steps.find(s=>s.id===sfcSel.s);
-    if(t.id==='sfName'){const v=t.value.trim();if(!/^[A-Za-z_][A-Za-z0-9_]{0,24}$/.test(v)){toast('ชื่อขั้นใช้ A-Z 0-9 _ และไม่ขึ้นต้นด้วยตัวเลข','bad');t.value=st.name;return}
-      if(/^[XY][0-7]$/i.test(v)||KW.has(v.toUpperCase())){toast('ชื่อนี้ซ้ำกับ I/O หรือคำสงวน','bad');t.value=st.name;return}
-      if(SFC.steps.some(s=>s!==st&&s.name.toUpperCase()===v.toUpperCase())){toast('ชื่อขั้นซ้ำ','bad');t.value=st.name;return}
+    if(t.id==='sfName'){const v=t.value.trim();if(!/^[A-Za-z_][A-Za-z0-9_]{0,24}$/.test(v)){toast('Step names use A-Z 0-9 _ and do not start with a digit','bad');t.value=st.name;return}
+      if(/^[XY][0-7]$/i.test(v)||KW.has(v.toUpperCase())){toast('This name clashes with an I/O name or a keyword','bad');t.value=st.name;return}
+      if(SFC.steps.some(s=>s!==st&&s.name.toUpperCase()===v.toUpperCase())){toast('Duplicate step name','bad');t.value=st.name;return}
       const old=st.name;st.name=v;for(const tr of SFC.trans)tr.cond=tr.cond.replace(new RegExp('\\b'+old+'\\.(X|T)\\b','gi'),v+'.$1')}
     else if(t.id==='sfInit')st.init=t.checked;
     else if(t.dataset.ai!=null)st.actions[+t.dataset.ai].q=t.value;
@@ -2666,7 +2667,7 @@ sfcInsp.addEventListener('click',e=>{
     if(b.dataset.ad!=null){st.actions.splice(+b.dataset.ad,1);return sfcChanged()}
     if(b.id==='sfAddNext'){const s={id:nextId(SFC.steps),name:newStepName(),actions:[]};SFC.steps.splice(i+1,0,s);const t={id:nextId(SFC.trans),from:st.id,to:s.id,cond:'FALSE'};SFC.trans.unshift(t);sfcSel={t:t.id};return sfcChanged()}
     if(b.id==='sfAddBr'){const t={id:nextId(SFC.trans),from:st.id,to:SFC.steps[0].id,cond:'FALSE'};SFC.trans.push(t);sfcSel={t:t.id};return sfcChanged()}
-    if(b.id==='sfDel'){if(SFC.steps.length===1){toast('ต้องมีอย่างน้อย 1 ขั้น','warn');return}SFC.steps.splice(i,1);SFC.trans=SFC.trans.filter(t=>t.from!==st.id&&t.to!==st.id);if(!SFC.steps.some(s=>s.init))SFC.steps[0].init=true;sfcSel=null;return sfcChanged()}
+    if(b.id==='sfDel'){if(SFC.steps.length===1){toast('At least one step is required','warn');return}SFC.steps.splice(i,1);SFC.trans=SFC.trans.filter(t=>t.from!==st.id&&t.to!==st.id);if(!SFC.steps.some(s=>s.init))SFC.steps[0].init=true;sfcSel=null;return sfcChanged()}
   }
   if(sfcSel?.t!=null){const k=SFC.trans.findIndex(x=>x.id===sfcSel.t);
     if(b.id==='stDel'){SFC.trans.splice(k,1);sfcSel=null;return sfcChanged()}
@@ -2689,7 +2690,7 @@ const FBK={
 const FG={W:116,IOW:100,HEAD:22,ROW:22};
 const wp=(n,p)=>({n,p});
 const FBD_EXAMPLES=[
-{name:'FBD: Start/Stop และคัดแยกชิ้นงานโลหะ',model:{nodes:[
+{name:'FBD: Start/Stop and reject metal parts',model:{nodes:[
   {id:1,type:'IN',x:30,y:40,val:'X0'},{id:2,type:'IN',x:30,y:110,val:'X1'},{id:3,type:'SR',x:180,y:40},
   {id:4,type:'OUT',x:1000,y:30,val:'Y7'},{id:5,type:'OUT',x:1000,y:90,val:'Y0'},{id:6,type:'NOT',x:520,y:140},{id:7,type:'OUT',x:1000,y:150,val:'Y2'},
   {id:8,type:'IN',x:30,y:270,val:'X3'},{id:9,type:'AND',x:180,y:250},{id:10,type:'SR',x:340,y:250},
@@ -2701,11 +2702,11 @@ const FBD_EXAMPLES=[
   {from:wp(3,'Q1'),to:wp(9,'IN1')},{from:wp(8,'OUT'),to:wp(9,'IN2')},{from:wp(9,'OUT'),to:wp(10,'SET1')},{from:wp(14,'Q'),to:wp(10,'RESET')},
   {from:wp(10,'Q1'),to:wp(12,'IN')},{from:wp(11,'OUT'),to:wp(12,'PT')},{from:wp(12,'Q'),to:wp(14,'IN')},{from:wp(13,'OUT'),to:wp(14,'PT')},
   {from:wp(14,'Q'),to:wp(15,'IN')},{from:wp(12,'Q'),to:wp(16,'IN1')},{from:wp(15,'OUT'),to:wp(16,'IN2')},{from:wp(16,'OUT'),to:wp(17,'IN')}]}},
-{name:'FBD: นับชิ้นงานครบ 5 ชิ้นแล้วเปิดไฟสีเหลือง',model:{nodes:[
+{name:'FBD: Count 5 parts, then turn on the yellow lamp',model:{nodes:[
   {id:1,type:'IN',x:30,y:40,val:'X2'},{id:2,type:'IN',x:30,y:110,val:'X1'},{id:3,type:'IN',x:30,y:180,val:'5'},
   {id:4,type:'CTU',x:200,y:40},{id:5,type:'OUT',x:420,y:40,val:'Y1'},{id:6,type:'IN',x:30,y:290,val:'TRUE'},{id:7,type:'OUT',x:420,y:290,val:'Y7'}],
  wires:[{from:wp(1,'OUT'),to:wp(4,'CU')},{from:wp(2,'OUT'),to:wp(4,'RESET')},{from:wp(3,'OUT'),to:wp(4,'PV')},{from:wp(4,'Q'),to:wp(5,'IN')},{from:wp(6,'OUT'),to:wp(7,'IN')}]}},
-{name:'โปรแกรมใหม่ (ว่างเปล่า)',model:{nodes:[],wires:[]}}];
+{name:'New program (empty)',model:{nodes:[],wires:[]}}];
 let FBD=JSON.parse(JSON.stringify(FBD_EXAMPLES[0].model));
 let fbdSel=null,fbdDirty=false,fbdMap=[];
 const fbdSvg=$('fbd'),fbdWrap=$('fbdwrap'),fbdEdit=$('fbdEdit'),fbdEditIn=$('fbdEditIn');
@@ -2727,14 +2728,14 @@ function fbdToST(m){
   for(const n of m.nodes){
     if(!isIO(n))continue;
     const v=String(n.val||'').trim().toUpperCase();n.val=v;
-    if(!v)throw {msg:'มีกล่องตัวแปรที่ยังไม่ได้ระบุชื่อ (ดับเบิลคลิกเพื่อแก้ไข)',ref:{n:n.id}};
+    if(!v)throw {msg:'A variable box has no name (double-click to edit)',ref:{n:n.id}};
     if(n.type==='OUT'){
-      if(/^X[0-7]$/.test(v))throw {msg:`${v} เป็นอินพุต เขียนค่าไม่ได้`,ref:{n:n.id}};
-      if(!/^Y[0-7]$/.test(v)){if(!/^[A-Z_][A-Z0-9_]{0,24}$/.test(v)||KW.has(v))throw {msg:`ชื่อเอาต์พุต '${v}' ไม่ถูกต้อง`,ref:{n:n.id}};flags.add(v)}
+      if(/^X[0-7]$/.test(v))throw {msg:`${v} is an input and cannot be written`,ref:{n:n.id}};
+      if(!/^Y[0-7]$/.test(v)){if(!/^[A-Z_][A-Z0-9_]{0,24}$/.test(v)||KW.has(v))throw {msg:`Output name '${v}' is not valid`,ref:{n:n.id}};flags.add(v)}
     }else{
       if(/^[XY][0-7]$/.test(v)||v==='TRUE'||v==='FALSE'||/^-?\d+$/.test(v))continue;
-      if(/^(T|TIME)#[0-9A-Z_.]+$/.test(v)){try{tokenize(v)}catch(e){throw {msg:`เวลา '${v}' ไม่ถูกต้อง`,ref:{n:n.id}}}continue}
-      if(!/^[A-Z_][A-Z0-9_]{0,24}$/.test(v)||KW.has(v))throw {msg:`ตัวแปร '${v}' ไม่ถูกต้อง`,ref:{n:n.id}};
+      if(/^(T|TIME)#[0-9A-Z_.]+$/.test(v)){try{tokenize(v)}catch(e){throw {msg:`Time '${v}' is not valid`,ref:{n:n.id}}}continue}
+      if(!/^[A-Z_][A-Z0-9_]{0,24}$/.test(v)||KW.has(v))throw {msg:`Variable '${v}' is not valid`,ref:{n:n.id}};
       flags.add(v);
     }
   }
@@ -2808,9 +2809,9 @@ function renderFbd(){
     for(const p of FBK[n.type].outs){const q=pinPos(n,'o',p);s+=`<circle data-pin="${n.id}:o:${p}" cx="${q.x}" cy="${q.y}" r="5.5" fill="var(--ink)" stroke="var(--ink)" style="cursor:crosshair"/>`}
   }
   if(wireTmp.on)s+=`<path d="M${wireTmp.x1} ${wireTmp.y1} L${wireTmp.x2} ${wireTmp.y2}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4" fill="none"/>`;
-  if(!FBD.nodes.length)s+=`<text x="40" y="60" font-size="13" font-family="var(--f-ui)" fill="var(--muted)">ยังไม่มีบล็อก: กดปุ่มด้านบนเพื่อเพิ่มบล็อก แล้วลากจากจุดทึบ (เอาต์พุต) ไปยังจุดกลวง (อินพุต) เพื่อต่อสาย</text>`;
+  if(!FBD.nodes.length)s+=`<text x="40" y="60" font-size="13" font-family="var(--f-ui)" fill="var(--muted)">No blocks yet: add blocks with the buttons above, then drag from a filled pin (output) to a hollow pin (input) to wire them</text>`;
   fbdSvg.setAttribute('width',W);fbdSvg.setAttribute('height',H);fbdSvg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  fbdSvg.setAttribute('aria-label',`FBD ${FBD.nodes.length} บล็อก ${FBD.wires.length} สาย`);
+  fbdSvg.setAttribute('aria-label',`FBD, ${FBD.nodes.length} blocks, ${FBD.wires.length} wires`);
   fbdSvg.innerHTML=s;
 }
 function fbdSave(){store.set('plcsim.fbd',JSON.stringify(FBD))}
@@ -2861,7 +2862,7 @@ fbdEditIn.addEventListener('keydown',e=>{
   if(e.key==='Escape'){fbdEdit.hidden=true;fbdWrap.focus();return}
   if(e.key!=='Enter')return;e.preventDefault();
   const n=FBD.nodes.find(x=>x.id===+fbdEdit.dataset.n);const v=fbdEditIn.value.trim().toUpperCase();
-  if(!v){toast('กรุณาระบุชื่อตัวแปร เช่น X0, Y3, T#2S หรือ 5','warn');return}
+  if(!v){toast('Enter a variable name such as X0, Y3, T#2S or 5','warn');return}
   n.val=v;fbdEdit.hidden=true;fbdWrap.focus();fbdChanged();
 });
 fbdEditIn.addEventListener('blur',()=>setTimeout(()=>{if(document.activeElement!==fbdEditIn)fbdEdit.hidden=true},150));
@@ -2879,11 +2880,11 @@ function fbdErrToSel(ref){if(ref&&ref.n!=null){fbdSel={n:ref.n};renderFbd()}}
 /* ================= Language controller: Run / Stop / examples / monitor ================= */
 const LANGS=['LD','IL','ST','SFC','FBD'];
 const LANG_INFO={
-  LD:'Ladder: คลิกช่องที่ต้องการ แล้วกด F5 หรือ F7 หรือพิมพ์คำสั่งโดยตรง กด Ctrl+Enter เพื่อเริ่มการทำงาน',
-  IL:'IL: เลือกรูปแบบ MELSEC, Siemens STL หรือ Allen-Bradley แล้วพิมพ์คำสั่งบรรทัดละหนึ่งคำสั่ง กด Ctrl+Enter เพื่อเริ่มการทำงาน',
-  ST:'Structured Text: กด Run หรือ Ctrl+Enter เพื่อคอมไพล์ อ้างอิง I/O ได้ทั้ง X0 และ %IX0.0 กด Esc ตามด้วย Tab เพื่อออกจากช่องแก้ไขโค้ด',
-  SFC:'SFC: คลิกขั้นหรือทรานซิชันเพื่อแก้ไข แล้วกด Run ขั้นที่กำลังทำงานจะแสดงด้วยสีเน้น',
-  FBD:'FBD: เพิ่มบล็อกจากแถบเครื่องมือด้านบน ลากจากจุดทึบ (เอาต์พุต) ไปยังจุดกลวง (อินพุต) เพื่อต่อสาย ดับเบิลคลิกกล่องตัวแปรเพื่อแก้ไขชื่อ'};
+  LD:'Ladder: click a cell, then press F5 or F7 or type an instruction. Press Ctrl+Enter to run',
+  IL:'IL: choose MELSEC, Siemens STL or Allen-Bradley and type one instruction per line. Press Ctrl+Enter to run',
+  ST:'Structured Text: press Run or Ctrl+Enter to compile. I/O can be written as X0 or %IX0.0. Press Esc, then Tab, to leave the editor',
+  SFC:'SFC: click a step or transition to edit it, then press Run. The active step is highlighted',
+  FBD:'FBD: add blocks from the toolbar, drag from a filled pin (output) to a hollow pin (input) to wire them, and double-click a variable box to rename it'};
 const DIALECT_NAME={mel:'MELSEC IL',stl:'Siemens STL',ab:'Allen-Bradley'};
 const ilEd=$('ilEd'),ilDia=$('ilDialect');
 let ilDirty=false,ilSaveT=0;
@@ -2892,32 +2893,32 @@ ilEd.addEventListener('input',()=>{ilDirty=true;clearTimeout(ilSaveT);ilSaveT=se
 ilEd.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();startPLC()}});
 ilDia.addEventListener('change',()=>{ilSave();if(running&&lang==='IL')startPLC()});
 $('ilOpenLad').addEventListener('click',()=>{
-  try{const rungs=dialectRungs(ilEd.value,ilDia.value);if(!rungs.length)throw 'ยังไม่มี rung ที่มีเอาต์พุต';const p=rungsToProgram(rungs);setLang('LD');snap();loadProgram(p);toast(`เปิด ${DIALECT_NAME[ilDia.value]} เป็น Ladder แล้ว ${LAD.rungs.length} rung`,'ok')}
-  catch(e){toast('แปลงไม่สำเร็จ · '+(e.message||e),'bad')}
+  try{const rungs=dialectRungs(ilEd.value,ilDia.value);if(!rungs.length)throw 'There is no rung with an output yet';const p=rungsToProgram(rungs);setLang('LD');snap();loadProgram(p);toast(`Opened ${DIALECT_NAME[ilDia.value]} as Ladder: ${LAD.rungs.length} rungs`,'ok')}
+  catch(e){toast('Conversion failed: '+(e.message||e),'bad')}
 });
 function afterST(){errLine=null;renderEditor();ed.scrollTop=0;syncScroll();store.set('plcsim.code',ed.value)}
 const SRC={
   LD:{list:()=>LAD_EXAMPLES,key:'plcsim.lad.mine',dirty:()=>ladDirty,clean:()=>{ladDirty=false},get:()=>JSON.stringify(P),
-      set:v=>{const p=JSON.parse(v);if(!validProgram(p))throw 'อ่านไม่ได้';snap();loadProgram(p)},
+      set:v=>{const p=JSON.parse(v);if(!validProgram(p))throw 'unreadable';snap();loadProgram(p)},
       load:e=>{snap();loadProgram(e.il?ilToProgram(e.il):{C:LADC,rows:[newRow(LADC)]})}},
   IL:{list:()=>IL_EXAMPLES,key:'plcsim.il.mine',dirty:()=>ilDirty,clean:()=>{ilDirty=false},get:()=>JSON.stringify({d:ilDia.value,t:ilEd.value}),
       set:v=>{const o=JSON.parse(v);ilDia.value=o.d;ilEd.value=o.t;ilSave()},load:e=>{ilDia.value=e.dialect;ilEd.value=e.text;ilSave()}},
   ST:{list:()=>ST_EXAMPLES,key:'plcsim.code.mine',dirty:()=>stDirty,clean:()=>{stDirty=false},get:()=>ed.value,set:v=>{ed.value=v;afterST()},load:e=>{ed.value=e.code;afterST()}},
   SFC:{list:()=>SFC_EXAMPLES,key:'plcsim.sfc.mine',dirty:()=>sfcDirty,clean:()=>{sfcDirty=false},get:()=>JSON.stringify(SFC),
-      set:v=>{const m=JSON.parse(v);if(!validSfc(m))throw 'อ่านไม่ได้';SFC=m;sfcSel=null;sfcSave();renderSfc();renderSfcInsp()},
+      set:v=>{const m=JSON.parse(v);if(!validSfc(m))throw 'unreadable';SFC=m;sfcSel=null;sfcSave();renderSfc();renderSfcInsp()},
       load:e=>{SFC=JSON.parse(JSON.stringify(e.model));sfcSel=null;sfcSave();renderSfc();renderSfcInsp()}},
   FBD:{list:()=>FBD_EXAMPLES,key:'plcsim.fbd.mine',dirty:()=>fbdDirty,clean:()=>{fbdDirty=false},get:()=>JSON.stringify(FBD),
-      set:v=>{const m=JSON.parse(v);if(!validFbd(m))throw 'อ่านไม่ได้';FBD=m;fbdSel=null;fbdSave();renderFbd()},
+      set:v=>{const m=JSON.parse(v);if(!validFbd(m))throw 'unreadable';FBD=m;fbdSel=null;fbdSave();renderFbd()},
       load:e=>{FBD=JSON.parse(JSON.stringify(e.model));fbdSel=null;fbdSave();renderFbd()}}
 };
 let stRt=null;
-function showErr(e,kind){plcErr=true;errLine=e.line||null;setConsole('bad',`${kind} บรรทัด ${e.line??'?'}: ${e.message}`);renderEditor()}
+function showErr(e,kind){plcErr=true;errLine=e.line||null;setConsole('bad',`${kind} line ${e.line??'?'}: ${e.message}`);renderEditor()}
 const mapAddr=s=>s.replace(/%I[XB]?(\d+)\.([0-7])\b/gi,(m,a,b)=>'X'+(+a*8+ +b).toString(8)).replace(/%Q[XB]?(\d+)\.([0-7])\b/gi,(m,a,b)=>'Y'+(+a*8+ +b).toString(8));
 function refName(ref){
   if(!ref)return '';
-  if(ref.s!=null)return `ขั้น ${sfcStepName(ref.s)}`;
-  if(ref.t!=null){const t=SFC.trans.find(x=>x.id===ref.t);return t?`ทรานซิชัน ${sfcStepName(t.from)} ไป ${sfcStepName(t.to)}`:'ทรานซิชัน'}
-  if(ref.n!=null){const n=FBD.nodes.find(x=>x.id===ref.n);return n?`บล็อก ${n.type}${n.val?' '+n.val:''}`:'บล็อก'}
+  if(ref.s!=null)return `Step ${sfcStepName(ref.s)}`;
+  if(ref.t!=null){const t=SFC.trans.find(x=>x.id===ref.t);return t?`Transition ${sfcStepName(t.from)} to ${sfcStepName(t.to)}`:'Transition'}
+  if(ref.n!=null){const n=FBD.nodes.find(x=>x.id===ref.n);return n?`Block ${n.type}${n.val?' '+n.val:''}`:'Block'}
   return '';
 }
 function failGraphic(msg,ref){
@@ -2926,21 +2927,21 @@ function failGraphic(msg,ref){
   if(lang==='SFC')sfcErrToSel(ref);else fbdErrToSel(ref);
 }
 function startPLC(quiet){
-  if(source==='bridge'){toast('ขณะนี้ GX Works2 ควบคุมเครื่องผ่าน Bridge กรุณาตัดการเชื่อมต่อก่อนรันโปรแกรมในเว็บ','warn');return false}
+  if(source==='bridge'){toast('GX Works2 is controlling the machine through the Bridge. Disconnect before running a program in the page','warn');return false}
   errLine=null;
   if(lang==='LD'){
-    try{LAD=compileLadder()}catch(e){plcErr=true;running=false;setConsole('bad','Ladder ผิดพลาด: '+(e.message||e));return false}
+    try{LAD=compileLadder()}catch(e){plcErr=true;running=false;setConsole('bad','Ladder error: '+(e.message||e));return false}
     resetLadMem();stRt=null;plcErr=false;running=true;plcTime=0;scanCount=0;
     const w2=ladWarn();
-    if(w2)setConsole('warn','RUN แล้ว แต่'+w2);
-    else setConsole('ok',LAD.rungs.length?`RUN: ${LAD.rungs.length} rung, ${LAD.steps} สเต็ป`:'RUN แล้ว แต่ยังไม่มี rung ที่มีคอยล์ เริ่มต้นได้โดยกด F5 แล้วพิมพ์ X0');
+    if(w2)setConsole('warn','RUN, but '+w2);
+    else setConsole('ok',LAD.rungs.length?`RUN: ${LAD.rungs.length} rungs, ${LAD.steps} steps`:'RUN, but no rung has a coil yet. Start by pressing F5 and typing X0');
     renderLad();renderWatch(true);return true;
   }
   if(lang==='IL'){
     let rungs;
     try{rungs=dialectRungs(ilEd.value,ilDia.value)}catch(e){running=false;plcErr=true;setConsole('bad',`${DIALECT_NAME[ilDia.value]}: ${e.message||e}`);return false}
     ILC=runnableRungs(rungs);resetLadMem();stRt=null;plcErr=false;running=true;plcTime=0;scanCount=0;
-    setConsole(rungs.length?'ok':'warn',rungs.length?`RUN: ${DIALECT_NAME[ilDia.value]} ${rungs.length} rung`:'RUN แล้ว แต่ยังไม่มีคำสั่งเอาต์พุต');
+    setConsole(rungs.length?'ok':'warn',rungs.length?`RUN: ${DIALECT_NAME[ilDia.value]} ${rungs.length} rung`:'RUN, but there is no output instruction yet');
     renderWatch(true);return true;
   }
   let src,map=null;
@@ -2950,21 +2951,21 @@ function startPLC(quiet){
   try{prog=parse(src)}catch(e){
     const er=e instanceof StErr?e:new StErr(String(e.message||e),null);
     if(map){failGraphic(er.message,map[(er.line||1)-1]);return false}
-    running=false;stRt=null;showErr(er,'คอมไพล์ไม่ผ่าน ·');return false;
+    running=false;stRt=null;showErr(er,'Compile error:');return false;
   }
-  try{stRt=makeRuntime(prog);stRt.map=map}catch(e){running=false;stRt=null;if(map){failGraphic(e.message,map[(e.line||1)-1])}else showErr(e,'ค่าเริ่มต้นไม่ถูกต้อง ·');return false}
+  try{stRt=makeRuntime(prog);stRt.map=map}catch(e){running=false;stRt=null;if(map){failGraphic(e.message,map[(e.line||1)-1])}else showErr(e,'Invalid initial value:');return false}
   plcErr=false;running=true;plcTime=0;scanCount=0;
-  if(lang==='ST'){const nv=[...prog.sym.values()].filter(s=>s.kind==='var'||s.kind==='fb').length;setConsole('ok',`คอมไพล์ผ่าน ตัวแปร ${nv} ตัว PLC อยู่ในโหมด RUN`);renderEditor()}
-  else if(lang==='SFC'){setConsole('ok',`RUN: SFC ${SFC.steps.length} ขั้น ${SFC.trans.length} ทรานซิชัน`);renderSfc()}
+  if(lang==='ST'){const nv=[...prog.sym.values()].filter(s=>s.kind==='var'||s.kind==='fb').length;setConsole('ok',`Compiled, ${nv} variable(s). The PLC is in RUN`);renderEditor()}
+  else if(lang==='SFC'){setConsole('ok',`RUN: SFC, ${SFC.steps.length} steps, ${SFC.trans.length} transitions`);renderSfc()}
   else{const un=FBD.nodes.filter(n=>FBK[n.type].ins.some(p=>!FBD.wires.some(x=>x.to.n===n.id&&x.to.p===p))).length;
-    setConsole(un?'warn':'ok',`RUN: FBD ${FBD.nodes.length} บล็อก`+(un?` มี ${un} บล็อกที่ขาอินพุตยังไม่ต่อสาย (ใช้ค่า FALSE หรือ 0)`:''));renderFbd()}
+    setConsole(un?'warn':'ok',`RUN: FBD, ${FBD.nodes.length} blocks`+(un?`; ${un} block(s) have unwired inputs (read as FALSE or 0)`:''));renderFbd()}
   renderWatch(true);return true;
 }
 function stopPLC(silent){
   running=false;
   if(stRt)for(const y of IO_Y)stRt.mem[y.n]=false;
   LM.Y.fill(0);
-  if(!silent&&!plcErr)setConsole('info','PLC หยุดทำงาน (STOP) ปิดเอาต์พุตทั้งหมดแล้ว');
+  if(!silent&&!plcErr)setConsole('info','PLC stopped (STOP). All outputs are off');
   if(lang==='LD')renderLad();else if(lang==='SFC')renderSfc();else if(lang==='FBD')renderFbd();
 }
 function tick(dt){
@@ -2978,7 +2979,7 @@ function tick(dt){
       else{for(const x of IO_X)stRt.mem[x.n]=lastIn[x.n];stRt.scan(plcTime);Y=IO_Y.map(y=>!!stRt.mem[y.n])}
     }catch(e){
       running=false;Y=Array(8).fill(false);
-      if(lang==='ST'){for(const y of IO_Y)stRt.mem[y.n]=false;showErr(e,'Runtime error ·')}
+      if(lang==='ST'){for(const y of IO_Y)stRt.mem[y.n]=false;showErr(e,'Runtime error:')}
       else if(stRt&&stRt.map){failGraphic('Runtime error: '+(e.message||e),stRt.map[(e.line||1)-1])}
       else{plcErr=true;setConsole('bad','Runtime error: '+(e.message||e))}
     }
@@ -2992,10 +2993,10 @@ function fillExamples(){
   exSel.innerHTML='';
   const list=SRC[lang].list();
   const add=(v,t)=>{const o=document.createElement('option');o.value=v;o.textContent=t;exSel.appendChild(o)};
-  add('','เลือกแบบฝึกหัดหรือโปรแกรม');
+  add('','Choose an exercise or program');
   const blank=list.length-1;add(blank,list[blank].name);
   list.slice(0,blank).forEach((e,i)=>add(i,e.name));
-  if(store.get(SRC[lang].key))add('mine','โปรแกรมที่บันทึกไว้ (ก่อนเปลี่ยนแบบฝึกหัด)');
+  if(store.get(SRC[lang].key))add('mine','Saved program (before switching exercise)');
   const DEF={LD:['2','plcsim.lad'],IL:['1','plcsim.il'],ST:['2','plcsim.code'],SFC:['0','plcsim.sfc'],FBD:['0','plcsim.fbd']}[lang];
   exSel.value=store.get('plcsim.ex.'+lang)??(store.get(DEF[1])==null?DEF[0]:'');
   if(typeof briefUpdate==='function')briefUpdate();
@@ -3010,7 +3011,7 @@ function setLang(l,keepRun){
   fillExamples();errLine=null;plcErr=false;
   if(l==='LD')renderLad();else if(l==='ST'){renderEditor();syncScroll()}else if(l==='SFC'){renderSfc();renderSfcInsp()}else if(l==='FBD')renderFbd();else ilSave();
   setConsole('info',LANG_INFO[l]);
-  if(wasRun)toast(`PLC หยุดทำงานเนื่องจากเปลี่ยนเป็นภาษา ${l} กด Run เพื่อเริ่มโปรแกรมนี้`);
+  if(wasRun)toast(`PLC stopped because the language changed to ${l}. Press Run to start this program`);
   renderWatch(true);
 }
 let edEsc=false;
@@ -3020,12 +3021,12 @@ for(const k of LANGS)$('lang'+k).addEventListener('click',()=>setLang(k));
 exSel.addEventListener('change',()=>{
   if(exSel.value==='')return;
   const v=exSel.value,S=SRC[lang];
-  if(v==='mine'){try{S.set(store.get(S.key)||'');S.clean()}catch(e){toast('ไม่สามารถอ่านโปรแกรมที่บันทึกไว้','bad')}if(running)startPLC();return}
+  if(v==='mine'){try{S.set(store.get(S.key)||'');S.clean()}catch(e){toast('The saved program could not be read','bad')}if(running)startPLC();return}
   let kept=false;
   if(S.dirty()){store.set(S.key,S.get());kept=true}
   store.set('plcsim.ex.'+lang,v);
   try{S.load(S.list()[+v]);S.clean()}catch(e){toast(String(e.message||e),'bad')}
-  if(kept){fillExamples();exSel.value=v;toast('บันทึกโปรแกรมเดิมไว้ในรายการ “โปรแกรมที่บันทึกไว้” แล้ว','ok')}
+  if(kept){fillExamples();exSel.value=v;toast('Your previous program is kept as “Saved program”','ok')}
   if(running)startPLC();
 });
 $('btnRun').addEventListener('click',()=>startPLC());
@@ -3060,13 +3061,13 @@ function renderWatch(force){
   const tb=$('watch');let html;
   if(lang==='LD'||lang==='IL'){
     const {list,pre}=ladDevices();
-    if(!list.length)html='<tr><td colspan="3" class="empty">โปรแกรมนี้ยังไม่มีอุปกรณ์ M, T, C หรือ D</td></tr>';
+    if(!list.length)html='<tr><td colspan="3" class="empty">This program has no M, T, C or D devices yet</td></tr>';
     else html=list.slice(0,60).map(d=>{
       if(d.t==='M')return row3(d.s,'Bit',onoff(getBit(d)));
       if(d.t==='T')return row3(d.s,`Timer ${tBase(d.n)}ms`,`${onoff(getBit(d))} ${getWord(d)} / ${pre[d.s]||'-'}`);
       if(d.t==='C')return row3(d.s,'Counter',`${onoff(getBit(d))} ${getWord(d)} / ${pre[d.s]||'-'}`);
       return row3(d.s,'Word',String(getWord(d)))}).join('');
-  }else if(!stRt)html='<tr><td colspan="3" class="empty">กด Run เพื่อแสดงค่าขณะโปรแกรมทำงาน</td></tr>';
+  }else if(!stRt)html='<tr><td colspan="3" class="empty">Press Run to see live values</td></tr>';
   else{
     const rows=[];
     if(lang==='SFC')for(const s of SFC.steps){const n=sfcVar(s);rows.push(row3(svgEsc(s.name),'Step',`${onoff(stRt.mem[n+'_X'])} ${((stRt.mem[n+'_T']||0)/1000).toFixed(1)} s`))}
@@ -3074,7 +3075,7 @@ function renderWatch(force){
       if(s.kind==='var'){if(n.startsWith('_')||(lang==='SFC'&&n.startsWith('S_')))continue;rows.push(row3(s.decl,s.type,fmt(s.type,stRt.mem[n])))}
       else if(s.kind==='fb'){if(lang==='SFC'&&n.startsWith('S_'))continue;const d=FBDEF[s.type],o=stRt.mem[n];const parts=Object.keys(d.out).map(k=>`${k}=${fmt(d.out[k],o[k])}`);if('PT' in d.in)parts.push(`PT=${fmt('TIME',o.PT)}`);if('PV' in d.in)parts.push(`PV=${o.PV}`);rows.push(row3(n.startsWith('_F')?`${s.type} #${n.slice(2)}`:s.decl,s.type,parts.join(' ')))}
     }
-    html=rows.length?rows.join(''):'<tr><td colspan="3" class="empty">โปรแกรมนี้ยังไม่มีตัวแปร</td></tr>';
+    html=rows.length?rows.join(''):'<tr><td colspan="3" class="empty">This program has no variables yet</td></tr>';
   }
   if(force||html!==watchKey){tb.innerHTML=html;watchKey=html}
 }
@@ -3184,13 +3185,13 @@ function draw(){
   if(sim.held)drawPart(sim.held);
   c.fillStyle=K.ink;c.fillRect(X-w-6,F-28,6,28);c.fillRect(X+w,F-28,6,28);
   // callouts
-  callout(174,160,330,168,'Y5 ซ้าย-ขวา');
-  callout(X+13,212,330,204,'Y6 ขึ้น-ลง');
-  callout(X+36,F-34,330,240,'Y4 หัวจับ');
-  callout(166,301,140,280,'X2 จุดรับ','right');
-  callout(G.x3-18,G.beltY-28,G.x3-40,G.beltY-56,'X3 โลหะ','right');
-  callout(kx+9,G.beltY-60,kx+28,G.beltY-76,'Y3 ผลัก');
-  callout(G.bx1-6,404,G.bx1+26,452,'Y7 สายพาน');
+  callout(174,160,330,168,'Y5 left-right');
+  callout(X+13,212,330,204,'Y6 up-down');
+  callout(X+36,F-34,330,240,'Y4 gripper');
+  callout(166,301,140,280,'X2 part','right');
+  callout(G.x3-18,G.beltY-28,G.x3-40,G.beltY-56,'X3 metal','right');
+  callout(kx+9,G.beltY-60,kx+28,G.beltY-76,'Y3 kicker');
+  callout(G.bx1-6,404,G.bx1+26,452,'Y7 conveyor');
   // operator console
   box(150,436,196,52,K.sheet);
   [['Y2',2,K.red],['Y1',1,K.amber],['Y0',0,K.green]].forEach((L,i)=>{const x=188+i*60;txt(L[0],x,446,K.ink,14,'center',700);lampDraw(x,467,11,!!Y[L[1]],L[2])});
@@ -3200,7 +3201,7 @@ function draw(){
     circ(bx,468,14,K.tone2,LW);circ(bx,468+(pr?1.5:0),pr?8.5:10,col,pr?2.6:LW);
   }
   txt('PLC TRAINING KIT',448,462,K.mute,9,'center',700);
-  if(sim.jam&&Y[7]){box(X-100,G.beltY-74,200,24,K.ink,0);c.fillStyle=K.amber;c.fillRect(X-100,G.beltY-74,6,24);txt('ชิ้นงานชนหัวจับ สายพานหยุดชะงัก',X+3,G.beltY-62,K.sheet,11.5,'center',600,THAI)}
+  if(sim.jam&&Y[7]){box(X-100,G.beltY-74,200,24,K.ink,0);c.fillStyle=K.amber;c.fillRect(X-100,G.beltY-74,6,24);txt('Part hit the gripper, conveyor jammed',X+3,G.beltY-62,K.sheet,11.5,'center',600,THAI)}
 }
 cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)*G.W/r.width,y=(e.clientY-r.top)*G.H/r.height;
@@ -3230,7 +3231,7 @@ function setView(v){
   if(V3.ready){V3.on=true;cv.hidden=true;V3.el.hidden=false;$('hint3d').hidden=false;size3d();return}
   if(V3.loading)return;V3.loading=true;$('v3d').setAttribute('aria-busy','true');
   loadThree().then(()=>{build3d();V3.ready=true;V3.loading=false;$('v3d').removeAttribute('aria-busy');setView('3d')})
-    .catch(()=>{V3.loading=false;$('v3d').removeAttribute('aria-busy');setView('2d');toast('ไม่สามารถโหลดโมดูล 3D ได้ ต้องเชื่อมต่ออินเทอร์เน็ตเพื่อดาวน์โหลด Three.js ระหว่างนี้จะแสดงมุมมอง 2D','bad')});
+    .catch(()=>{V3.loading=false;$('v3d').removeAttribute('aria-busy');setView('2d');toast('The 3D module could not load. An internet connection is needed to download Three.js; showing the 2D view','bad')});
 }
 $('v2d').addEventListener('click',()=>setView('2d'));
 $('v3d').addEventListener('click',()=>setView('3d'));
@@ -3297,7 +3298,7 @@ function build3d(){
   const J=G.jig,by=H3(G.beltY);
   box((J.r-J.l)/100,0.1,0.5,new T.MeshStandardMaterial({color:0xdfe8f2,roughness:.15,transparent:true,opacity:.8}),P3(J.x),by-0.05,0);
   for(const x of [P3(J.l+10),P3(J.r-10)])box(0.05,by-0.2,0.05,mat.alu,x,(by-0.2)/2+0.16,0.2);
-  const fib=tag(box(0.1,0.1,0.1,mat.ink,P3(J.r+7),by+0.15,0.25),'X2 เซนเซอร์จุดรับชิ้นงาน');
+  const fib=tag(box(0.1,0.1,0.1,mat.ink,P3(J.r+7),by+0.15,0.25),'X2 pick-point sensor');
   const pLed=new T.Mesh(new T.SphereGeometry(0.025,12,8),glow(0xff3b30));pLed.position.set(P3(J.r+7),by+0.23,0.25);scene.add(pLed);
   const amp=box(0.58,0.18,0.12,mat.ink,P3(195),H3(301),-0.86);
   const beam=new T.Mesh(new T.CylinderGeometry(0.005,0.005,0.5,8),new T.MeshBasicMaterial({color:0xff3b30,transparent:true,opacity:.5}));beam.rotation.x=Math.PI/2;beam.position.set(P3(J.x),by+0.15,0);scene.add(beam);
@@ -3311,29 +3312,29 @@ function build3d(){
   const belt=box(bl,0.05,0.58,mat.belt,bcx,by-0.025,0);
   const rollers=[cylZ(0.11,0.62,mat.roller,P3(G.bx0),by-0.11,0),cylZ(0.11,0.62,mat.roller,P3(G.bx1),by-0.11,0)];
   for(const x of [P3(G.bx0),P3(G.bx1)])for(const z of [-0.34,0.34])cylZ(0.15,0.04,mat.white,x,by-0.11,z);
-  const motor=tag(cylZ(0.13,0.34,mat.dark,P3(G.bx1),by-0.11,0.55),'Y7 มอเตอร์สายพาน');
+  const motor=tag(cylZ(0.13,0.34,mat.dark,P3(G.bx1),by-0.11,0.55),'Y7 conveyor motor');
   const fan=box(0.2,0.03,0.02,mat.alu,P3(G.bx1),by-0.11,0.73,false);
   // X3 proximity: green cap pointing across the belt from behind
-  const prox=tag(cylZ(0.11,0.28,mat.dark,P3(G.x3),by+0.16,-0.48),'X3 เซนเซอร์โลหะ');
+  const prox=tag(cylZ(0.11,0.28,mat.dark,P3(G.x3),by+0.16,-0.48),'X3 metal sensor');
   cylZ(0.115,0.05,new T.MeshStandardMaterial({color:0x7fd34e,roughness:.4}),P3(G.x3),by+0.16,-0.32);
   const proxLed=new T.Mesh(new T.SphereGeometry(0.022,12,8),glow(0xff8a1f));proxLed.position.set(P3(G.x3),by+0.3,-0.48);scene.add(proxLed);
   // Y3 kicker behind the belt, pushing toward the front bin
   const kx=P3(G.kick);
-  tag(cylZ(0.07,0.42,mat.cyl,kx,by+0.16,-0.66),'Y3 กระบอกผลัก');
+  tag(cylZ(0.07,0.42,mat.cyl,kx,by+0.16,-0.66),'Y3 kicker cylinder');
   const kRod=cylZ(0.022,1,mat.rod,kx,by+0.16,-0.4);
   const kPlate=box(0.36,0.2,0.04,mat.white,kx,by+0.12,-0.3);
   // slide cylinder Y5, vertical cylinder Y6, gripper Y4
   const sy=H3(171),sz=-0.42;
-  tag(box(1.18,0.3,0.3,mat.cyl,P3(115),sy,sz),'Y5 กระบอกซ้าย-ขวา');
+  tag(box(1.18,0.3,0.3,mat.cyl,P3(115),sy,sz),'Y5 left-right cylinder');
   box(2.5,0.05,0.08,mat.alu,P3(195),H3(192),sz);
   const sRod=cylX(0.035,1,mat.rod,0,sy,sz);
   const carriage=box(0.6,0.4,0.36,mat.dark,0,H3(170),sz+0.05);
   const reed6=new T.Mesh(new T.SphereGeometry(0.001,4,4),glow(0));const reed7=reed6;
   const arm=box(0.12,0.08,0.44,mat.alu,0,H3(200),-0.2);
-  const vBody=tag(cylY(0.12,0.42,mat.cyl,0,H3(211),0),'Y6 กระบอกขึ้น-ลง');
+  const vBody=tag(cylY(0.12,0.42,mat.cyl,0,H3(211),0),'Y6 up-down cylinder');
   const reed4=new T.Mesh(new T.SphereGeometry(0.001,4,4),glow(0)),reed5=reed4;
   const vRod=cylY(0.03,1,mat.rod,0,0,0);
-  const head=tag(box(0.72,0.13,0.3,mat.dark,0,0,0),'Y4 หัวจับ');
+  const head=tag(box(0.72,0.13,0.3,mat.dark,0,0,0),'Y4 gripper');
   const fl=box(0.06,0.28,0.24,mat.alu,0,0,0),fr=box(0.06,0.28,0.24,mat.alu,0,0,0);
   // black parts bin in front of the belt, OK tray at the belt end
   const B=G.bin,binW=(B.r-B.l)/100,bx=P3((B.l+B.r)/2),bz=0.68,bH=0.42,bY=0.16;
@@ -3344,7 +3345,7 @@ function build3d(){
   // operator console on the bench
   const cz=1.25;
   box(2.0,0.24,0.5,mat.white,P3(248),0.12,cz);box(1.4,0.24,0.5,mat.white,P3(630),0.12,cz);
-  const lamps=[[2,0xe3352b,188,'Y2 ไฟแดง'],[1,0xf0ae00,248,'Y1 ไฟเหลือง'],[0,0x13a058,308,'Y0 ไฟเขียว']].map(([yi,c,x,lb])=>{
+  const lamps=[[2,0xe3352b,188,'Y2 red lamp'],[1,0xf0ae00,248,'Y1 yellow lamp'],[0,0x13a058,308,'Y0 green lamp']].map(([yi,c,x,lb])=>{
     cylY(0.13,0.06,mat.alu,P3(x),0.27,cz);
     const dome=tag(new T.Mesh(new T.SphereGeometry(0.11,24,16,0,Math.PI*2,0,Math.PI/2),new T.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:0,roughness:.25,transparent:true,opacity:.92})),lb);
     dome.position.set(P3(x),0.3,cz);scene.add(dome);
@@ -3435,13 +3436,13 @@ function draw3D(){
 
 /* ================= Exercise brief, pass check, dock, I/O and Monitor tabs ================= */
 const GOALS=[
-  [/คัดแยก/,{g:'หยิบชิ้นงานจากจุดรับชิ้นงานวางบนสายพาน ชิ้นงานโลหะต้องถูกผลักลงกล่อง และชิ้นงานพลาสติกต้องไหลไปถึงปลายสายพาน',n:5,t:'sort'}],
-  [/วางบนสายพาน|หยิบชิ้นงาน/,{g:'หยิบชิ้นงานจากจุดรับชิ้นงาน (X2) ไปวางบนสายพาน แล้วกลับไปรอชิ้นงานถัดไป',n:5,t:'feed'}],
-  [/กะพริบ/,{g:'ไฟสีเหลือง (Y1) ต้องกะพริบเมื่อมีชิ้นงานรออยู่ที่จุดรับชิ้นงาน (X2) และดับเมื่อไม่มีชิ้นงาน'}],
-  [/ไฟวิ่ง/,{g:'เมื่อกด START ไฟสีแดง เหลือง และเขียว ต้องติดวนทีละดวง และดับทั้งหมดเมื่อกด STOP'}],
-  [/นับชิ้นงาน/,{g:'นับชิ้นงานที่ผ่านเซนเซอร์ตรวจจับโลหะ เมื่อครบ 5 ชิ้นต้องเปิดไฟสีเหลือง'}],
-  [/Start\/Stop/,{g:'เมื่อกด START (X0) สายพานต้องหมุนต่อเนื่องแม้ปล่อยปุ่มแล้ว และหยุดเมื่อกด STOP (X1)'}],
-  [/ว่าง/,{g:'เขียนโปรแกรมได้อย่างอิสระ ดูชื่อและหน้าที่ของ X และ Y ได้ที่แผง I/O'}]];
+  [/reject metal/,{g:'Move each part from the pick point to the conveyor. Metal parts must be kicked into the bin; plastic parts must reach the end of the conveyor.',n:5,t:'sort'}],
+  [/on the conveyor/,{g:'Pick each part at the pick point (X2), place it on the conveyor and return for the next one.',n:5,t:'feed'}],
+  [/blinks/,{g:'The yellow lamp (Y1) blinks while a part waits at the pick point (X2) and is off otherwise.'}],
+  [/Running lights/,{g:'After START the red, yellow and green lamps light one after another; STOP turns them all off.'}],
+  [/Count 5/,{g:'Count the parts passing the metal sensor; after 5 the yellow lamp turns on.'}],
+  [/Start\/Stop/,{g:'START (X0) keeps the conveyor running after the button is released; STOP (X1) stops it.'}],
+  [/empty/,{g:'Write your own program. The I/O panel lists every X and Y.'}]];
 let goal=null,base={ok:0,ng:0,drop:0},wasRunning=false,lastPass='';
 function briefUpdate(){
   const opt=exSel.options[exSel.selectedIndex],v=exSel.value;
@@ -3452,13 +3453,13 @@ function briefUpdate(){
 }
 function passUpdate(){
   const el=$('briefPass');
-  if(!goal||!goal.n){if(lastPass!=='none'){el.textContent='ทดสอบได้โดยกดปุ่มบนภาพเครื่องจำลองหรือในแผง I/O';el.className='goal';lastPass='none'}return}
+  if(!goal||!goal.n){if(lastPass!=='none'){el.textContent='Test it with the buttons on the machine picture or in the I/O panel';el.className='goal';lastPass='none'}return}
   const ok=sim.stats.ok-base.ok,ng=sim.stats.ng-base.ng,dr=sim.stats.drop-base.drop;
   const done=goal.t==='sort'?ok:ok+ng,bad=goal.t==='sort'?ng+dr:dr;
   let txt,cls;
-  if(bad>0){txt=goal.t==='sort'?`คัดแยกผิดพลาด ${bad} ชิ้น กรุณากดรีเซ็ตแล้วเริ่มใหม่`:`ชิ้นงานตกหล่น ${bad} ชิ้น กรุณากดรีเซ็ตแล้วเริ่มใหม่`;cls='goal fail'}
-  else if(done>=goal.n){txt=goal.t==='sort'?`ผ่านเกณฑ์: คัดแยกถูกต้อง ${goal.n} ชิ้นโดยไม่มีข้อผิดพลาด`:`ผ่านเกณฑ์: ส่งชิ้นงานลงสายพานครบ ${goal.n} ชิ้น`;cls='goal pass'}
-  else{txt=goal.t==='sort'?`เป้าหมาย: คัดแยกถูกต้อง ${goal.n} ชิ้นโดยไม่มีข้อผิดพลาด (ความคืบหน้า ${done}/${goal.n})`:`เป้าหมาย: ส่งชิ้นงานลงสายพานครบ ${goal.n} ชิ้น (ความคืบหน้า ${done}/${goal.n})`;cls='goal'}
+  if(bad>0){txt=goal.t==='sort'?`${bad} part(s) sorted wrongly. Press Reset and try again`:`${bad} part(s) dropped. Press Reset and try again`;cls='goal fail'}
+  else if(done>=goal.n){txt=goal.t==='sort'?`Passed: ${goal.n} parts sorted correctly with no errors`:`Passed: ${goal.n} parts placed on the conveyor`;cls='goal pass'}
+  else{txt=goal.t==='sort'?`Goal: sort ${goal.n} parts correctly with no errors (${done}/${goal.n})`:`Goal: place ${goal.n} parts on the conveyor (${done}/${goal.n})`;cls='goal'}
   const key=cls+txt;if(key!==lastPass){el.textContent=txt;el.className=cls;lastPass=key}
 }
 exSel.addEventListener('change',()=>setTimeout(briefUpdate,0));
@@ -3534,7 +3535,7 @@ try{const m=JSON.parse(store.get('plcsim.fbd')||'null');if(validFbd(m))FBD=m}cat
 const savedLang=LANGS.includes(store.get('plcsim.lang'))?store.get('plcsim.lang'):'LD';
 let savedLad=null;const rawLad=store.get('plcsim.lad');try{savedLad=JSON.parse(rawLad||'null')}catch(e){}
 if(validProgram(savedLad))P=savedLad;
-else{if(rawLad)setTimeout(()=>toast('ไม่สามารถอ่านโปรแกรมที่บันทึกไว้ จึงเปิดแบบฝึกหัดที่ 3 แทน','warn'),800);P=ilToProgram(LAD_EXAMPLES[2].il);store.set('plcsim.ex.LD','2')}
+else{if(rawLad)setTimeout(()=>toast('The saved program could not be read, so Exercise 3 was opened instead','warn'),800);P=ilToProgram(LAD_EXAMPLES[2].il);store.set('plcsim.ex.LD','2')}
 LAD=compileLadder();
 lang='';setLang(savedLang);
 renderEditor();refreshIL();renderSfc();renderSfcInsp();renderFbd();

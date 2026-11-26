@@ -559,7 +559,7 @@ button.iorow span.d{color:#E4E4E7}
             <label class="chk" title="Place parts straight on the conveyor, skipping the gripper, for programs without pick and place"><input type="checkbox" id="direct"> Skip gripper</label>
             <button id="resetSim">Reset</button>
           </div>
-          <p class="hint3d" id="hint3d" hidden>Drag to orbit, scroll or pinch to zoom, double-click to reset the view. The START and STOP buttons on the table can be pressed.</p>
+          <p class="hint3d" id="hint3d" hidden>Drag to orbit, right-drag or Shift-drag to pan, scroll or pinch to zoom in on any part, double-click to reset the view. The START and STOP buttons on the table can be pressed.</p>
         </section>
         <section class="panel dark iopanel" aria-label="I/O and Monitor">
           <div class="phead">
@@ -3263,7 +3263,7 @@ cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();const x
 if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{kN=0});
 new MutationObserver(()=>{kN=0}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
-/* ================= 3D view (Three.js r128, loaded on demand) ================= */
+/*CAD*//* ================= 3D view (Three.js r128, loaded on demand) ================= */
 const V3={on:false,ready:false,loading:false,el:$('sim3d'),tip:$('tip3d')};
 const THREE_URLS=['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js','https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js'];
 function loadThree(){
@@ -3274,6 +3274,14 @@ function cssRgb(name,fb){
   try{const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim()||fb;const cv2=document.createElement('canvas');cv2.width=cv2.height=1;const x=cv2.getContext('2d');x.fillStyle=fb;x.fillStyle=v;x.fillRect(0,0,1,1);const d=x.getImageData(0,0,1,1).data;return (d[0]<<16)|(d[1]<<8)|d[2]}catch(e){return parseInt(fb.slice(1),16)}
 }
 const P3=x=>(x-450)/100,H3=y=>(420-y)/100;
+/* unpack a CAD mesh blob (see CAD.js) into per-part position and index arrays */
+function unpackCad(d){
+  if(!window.DecompressionStream)return Promise.reject(new Error('no DecompressionStream'));
+  const bin=Uint8Array.from(atob(d.b),c=>c.charCodeAt(0));
+  return new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer().then(buf=>d.h.map(([n,o,nv,ni,w])=>{
+    const q=new Int16Array(buf,o,nv*3),pos=new Float32Array(nv*3);for(let i=0;i<pos.length;i++)pos[i]=q[i]/100;
+    const io=(o+nv*6+3)&~3;return {n,pos,idx:w===2?new Uint16Array(buf,io,ni):new Uint32Array(buf,io,ni)}}));
+}
 function setView(v){
   const want3=v==='3d';
   $('v2d').setAttribute('aria-pressed',!want3);$('v3d').setAttribute('aria-pressed',want3);store.set('plcsim.view',v);
@@ -3321,9 +3329,13 @@ function build3d(){
   const duct=ctex(256,64,(x,w,h)=>{x.fillStyle='#f2f3f0';x.fillRect(0,0,w,h);x.fillStyle='#c8cbc6';for(let i=6;i<w;i+=16)x.fillRect(i,0,6,h*0.42)},[10,1]);
   const vents=ctex(128,128,(x,w,h)=>{x.fillStyle='#c9cdd2';x.fillRect(0,0,w,h);x.fillStyle='#8c9198';for(let j=14;j<h-10;j+=10)x.fillRect(16,j,w-32,4)});
   const thread=ctex(64,64,(x,w,h)=>{x.fillStyle='#b9bec4';x.fillRect(0,0,w,h);x.fillStyle='#7d838a';for(let j=0;j<h;j+=6)x.fillRect(0,j,w,2)},[1,4]);
-  const plcFace=ctex(512,240,(x,w,h)=>{x.fillStyle='#eceeed';x.fillRect(0,0,w,h);x.fillStyle='#24282d';x.fillRect(300,52,196,136);
-    x.fillStyle='#3a3f45';x.font='bold 24px Arial, sans-serif';x.fillText('MITSUBISHI',28,90);x.font='bold 30px Arial, sans-serif';x.fillText('FX3U-16M',28,140);
-    x.fillStyle='#9aa1a8';x.font='13px Arial, sans-serif';x.fillText('IN',306,80);x.fillText('OUT',306,166);x.fillText('POWER RUN',306,66)});
+  const plcFace=ctex(520,360,(x,w,h)=>{const X=mm=>(mm+65)*4,Yp=mm=>(45-mm)*4;
+    x.fillStyle='#cfd2d5';x.fillRect(0,0,w,h);
+    x.fillStyle='#b3b8bd';x.fillRect(X(-35),0,X(65)-X(-35),Yp(22.5));x.fillRect(X(-35),Yp(-22.5),X(65)-X(-35),h-Yp(-22.5));   // terminal covers
+    x.fillStyle='rgba(0,0,0,.12)';for(const y of [Yp(22.5),Yp(-22.5)])x.fillRect(X(-35),y-2,X(65)-X(-35),3);
+    x.fillStyle='#dadde0';x.fillRect(X(-39),Yp(21),X(27)-X(-39),Yp(-21)-Yp(21));x.fillStyle='rgba(0,0,0,.1)';x.fillRect(X(-39),Yp(21),2,Yp(-21)-Yp(21));x.fillRect(X(27)-2,Yp(21),2,Yp(-21)-Yp(21));
+    x.fillStyle='#c4c8cc';x.fillRect(X(53),Yp(21),X(65)-X(53),Yp(-21)-Yp(21));x.fillRect(X(-65),Yp(16),X(-45)-X(-65),Yp(-30)-Yp(16));
+    x.fillStyle='#bfc3c7';for(const [cx,cy] of [[36.9,12.5],[40.2,12.5],[43.8,12.5],[47.1,12.5],[36.9,-12.5],[40.2,-12.5],[43.8,-12.5],[47.1,-12.5]])x.fillRect(X(cx)-4,Yp(cy)-6,8,12)});   // LED windows; print comes from the decals
   const tagTex=(txt,bg,fg)=>ctex(128,40,(x,w,h)=>{x.fillStyle=bg;x.fillRect(0,0,w,h);x.fillStyle=fg;x.font='bold 22px Arial, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(txt,w/2,h/2+1)});
   const glowTex=ctex(64,64,(x,w,h)=>{const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,255,255,.55)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,w,h)});
   glowTex.encoding=T.LinearEncoding;
@@ -3333,7 +3345,7 @@ function build3d(){
   const mat={
     bench:M(0xffffff,{map:mat3,roughness:.92}),benchBody:M(0xeef0ec,{roughness:.7}),
     alu:M(0xd9dde2,{map:brushed,metalness:.85,roughness:.34}),aluDark:M(0x9aa1a9,{metalness:.8,roughness:.4}),
-    panel:M(0xffffff,{map:perf,roughness:.75,metalness:.15}),plc:M(0xffffff,{map:plcFace,roughness:.55}),
+    panel:M(0xffffff,{map:perf,roughness:.75,metalness:.15}),plc:M(0xffffff,{map:plcFace,roughness:.5}),plcSide:M(0xc4c8cc,{roughness:.5}),
     white:M(0xf3f4f1,{roughness:.5}),grey:M(0xd8dbd8,{roughness:.55}),dark:M(0x2a2e34,{roughness:.45,metalness:.1}),ink:M(0x16191d,{roughness:.4}),
     rubber:M(0xffffff,{map:rubber,roughness:.88}),rubberDark:M(0x1d2124,{roughness:.9}),
     roller:M(0xd7dbe0,{metalness:.9,roughness:.25}),chrome:M(0xf2f4f6,{metalness:1,roughness:.08}),
@@ -3387,16 +3399,28 @@ function build3d(){
   for(const x of [-4.1,4.1])prof('y',3.9,0.14,x,2.04,-0.93);
   prof('x',8.34,0.14,0,3.99,-0.93);prof('x',8.2,0.12,0,2.78,-0.78);
   for(const y of [H3(50)-0.12,H3(129)+0.12,H3(224)])box(8.0,0.035,0.02,mat.roller,0,y,-0.945,false);
-  /* ---- PLC FX3U-16M with terminal blocks and LEDs ---- */
-  const px=P3(157),py=H3(90);
-  rbox(1.86,0.88,0.34,0.04,mat.plc,px,py,-0.78);
-  for(const yy of [H3(50),H3(129)]){rbox(1.86,0.11,0.38,0.02,mat.dark,px,yy,-0.77);for(let i=0;i<16;i++)cylZ(0.022,0.03,mat.roller,px-0.82+i*0.109,yy+0.01,-0.57,8)}
-  const ledX=[],ledY=[];
-  for(let i=0;i<8;i++){
-    const a=add(new T.BoxGeometry(0.045,0.04,0.02),glowMat(0x3ccf6e),P3(184+i*7.5),H3(78),-0.6,false);ledX.push(a);
-    const b=add(new T.BoxGeometry(0.045,0.04,0.02),glowMat(0xffb02e),P3(184+i*7.5),H3(102),-0.6,false);ledY.push(b);
-  }
-  const runLed=add(new T.BoxGeometry(0.06,0.04,0.02),glowMat(0x3ccf6e),P3(182),H3(64),-0.6,false);
+  /* ---- PLC FX3U-16MT/ES: the manufacturer's CAD model, lit from the live I/O ---- */
+  const px=P3(157),py=H3(90),PZ=-0.95,PS=[0.0140,0.0098,0.0075];   // mm to scene, per axis like the rest of the kit
+  const plcBox=add(new T.BoxGeometry(130*PS[0],90*PS[1],86*PS[2]),[mat.plcSide,mat.plcSide,mat.plcSide,mat.plcSide,mat.plc,mat.plcSide],px,py,PZ+43*PS[2]);
+  const plcG=tag(new T.Group(),'PLC Mitsubishi FX3U-16MT/ES');plcG.position.set(px,py,PZ);plcG.scale.set(PS[0],PS[1],PS[2]);scene.add(plcG);
+  const cadM={body:M(0xbcc0c4,{roughness:.5}),cover:M(0xc9cdd0,{roughness:.42}),term:M(0xa9afb5,{roughness:.36}),strip:M(0x474c52,{roughness:.6}),clip:M(0x2c2f33,{roughness:.7})};
+  const cadMat=n=>/^slider/.test(n)?cadM.clip:/^cover_\d_(1|15)$/.test(n)?cadM.strip:/^cover_\d_1[23]$/.test(n)?cadM.term:/^cover_7$/.test(n)?cadM.cover:cadM.body;
+  if(typeof FX3U_CAD!=='undefined')unpackCad(FX3U_CAD).then(list=>{
+    for(const p of list){const g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(p.pos,3));g.setIndex(new T.BufferAttribute(p.idx,1));g.computeVertexNormals();
+      const m=new T.Mesh(g,cadMat(p.n));m.castShadow=m.receiveShadow=true;plcG.add(m)}
+    plcBox.visible=false;
+  }).catch(()=>{});   // older browsers keep the plain box
+  // front cover print, and the legends beside the LED windows
+  const decal=(w,h,cx,cy,cw,ch,draw)=>{const t=ctex(cw,ch,(x,W,H)=>{x.clearRect(0,0,W,H);draw(x,W,H)});const m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshStandardMaterial({map:t,transparent:true,roughness:.5,polygonOffset:true,polygonOffsetFactor:-2}));m.position.set(cx,cy,86.08);plcG.add(m);return m};
+  decal(56,30,-7,2,512,274,(x,W,H)=>{x.fillStyle='#3a3f45';x.font='bold 50px Arial, sans-serif';x.fillText('MITSUBISHI',24,70);x.fillStyle='#5b6168';x.font='bold 40px Arial, sans-serif';x.fillText('FX3U-16M',24,128);x.fillStyle='#8a9097';x.font='26px Arial, sans-serif';x.fillText('MELSEC',24,250)});
+  decal(18,36,40.5,0,256,512,(x,W,H)=>{x.fillStyle='#6b7178';x.font='bold 24px Arial, sans-serif';x.textAlign='center';x.fillText('IN',(37-31.5)/18*W+60,34);x.fillText('OUT',(37-31.5)/18*W+60,500);
+    x.textAlign='right';x.font='19px Arial, sans-serif';[['POWER',7.6],['RUN',2.5],['BATT',-2.5],['ERROR',-7.4]].forEach(([s,y])=>x.fillText(s,(44-31.5)/18*W,(18-y)/36*H+7))});
+  const led=(c,x,y,w=1.5,h=0.9)=>{const o=new T.Mesh(new T.BoxGeometry(w,h,0.5),new T.MeshStandardMaterial({color:0x30353a,emissive:c,emissiveIntensity:0,roughness:.3}));o.position.set(x,y,86.1);plcG.add(o);return o};
+  const ledCols=[36.9,40.2,43.8,47.1],ledX=[],ledY=[];
+  for(let i=0;i<8;i++){ledX.push(led(0x1fd655,ledCols[i%4],i<4?13.5:11.5,1.5,1.1));ledY.push(led(0xff8c00,ledCols[i%4],i<4?-11.5:-13.5,1.5,1.1))}
+  led(0x1fd655,45.6,7.6,1.6,1.2).material.emissiveIntensity=1.1;   // POWER
+  const runLed=led(0x1fd655,45.6,2.5,1.6,1.2);
+  led(0xff4d4f,45.6,-2.5,1.6,1.2);led(0xff4d4f,45.6,-7.4,1.6,1.2);   // BATT, ERROR (off)
   /* ---- GOT2000 HMI with a live I/O screen ---- */
   rbox(1.5,0.84,0.14,0.05,mat.ink,P3(399),H3(91),-0.88);
   const hmiC=document.createElement('canvas');hmiC.width=512;hmiC.height=256;const hmiX=hmiC.getContext('2d');const hmiTex=new T.CanvasTexture(hmiC);hmiTex.encoding=T.sRGBEncoding;
@@ -3493,34 +3517,42 @@ function build3d(){
   /* ---- parts ---- */
   const partGeo=rboxGeo(G.pw/100,G.ph/100,0.36,0.03),parts=new Map();
   /* ---- camera orbit with easing ---- */
-  const home={th:-0.28,ph:1.13,r:9.6},orb={...home,tx:0,ty:1.35,tz:0.2},want={...home};
+  const home={th:-0.28,ph:1.13,r:9.6,tx:0,ty:1.35,tz:0.2},orb={...home},want={...home};
+  const RMIN=1.6,RMAX=18,clampT=()=>{want.tx=Math.min(4.6,Math.max(-4.6,want.tx));want.ty=Math.min(4.2,Math.max(0.2,want.ty));want.tz=Math.min(1.2,Math.max(-0.9,want.tz))};
+  const camR=new T.Vector3(),camU=new T.Vector3(),panBy=(dx,dy)=>{camR.setFromMatrixColumn(cam.matrixWorld,0);camU.setFromMatrixColumn(cam.matrixWorld,1);const s=orb.r*0.0016;want.tx+=(-dx*camR.x+dy*camU.x)*s;want.ty+=(-dx*camR.y+dy*camU.y)*s;want.tz+=(-dx*camR.z+dy*camU.z)*s;clampT()};
   const placeCam=()=>{cam.position.set(orb.tx+orb.r*Math.sin(orb.ph)*Math.sin(orb.th),orb.ty+orb.r*Math.cos(orb.ph),orb.tz+orb.r*Math.sin(orb.ph)*Math.cos(orb.th));cam.lookAt(orb.tx,orb.ty,orb.tz)};
   placeCam();
   const ray=new T.Raycaster(),ndc=new T.Vector2();
   const pick=e=>{const r=renderer.domElement.getBoundingClientRect();ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);ray.setFromCamera(ndc,cam);const hits=ray.intersectObjects(labels,true);if(!hits.length)return null;let o=hits[0].object;while(o&&!o.userData.label)o=o.parent;return o};
-  const ptrs=new Map();let pressed=null,pinch=0;
+  const ptrs=new Map();let pressed=null,pinch=0,panning=false,mid=null;
   const dom=renderer.domElement;dom.style.touchAction='none';dom.style.display='block';
   dom.addEventListener('pointerdown',e=>{
     const hit=pick(e);
     if(hit&&hit.userData.btn){pressed=hit.userData.btn;sim.btn[pressed]=true;try{dom.setPointerCapture(e.pointerId)}catch(_){};return}
     ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});try{dom.setPointerCapture(e.pointerId)}catch(_){}
-    if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y)}
+    panning=e.button===2||e.shiftKey;
+    if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y);mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2}}
   });
   dom.addEventListener('pointermove',e=>{
     if(ptrs.has(e.pointerId)){
       const p=ptrs.get(e.pointerId);const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;
-      if(ptrs.size===1){want.th-=dx*0.006;want.ph=Math.min(1.5,Math.max(0.25,want.ph-dy*0.006))}
-      else if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch)want.r=Math.min(18,Math.max(4,want.r*pinch/d));pinch=d}
+      if(ptrs.size===1){if(panning)panBy(dx,dy);else{want.th-=dx*0.006;want.ph=Math.min(1.5,Math.max(0.25,want.ph-dy*0.006))}}
+      else if(ptrs.size===2){const [a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch)want.r=Math.min(RMAX,Math.max(RMIN,want.r*pinch/d));pinch=d;const m={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(mid)panBy(m.x-mid.x,m.y-mid.y);mid=m}
       V3.tip.hidden=true;return;
     }
     const hit=pick(e);
     if(hit){const r=V3.el.getBoundingClientRect();V3.tip.textContent=hit.userData.label;V3.tip.style.left=(e.clientX-r.left+12)+'px';V3.tip.style.top=(e.clientY-r.top+12)+'px';V3.tip.hidden=false;dom.style.cursor=hit.userData.btn?'pointer':'help'}
     else{V3.tip.hidden=true;dom.style.cursor='grab'}
   });
-  const up=e=>{ptrs.delete(e.pointerId);pinch=0;if(pressed){sim.btn[pressed]=false;pressed=null}};
+  const up=e=>{ptrs.delete(e.pointerId);pinch=0;mid=null;panning=false;if(pressed){sim.btn[pressed]=false;pressed=null}};
   ['pointerup','pointercancel','lostpointercapture'].forEach(n=>dom.addEventListener(n,up));
   dom.addEventListener('pointerleave',()=>{V3.tip.hidden=true});
-  dom.addEventListener('wheel',e=>{e.preventDefault();want.r=Math.min(18,Math.max(4,want.r*(1+Math.sign(e.deltaY)*0.08)))},{passive:false});
+  // wheel zooms toward the point under the pointer
+  const zp=new T.Plane(),zn=new T.Vector3(),zhit=new T.Vector3();
+  dom.addEventListener('wheel',e=>{e.preventDefault();const r0=want.r,r1=Math.min(RMAX,Math.max(RMIN,r0*(1+Math.sign(e.deltaY)*0.1)));want.r=r1;
+    if(r1<r0){const rc=dom.getBoundingClientRect();ndc.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);ray.setFromCamera(ndc,cam);cam.getWorldDirection(zn);zp.setFromNormalAndCoplanarPoint(zn,new T.Vector3(want.tx,want.ty,want.tz));
+      if(ray.ray.intersectPlane(zp,zhit)){const f=1-r1/r0;want.tx+=(zhit.x-want.tx)*f;want.ty+=(zhit.y-want.ty)*f;want.tz+=(zhit.z-want.tz)*f;clampT()}}},{passive:false});
+  dom.addEventListener('contextmenu',e=>e.preventDefault());
   dom.addEventListener('dblclick',()=>{Object.assign(want,home)});
   new ResizeObserver(size3d).observe(V3.el);
   const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3546,7 +3578,7 @@ function draw3D(){
   if(r.bgN--<=0){const bg=cssRgb('--color-paper','#f6f7f8');r.scene.background=new T.Color(bg);r.floorMat.color.setHex(cssRgb('--color-paper-2','#eeeff1'));r.bgN=90}
   // camera glides toward where the pointer left it
   const o=r.orb,wt=r.want,k=r.reduce?1:0.2;
-  if(Math.abs(o.th-wt.th)+Math.abs(o.ph-wt.ph)+Math.abs(o.r-wt.r)>1e-4){o.th+=(wt.th-o.th)*k;o.ph+=(wt.ph-o.ph)*k;o.r+=(wt.r-o.r)*k;r.placeCam()}
+  if(Math.abs(o.th-wt.th)+Math.abs(o.ph-wt.ph)+Math.abs(o.r-wt.r)+Math.abs(o.tx-wt.tx)+Math.abs(o.ty-wt.ty)+Math.abs(o.tz-wt.tz)>1e-4){for(const q of ['th','ph','r','tx','ty','tz'])o[q]+=(wt[q]-o[q])*k;r.placeCam()}
   // belt + rollers + motor
   r.rubber.offset.x=-(sim.belt/100)/((G.bx1-G.bx0)/100)*r.rubber.repeat.x;
   for(const ro of r.rollers)ro.rotation.y=-sim.belt/11;
@@ -3567,9 +3599,9 @@ function draw3D(){
   // lamps, buttons, PLC LEDs, valve coils, HMI
   for(const L of r.lamps){const on=!!Y[L.yi];L.dome.material.emissiveIntensity=on?1.6:0.02;L.light.intensity=on?2:0;L.halo.material.opacity=on?.85:0}
   for(const b of r.btns)b.cap.position.y=sim.btn[b.k]?0.295:0.32;
-  for(let i=0;i<8;i++){r.ledX[i].material.emissiveIntensity=I['X'+i]?2:0;r.ledY[i].material.emissiveIntensity=Y[i]?2:0}
+  for(let i=0;i<8;i++){r.ledX[i].material.emissiveIntensity=I['X'+i]?1.1:0;r.ledY[i].material.emissiveIntensity=Y[i]?1.1:0}
   for(const v of r.valves){const on=!!Y[v.yi];v.led.material.emissiveIntensity=on?2.2:0;v.gl.material.opacity=on?.9:0}
-  const act=plcActive();r.runLed.material.emissiveIntensity=act?2:0;r.hmiMat.emissiveIntensity=act?0.85:0.25;
+  const act=plcActive();r.runLed.material.emissiveIntensity=act?1.1:0;r.hmiMat.emissiveIntensity=act?0.85:0.25;
   drawHmi(r,I,Y,act);
   // parts: a kicked part tips over as it falls into the bin
   const seen=new Set();

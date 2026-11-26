@@ -3354,6 +3354,7 @@ function build3d(){
     metal:M(0xdfe3e8,{map:brushed,metalness:1,roughness:.28}),plastic:M(0x2440c8,{roughness:.38}),
     bin:M(0x23272d,{roughness:.75}),tray:M(0xaab2ba,{metalness:.7,roughness:.4}),duct:M(0xffffff,{map:duct,roughness:.6}),
     vents:M(0xffffff,{map:vents,metalness:.5,roughness:.45}),thread:M(0xffffff,{map:thread,metalness:.9,roughness:.3}),
+    steel:M(0xcfd3d7,{metalness:.95,roughness:.22}),anod:M(0xc3c8ce,{metalness:.6,roughness:.42}),
     acrylic:new T.MeshPhysicalMaterial({color:0xe8f1f8,roughness:.05,metalness:0,transmission:0,transparent:true,opacity:.55,clearcoat:1})
   };
 
@@ -3389,6 +3390,20 @@ function build3d(){
     if(axis==='x')g.rotation.y=Math.PI/2;else if(axis==='y')g.rotation.x=Math.PI/2;
     g.position.set(x,y,z);scene.add(g);return g};
 
+  // round air cylinder (SMC CJ2 / Koganei slim style): tube, rod and head covers, ports on the head cover, auto switch band
+  const rcyl=(axis,len,r,x,y,z,o={})=>{const g=new T.Group(),m=o.body||mat.steel;
+    const body=new T.Mesh(cylGeo(r,len*0.8,32),m);body.castShadow=body.receiveShadow=true;g.add(body);
+    for(const e of [-1,1]){const c=new T.Mesh(cylGeo(r*1.14,len*0.1,32),mat.anod);c.position.y=e*len*0.45;c.castShadow=true;g.add(c)}
+    const boss=new T.Mesh(cylGeo(r*0.75,len*0.06,24),mat.anod);boss.position.y=len*0.53;g.add(boss);
+    const nut=new T.Mesh(cylGeo(r*0.95,len*0.035,6),mat.aluDark);nut.position.y=len*0.52;g.add(nut);
+    for(const e of [-1,1]){const f=new T.Mesh(cylGeo(r*0.22,r*0.5,16),mat.brass);f.rotation.x=Math.PI/2;f.position.set(0,e*len*0.45,r*1.3);g.add(f);
+      const ring=new T.Mesh(cylGeo(r*0.26,r*0.14,16),mat.tubeBlue);ring.rotation.x=Math.PI/2;ring.position.set(0,e*len*0.45,r*1.6);g.add(ring)}
+    if(o.sw){const s=new T.Mesh(new T.BoxGeometry(r*0.5,len*0.16,r*0.5),mat.ink);s.position.set(0,len*0.18,r*1.08);g.add(s);
+      const band=new T.Mesh(new T.TorusGeometry(r*1.02,r*0.06,8,24),mat.aluDark);band.rotation.x=Math.PI/2;band.position.y=len*0.18;g.add(band)}
+    // the group's local y is the rod direction
+    if(axis==='x')g.rotation.z=-Math.PI/2;else if(axis==='z')g.rotation.x=Math.PI/2;
+    g.position.set(x,y,z);scene.add(g);return g};
+
   /* ---- floor, bench ---- */
   const floorMat=M(0xe9ebe6,{roughness:1});const floor=new T.Mesh(new T.PlaneGeometry(40,40),floorMat);floor.rotation.x=-Math.PI/2;floor.position.y=-0.86;floor.receiveShadow=true;scene.add(floor);
   rbox(9.4,0.08,3.2,0.03,mat.bench,0,-0.04,0.1);rbox(9.4,0.78,3.0,0.04,mat.benchBody,0,-0.47,0.1,false);
@@ -3421,17 +3436,27 @@ function build3d(){
   led(0x1fd655,45.6,7.6,1.6,1.2).material.emissiveIntensity=1.1;   // POWER
   const runLed=led(0x1fd655,45.6,2.5,1.6,1.2);
   led(0xff4d4f,45.6,-2.5,1.6,1.2);led(0xff4d4f,45.6,-7.4,1.6,1.2);   // BATT, ERROR (off)
-  /* ---- GOT2000 HMI with a live I/O screen ---- */
-  rbox(1.5,0.84,0.14,0.05,mat.ink,P3(399),H3(91),-0.88);
-  const hmiC=document.createElement('canvas');hmiC.width=512;hmiC.height=256;const hmiX=hmiC.getContext('2d');const hmiTex=new T.CanvasTexture(hmiC);hmiTex.encoding=T.sRGBEncoding;
-  const hmiMat=new T.MeshStandardMaterial({map:hmiTex,emissive:0xffffff,emissiveMap:hmiTex,emissiveIntensity:.15,roughness:.2});
-  const hmi=new T.Mesh(new T.PlaneGeometry(1.32,0.62),hmiMat);hmi.position.set(P3(399),H3(89),-0.805);scene.add(hmi);
+  /* ---- GOT2000 GT2103-PMBD: 3.8 inch monochrome screen with the live I/O ---- */
+  tag(rbox(1.58,0.8,0.14,0.05,mat.ink,P3(399),H3(91),-0.88),'HMI Mitsubishi GOT2000 GT2103-PMBD');
+  const hmiC=document.createElement('canvas');hmiC.width=640;hmiC.height=256;const hmiX=hmiC.getContext('2d');const hmiTex=new T.CanvasTexture(hmiC);hmiTex.encoding=T.sRGBEncoding;
+  const hmiMat=new T.MeshStandardMaterial({map:hmiTex,emissive:0xffffff,emissiveMap:hmiTex,emissiveIntensity:.35,roughness:.2});
+  const hmi=new T.Mesh(new T.PlaneGeometry(1.25,0.5),hmiMat);hmi.position.set(P3(399),H3(88),-0.805);scene.add(hmi);
   /* ---- power supply, stepper, breaker, fibre amplifier ---- */
-  rbox(1.5,0.84,0.3,0.03,mat.vents,P3(725),H3(90),-0.8);
+  tag(rbox(1.39,0.95,0.26,0.02,mat.vents,P3(725),H3(92),-0.81),'Power supply MEAN WELL LRS-75-24 (24 V DC, 3.2 A)');
   const psuLed=add(new T.SphereGeometry(0.03,12,8),glowMat(0x3ccf6e),P3(772),H3(116),-0.64,false);psuLed.material.emissiveIntensity=1.6;
-  rbox(0.56,0.56,0.4,0.04,mat.dark,P3(486),H3(224),-0.75);cylZ(0.16,0.04,mat.aluDark,P3(486),H3(224),-0.54);const stepper=cylZ(0.04,0.14,mat.chrome,P3(486),H3(224),-0.48);
-  rbox(0.52,0.8,0.36,0.03,mat.white,P3(766),H3(216),-0.78);rbox(0.14,0.24,0.08,0.02,mat.ink,P3(766),H3(206),-0.58);
-  rbox(0.58,0.18,0.12,0.02,mat.ink,P3(195),H3(301),-0.86);
+  // stepper driver DR57A: black case with a finned heat sink
+  tag(rbox(0.5,0.62,0.22,0.02,mat.ink,P3(486),H3(224),-0.84),'Stepper driver MISUMI DR57A');
+  for(let i=0;i<6;i++)box(0.03,0.56,0.1,mat.aluDark,P3(486)-0.19+i*0.076,H3(224),-0.68);
+  add(new T.SphereGeometry(0.02,10,8),glowMat(0x3ccf6e),P3(486)+0.18,H3(224)+0.24,-0.73,false).material.emissiveIntensity=1.4;
+  const stepper=new T.Object3D();
+  tag(rbox(0.52,0.8,0.36,0.03,mat.white,P3(766),H3(216),-0.78),'Breaker Mitsubishi NF30-CS, 2P 20 A');rbox(0.14,0.24,0.08,0.02,mat.ink,P3(766),H3(206),-0.58);
+  // fibre amplifier FS-N41N on the DIN rail: 10 mm wide, display on the face
+  const ampTex=on=>ctex(64,160,(x,w,h)=>{x.fillStyle='#15181c';x.fillRect(0,0,w,h);x.fillStyle='#050607';x.fillRect(6,14,52,62);
+    x.font='bold 22px monospace';x.textAlign='center';x.fillStyle='#ff4a3d';x.fillText(on?'3871':' 152',32,40);x.fillStyle='#46e06c';x.fillText('2000',32,68);
+    x.fillStyle='#2b3036';for(const yy of [100,124])x.fillRect(14,yy,36,14)});
+  const ampOn=ampTex(1),ampOff=ampTex(0);
+  const amp=tag(add(new T.BoxGeometry(0.14,0.7,0.27),[mat.ink,mat.ink,mat.ink,mat.ink,M(0xffffff,{map:ampOff,roughness:.35}),mat.ink],P3(195),H3(301),-0.81),'X2 fibre amplifier Keyence FS-N41N');
+  const ampLed=add(new T.BoxGeometry(0.05,0.03,0.01),glowMat(0xff8a1f),P3(195),H3(301)+0.31,-0.672,false);
   /* ---- slotted cable ducts ---- */
   rbox(8.2,0.14,0.16,0.01,mat.duct,0,H3(145),-0.86);const vd=rbox(0.3,2.5,0.16,0.01,mat.duct,P3(837),H3(278),-0.86);
   /* ---- solenoid valve manifold (Y3 to Y6) ---- */
@@ -3441,15 +3466,15 @@ function build3d(){
     rbox(0.18,0.34,0.2,0.025,mat.dark,x,vy,-0.84);rbox(0.16,0.12,0.16,0.02,mat.ink,x,vy+0.2,-0.84);
     const led=add(new T.BoxGeometry(0.05,0.03,0.02),glowMat(0xff8a1f),x,vy+0.2,-0.755,false);const gl=sprite(0xff8a1f,0.18,x,vy+0.2,-0.73);
     plate(0.14,0.045,tagTex('Y'+yi,'#f2f3f0','#1a1d22'),x,vy-0.07,-0.739);
-    valves.push({yi,led,gl});tag(valves[i].led,'Y'+yi+' solenoid valve')});
+    valves.push({yi,led,gl});tag(valves[i].led,'Y'+yi+' solenoid valve Koganei 030-4E1 (24 V DC)')});
   /* ---- pick point: acrylic jig, fibre sensor X2 ---- */
   const J=G.jig,by=H3(G.beltY);
   rbox((J.r-J.l)/100,0.06,0.5,0.02,mat.acrylic,P3(J.x),by-0.03,0,false);
   for(const x of [P3(J.l+10),P3(J.r-10)])prof('y',by-0.2,0.06,x,(by-0.2)/2+0.16,0.2);
-  const fib=tag(rbox(0.12,0.1,0.1,0.02,mat.ink,P3(J.r+7),by+0.15,0.25),'X2 pick-point sensor');
+  const fib=tag(rbox(0.12,0.1,0.1,0.02,mat.ink,P3(J.r+7),by+0.15,0.25),'X2 fibre sensor head Keyence FU-35FZ');
   const pLed=add(new T.SphereGeometry(0.022,12,8),glowMat(0xff3b30),P3(J.r+7),by+0.22,0.25,false);const pGlow=sprite(0xff3b30,0.16,P3(J.r+7),by+0.22,0.27);
   const beam=new T.Mesh(new T.CylinderGeometry(0.004,0.004,0.5,8),new T.MeshBasicMaterial({color:0xff3b30,transparent:true,opacity:.55}));beam.rotation.x=Math.PI/2;beam.position.set(P3(J.x),by+0.15,0);scene.add(beam);
-  tube([[P3(J.r+7),by+0.15,0.32],[P3(J.r+7)+0.1,by-0.15,0.45],[P3(195),0.3,-0.4],[P3(195),H3(301)-0.12,-0.86]],0.012,mat.tubeBlack);
+  tube([[P3(J.r+7),by+0.15,0.32],[P3(J.r+7)+0.1,by-0.15,0.45],[P3(195),0.3,-0.4],[P3(195),H3(301)-0.36,-0.8]],0.012,mat.tubeBlack);
   /* ---- conveyor: profile frame, belt loop, crowned rollers, gear motor ---- */
   const bl=(G.bx1-G.bx0)/100,bcx=P3((G.bx0+G.bx1)/2);
   for(const z of [-0.34,0.34])prof('x',bl+0.34,0.14,bcx,by-0.1,z);
@@ -3459,37 +3484,38 @@ function build3d(){
   const belt=box(bl,0.03,0.58,mat.rubber,bcx,by-0.015,0);box(bl,0.02,0.58,mat.rubberDark,bcx,by-0.21,0,false);
   const rollers=[cylZ(0.11,0.6,mat.roller,P3(G.bx0),by-0.11,0),cylZ(0.11,0.6,mat.roller,P3(G.bx1),by-0.11,0)];
   for(const x of [P3(G.bx0),P3(G.bx1)])for(const z of [-0.42,0.42]){rbox(0.34,0.3,0.03,0.04,mat.white,x,by-0.11,z);cylZ(0.05,0.04,mat.aluDark,x,by-0.11,z*1.06)}
-  const motor=tag(cylZ(0.13,0.34,mat.dark,P3(G.bx1),by-0.11,0.62),'Y7 conveyor motor');
-  rbox(0.32,0.32,0.16,0.03,mat.aluDark,P3(G.bx1),by-0.11,0.42);
-  const fan=cylZ(0.12,0.02,M(0x3b4148,{roughness:.6}),P3(G.bx1),by-0.11,0.8);
-  const fanMark=box(0.2,0.025,0.01,mat.white,P3(G.bx1),by-0.11,0.815,false);
+  const motor=tag(rbox(0.3,0.3,0.32,0.03,mat.ink,P3(G.bx1),by-0.11,0.62),'Y7 conveyor stepper motor MISUMI C-57STM01');
+  for(const z of [0.45,0.79])rbox(0.32,0.32,0.05,0.03,mat.aluDark,P3(G.bx1),by-0.11,z);
+  for(const dx of [-0.12,0.12])for(const dy of [-0.12,0.12])cylZ(0.014,0.02,mat.chrome,P3(G.bx1)+dx,by-0.11+dy,0.82,10);
+  const fan=cylZ(0.05,0.03,mat.steel,P3(G.bx1),by-0.11,0.83);
+  const fanMark=box(0.09,0.02,0.01,mat.ink,P3(G.bx1),by-0.11,0.848,false);
   /* ---- X3 inductive proximity sensor ---- */
-  const prox=tag(cylZ(0.1,0.34,mat.thread,P3(G.x3),by+0.16,-0.5),'X3 metal sensor');
+  const prox=tag(cylZ(0.1,0.34,mat.thread,P3(G.x3),by+0.16,-0.5),'X3 metal sensor Autonics PRT30-15DO (M30)');
   for(const z of [-0.6,-0.4])cylZ(0.15,0.035,mat.roller,P3(G.x3),by+0.16,z,6);
   cylZ(0.105,0.05,M(0x7fd34e,{roughness:.4}),P3(G.x3),by+0.16,-0.315);
   rbox(0.08,0.4,0.36,0.01,mat.aluDark,P3(G.x3),by-0.03,-0.52);
   const proxLed=add(new T.SphereGeometry(0.02,12,8),glowMat(0xff8a1f),P3(G.x3),by+0.27,-0.62,false);const proxGlow=sprite(0xff8a1f,0.16,P3(G.x3),by+0.27,-0.6);
   /* ---- Y3 kicker cylinder ---- */
   const kx=P3(G.kick);
-  tag(pneu('z',0.44,0.15,kx,by+0.16,-0.68),'Y3 kicker cylinder');
+  tag(rcyl('z',0.5,0.075,kx,by+0.16,-0.71,{body:mat.anod}),'Y3 kicker cylinder Koganei SUPS16x50');
   rbox(0.4,0.04,0.3,0.01,mat.aluDark,kx,by+0.06,-0.62);
-  const kRod=cylZ(0.022,1,mat.chrome,kx,by+0.16,-0.4);
+  const kRod=cylZ(0.018,1,mat.chrome,kx,by+0.16,-0.4);
   const kPlate=rbox(0.38,0.2,0.04,0.02,mat.white,kx,by+0.12,-0.3);
   tube([[kx,by+0.25,-0.78],[kx,by+0.36,-0.9],[vx0+0.1,vy-0.4,-0.9],[vx0,vy-0.2,-0.86]],0.016,mat.tubeBlue);
   /* ---- Y5 slide, Y6 lift, Y4 parallel gripper ---- */
   const sy=H3(171),sz=-0.42;
-  tag(pneu('x',1.18,0.26,P3(115),sy,sz),'Y5 left-right cylinder');
+  tag(rcyl('x',1.18,0.085,P3(115),sy,sz,{sw:true}),'Y5 left-right cylinder SMC CDJ2KB10-60 (60 mm stroke)');
   prof('x',2.5,0.07,P3(195),H3(192),sz);
   tube([[P3(115)+0.45,sy+0.15,sz-0.05],[P3(115)+0.5,sy+0.32,-0.85],[(P3(115)+vx0)/2,sy+0.36,-0.9],[vx0+0.3,sy+0.2,-0.9],[vx0+0.24,vy+0.36,-0.86]],0.016,mat.tubeBlue);
-  const sRod=cylX(0.035,1,mat.chrome,0,sy,sz);
+  const sRod=cylX(0.026,1,mat.chrome,0,sy,sz);
   const carriage=rbox(0.6,0.4,0.36,0.04,mat.dark,0,H3(170),sz+0.05);
   const chain=box(1,0.08,0.12,M(0x2b2f35,{roughness:.8}),0,H3(150),sz-0.08,false);
   const arm=rbox(0.14,0.08,0.44,0.02,mat.alu,0,H3(200),-0.2);
-  const vBody=tag(new T.Mesh(rboxGeo(0.2,0.42,0.2,0.04),mat.cyl),'Y6 up-down cylinder');vBody.castShadow=true;scene.add(vBody);
-  const vCaps=[0,1].map(()=>{const c=new T.Mesh(rboxGeo(0.22,0.06,0.22,0.03),mat.cap);c.castShadow=true;scene.add(c);return c});
-  const vRod=cylY(0.028,1,mat.chrome,0,0,0);
-  const head=tag(rbox(0.72,0.13,0.3,0.03,mat.dark,0,0,0),'Y4 gripper');
-  const fl=rbox(0.06,0.28,0.24,0.015,mat.alu,0,0,0),fr=rbox(0.06,0.28,0.24,0.015,mat.alu,0,0,0);
+  const vBody=tag(new T.Mesh(rboxGeo(0.38,0.42,0.17,0.03),mat.anod),'Y6 up-down cylinder Koganei TBDA10x50 (twin rod)');vBody.castShadow=true;scene.add(vBody);
+  const vCaps=[0,1].map(()=>{const c=new T.Mesh(rboxGeo(0.4,0.05,0.19,0.02),mat.aluDark);c.castShadow=true;scene.add(c);return c});
+  const vRod=new T.Group();for(const dx of [-0.11,0.11]){const rr=new T.Mesh(cylGeo(0.022,1,16),mat.chrome);rr.position.x=dx;rr.castShadow=true;vRod.add(rr)}scene.add(vRod);
+  const head=tag(rbox(0.72,0.13,0.3,0.03,mat.anod,0,0,0),'Y4 gripper SMC MHZ2-16D');
+  const fl=rbox(0.06,0.28,0.24,0.015,mat.steel,0,0,0),fr=rbox(0.06,0.28,0.24,0.015,mat.steel,0,0,0);
   /* ---- reject bin and end tray ---- */
   const B=G.bin,binW=(B.r-B.l)/100,bx=P3((B.l+B.r)/2),bz=0.68,bH=0.42,bY=0.16;
   rbox(binW,0.04,0.56,0.01,mat.bin,bx,bY+0.02,bz);rbox(binW,bH,0.04,0.01,mat.bin,bx,bY+bH/2,bz-0.28);rbox(binW,bH*0.75,0.04,0.01,mat.bin,bx,bY+bH*0.375,bz+0.28);
@@ -3502,13 +3528,13 @@ function build3d(){
   const torus=(r,t,m,x,y,z)=>{const o=add(new T.TorusGeometry(r,t,12,32),m,x,y,z);o.rotation.x=Math.PI/2;return o};
   const lamps=[[2,0xe3352b,188,'Y2 red lamp'],[1,0xf0ae00,248,'Y1 yellow lamp'],[0,0x13a058,308,'Y0 green lamp']].map(([yi,c,x,lb])=>{
     cylY(0.13,0.05,mat.aluDark,P3(x),0.265,cz);torus(0.125,0.018,mat.chrome,P3(x),0.29,cz);
-    const dome=tag(new T.Mesh(new T.SphereGeometry(0.105,32,16,0,Math.PI*2,0,Math.PI/2),new T.MeshPhysicalMaterial({color:c,emissive:c,emissiveIntensity:0,roughness:.15,clearcoat:1,transparent:true,opacity:.9})),lb);
-    dome.position.set(P3(x),0.29,cz);scene.add(dome);
+    const dome=tag(new T.Mesh(new T.CylinderGeometry(0.1,0.104,0.05,32),new T.MeshPhysicalMaterial({color:c,emissive:c,emissiveIntensity:0,roughness:.2,clearcoat:1,transparent:true,opacity:.92})),lb+' (pilot lamp, 24 V DC LED)');
+    dome.position.set(P3(x),0.305,cz);scene.add(dome);
     const light=new T.PointLight(c,0,2.6,2);light.position.set(P3(x),0.55,cz);scene.add(light);
     const gl=sprite(c,0.75,P3(x),0.36,cz);
     return {yi,dome,light,halo:gl};
   });
-  const btns=[['X1',0xe3352b,598,'X1 STOP','STOP'],['X0',0x13a058,662,'X0 START','START']].map(([k,c,x,lb,word])=>{
+  const btns=[['X1',0xe3352b,598,'X1 STOP button IDEC ABW110-R','STOP'],['X0',0x13a058,662,'X0 START button IDEC ABW110-G','START']].map(([k,c,x,lb,word])=>{
     cylY(0.14,0.05,mat.aluDark,P3(x),0.265,cz);torus(0.125,0.02,mat.chrome,P3(x),0.29,cz);
     const cap=tag(cylY(0.1,0.08,new T.MeshPhysicalMaterial({color:c,roughness:.3,clearcoat:.8}),P3(x),0.32,cz),lb);cap.userData.btn=k;
     const lp=plate(0.24,0.07,tagTex(word,'#1b1e22','#f2f3f0'),P3(x),0.2,cz+0.252);
@@ -3556,21 +3582,20 @@ function build3d(){
   dom.addEventListener('dblclick',()=>{Object.assign(want,home)});
   new ResizeObserver(size3d).observe(V3.el);
   const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  R3={kRod,kPlate,stepper,floorMat,T,renderer,scene,cam,mat,belt,rubber,rollers,fan,fanMark,pLed,pGlow,beam,proxLed,proxGlow,sRod,carriage,chain,arm,vBody,vCaps,vRod,head,fl,fr,lamps,btns,parts,partGeo,ledX,ledY,runLed,hmiMat,hmiTex,hmiX,valves,orb,want,placeCam,reduce,bgN:0,hmiSig:''};
+  R3={kRod,kPlate,stepper,amp,ampOn,ampOff,ampLed,floorMat,T,renderer,scene,cam,mat,belt,rubber,rollers,fan,fanMark,pLed,pGlow,beam,proxLed,proxGlow,sRod,carriage,chain,arm,vBody,vCaps,vRod,head,fl,fr,lamps,btns,parts,partGeo,ledX,ledY,runLed,hmiMat,hmiTex,hmiX,valves,orb,want,placeCam,reduce,bgN:0,hmiSig:''};
   size3d();
 }
 function drawHmi(r,I,Y,act){
   const x=r.hmiX,sig=(act?1:0)+':'+[0,1,2,3,4,5,6,7].map(i=>(I['X'+i]?1:0)+''+(Y[i]?1:0)).join('')+':'+sim.stats.ok+'/'+sim.stats.ng+'/'+sim.stats.drop;
   if(sig===r.hmiSig)return;r.hmiSig=sig;
-  x.fillStyle='#0d1b2a';x.fillRect(0,0,512,256);x.fillStyle='#16324f';x.fillRect(0,0,512,40);
-  x.fillStyle='#e6f0ff';x.font='bold 22px Arial, sans-serif';x.fillText('PLC Training',14,28);
-  x.fillStyle=act?'#b9ff66':'#ff6b6e';x.fillText(act?'RUN':'STOP',420,28);
-  x.font='16px Arial, sans-serif';
-  for(let i=0;i<8;i++){const xi=18+i*60;
-    x.fillStyle=I['X'+i]?'#3ccf6e':'#22384f';x.fillRect(xi,62,48,34);x.fillStyle=I['X'+i]?'#0d1b2a':'#9fb4cc';x.fillText('X'+i,xi+12,85);
-    x.fillStyle=Y[i]?'#ffb02e':'#22384f';x.fillRect(xi,112,48,34);x.fillStyle=Y[i]?'#0d1b2a':'#9fb4cc';x.fillText('Y'+i,xi+12,135)}
-  x.fillStyle='#e6f0ff';x.font='bold 20px Arial, sans-serif';
-  x.fillText('OK '+sim.stats.ok,18,200);x.fillText('NG '+sim.stats.ng,140,200);x.fillText('DROP '+sim.stats.drop,262,200);
+  const W=640,H=256,bg='#dfe3dc',ink='#1c1f1b';x.fillStyle=bg;x.fillRect(0,0,W,H);
+  x.fillStyle=ink;x.fillRect(0,0,W,42);x.fillStyle=bg;x.font='bold 24px Arial, sans-serif';x.fillText('PLC Training',16,30);
+  x.textAlign='right';x.fillText(act?'RUN':'STOP',W-16,30);x.textAlign='left';
+  x.font='bold 18px Arial, sans-serif';x.lineWidth=2;
+  for(let i=0;i<8;i++){const xi=16+i*77;
+    for(const [on,y,s] of [[I['X'+i],60,'X'+i],[Y[i],112,'Y'+i]]){x.strokeStyle=ink;x.strokeRect(xi+1,y+1,64,38);if(on){x.fillStyle=ink;x.fillRect(xi+1,y+1,64,38)}x.fillStyle=on?bg:ink;x.fillText(s,xi+20,y+27)}}
+  x.fillStyle=ink;x.font='bold 24px Arial, sans-serif';
+  x.fillText('OK '+sim.stats.ok,16,210);x.fillText('NG '+sim.stats.ng,190,210);x.fillText('DROP '+sim.stats.drop,364,210);
   r.hmiTex.needsUpdate=true;
 }
 function draw3D(){
@@ -3584,7 +3609,7 @@ function draw3D(){
   for(const ro of r.rollers)ro.rotation.y=-sim.belt/11;
   r.fan.rotation.y=sim.motorA*1.4;r.fanMark.rotation.z=sim.motorA*1.4;
   // sensors
-  r.pLed.material.emissiveIntensity=I.X2?2.4:0;r.pGlow.material.opacity=I.X2?.9:0;r.beam.visible=!I.X2;
+  r.pLed.material.emissiveIntensity=I.X2?2.4:0;{const am=r.amp.material[4],mp=I.X2?r.ampOn:r.ampOff;if(am.map!==mp){am.map=mp;am.needsUpdate=true}r.ampLed.material.emissiveIntensity=I.X2?2:0}r.pGlow.material.opacity=I.X2?.9:0;r.beam.visible=!I.X2;
   const ke=sim.kick*sim.kick*(3-2*sim.kick),kz=-0.3+ke*0.24;r.kPlate.position.z=kz;r.kRod.scale.y=Math.max(0.02,kz-(-0.45));r.kRod.position.z=-0.45+(kz+0.45)/2;r.stepper.rotation.y=sim.motorA*.4;
   r.proxLed.material.emissiveIntensity=I.X3?2.4:0;r.proxGlow.material.opacity=I.X3?.9:0;
   // slide + vertical cylinder + gripper

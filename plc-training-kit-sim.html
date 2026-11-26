@@ -146,9 +146,49 @@ section.block{margin-bottom:var(--space-3xl)}
 .pill.err{color:#FF8A8D} .pill.err i{background:#FF8A8D}
 
 /* workbench */
-.stage{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--space-xl) var(--space-lg);align-items:start}
-@media (max-width:1140px){.stage{grid-template-columns:minmax(0,1fr)}}
-.col{display:flex;flex-direction:column;gap:var(--space-xl);min-width:0}
+.stage{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-xl);align-items:start}
+/* machine row: the view leads, I/O sits beside it as a rail */
+.machrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,350px);gap:var(--space-lg);align-items:stretch;min-width:0}
+.iopanel{display:flex;flex-direction:column;min-height:0}
+.machrow .iopanel .iocols{grid-template-columns:minmax(0,1fr);flex:1 1 0;min-height:0;overflow:auto;align-content:start}
+.machrow .iopanel .iorow{min-height:28px;padding-block:2px}
+.machrow .iopanel .iorow span.d{font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.machrow .iopanel .iohead{padding:var(--space-xs) 0 2px}
+.iohead .ih{display:none}
+.machrow .iopanel .iohead .ih{display:inline}
+.machrow .iopanel #ioHint{display:none}
+.machrow .iopanel .phead{min-height:48px}
+.machrow .iopanel{padding-bottom:var(--space-sm)}
+.machrow .iopanel #pMon{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+.machrow .iopanel #pMon[hidden]{display:none}
+.machrow .iopanel .scroll{flex:1 1 0;max-height:none}
+@media (max-width:1100px){
+  .machrow{grid-template-columns:minmax(0,1fr)}
+  .machrow .iopanel .iocols{grid-template-columns:repeat(2,minmax(0,1fr));flex:none;overflow:visible}
+  .machrow .iopanel .iorow{min-height:36px}
+  .machrow .iopanel .iorow span.d{font-size:inherit;white-space:normal}
+  .machrow .iopanel .iohead{padding:var(--space-sm) 0 var(--space-2xs)}
+  .machrow .iopanel .iohead .ih{display:none}
+  .machrow .iopanel #ioHint{display:inline}
+  .machrow .iopanel .phead{min-height:56px}
+  .machrow .iopanel{padding-bottom:var(--space-lg)}
+  .machrow .iopanel #pMon{flex:none}
+  .machrow .iopanel .scroll{flex:none;max-height:22rem}
+}
+@media (max-width:30rem){.machrow .iopanel .iocols{grid-template-columns:minmax(0,1fr)}}
+.mctl{display:flex;align-items:center;gap:var(--space-xs)}
+.mctl button.primary,.mctl button.stop{min-height:40px;border-radius:var(--radius-btn);padding:0 var(--space-md)}
+.fsbtn{display:inline-grid;place-items:center;width:40px;min-height:40px;padding:0;border-radius:var(--radius-btn);background:#FFFFFF;color:#191A23}
+.fsbtn:hover{background:#191A23;color:#FFFFFF}
+.fsbtn .fs-off,:fullscreen .fsbtn .fs-on{display:none}
+:fullscreen .fsbtn .fs-off{display:inline}
+@media (max-width:44rem){.mctl #mRun,.mctl #mStop{display:none}}
+/* full screen machine */
+#machPanel:fullscreen{display:flex;flex-direction:column;border:0;border-radius:0;box-shadow:none;padding:var(--space-sm) var(--space-lg) var(--space-md);overflow:hidden}
+#machPanel:fullscreen .simwrap{flex:1 1 0;min-height:0;display:grid;place-items:center}
+#machPanel:fullscreen #sim{width:auto;height:100%;max-width:100%}
+#machPanel:fullscreen .sim3d{aspect-ratio:auto;height:100%}
+#machPanel:fullscreen .hint3d{display:none}
 .panel{background:var(--color-card);color:var(--color-card-ink);border:var(--rule-hair) solid var(--color-edge);border-radius:var(--radius-panel);box-shadow:var(--shadow-card);min-width:0;padding:var(--space-md) var(--space-lg) var(--space-lg)}
 .panel.lime{background:var(--lime);--color-card-ink:#191A23;color:#191A23}
 .panel.dark{background:var(--color-dark);color:#F3F3F3}
@@ -408,6 +448,9 @@ button.iorow span.d{color:#E4E4E7}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button.primary{background:var(--lime);border-color:var(--lime);color:#191A23}
  :root:not([data-theme="light"]) button.primary .icon{color:#191A23}
  :root:not([data-theme="light"]) button.primary:hover{background:#FFFFFF;border-color:#FFFFFF;color:#191A23}
+ :root:not([data-theme="light"]) .panel.lime button.primary{background:#191A23;border-color:#191A23;color:#FFFFFF}
+ :root:not([data-theme="light"]) .panel.lime button.primary .icon{color:var(--lime)}
+ :root:not([data-theme="light"]) .panel.lime button.primary:hover{background:#33343E;border-color:#33343E;color:#FFFFFF}
  :root:not([data-theme="light"]) .btn.primary{background:var(--lime);border-color:var(--lime);color:#191A23}
  :root:not([data-theme="light"]) .status{border:1px solid #4A4B55}
  :root:not([data-theme="light"]) .seg button[aria-pressed="true"]{background:var(--lime);color:#191A23}}
@@ -494,6 +537,48 @@ button.iorow span.d{color:#E4E4E7}
     </div></nav>
 
     <div class="stage">
+      <div class="machrow" id="paneMach">
+        <section class="panel lime" id="machPanel" aria-labelledby="hMach">
+          <div class="phead">
+            <h2 id="hMach"><span class="hl">Machine</span></h2>
+            <div class="seg" role="group" aria-label="Machine view"><button id="v2d" aria-pressed="true">2D</button><button id="v3d" aria-pressed="false">3D</button></div>
+            <div class="mctl">
+              <button class="primary" id="mRun" title="Ctrl+Enter"><svg class="icon" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2l10 6-10 6z" fill="currentColor"/></svg>Run</button>
+              <button class="stop" id="mStop"><svg class="icon" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" fill="currentColor"/></svg>Stop</button>
+              <button class="fsbtn" id="fsBtn" aria-label="Full screen" title="Full screen" hidden><svg class="icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path class="fs-on" d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4" fill="none" stroke="currentColor" stroke-width="1.6"/><path class="fs-off" d="M6 2v4H2M14 6h-4V2M10 14v-4h4M2 10h4v4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+            </div>
+          </div>
+          <div class="inner simwrap">
+            <canvas id="sim" aria-label="Simulated PLC training kit with conveyor, pneumatic gripper, sensors and status lamps. The START and STOP buttons in the picture can be pressed"></canvas>
+            <div id="sim3d" class="sim3d" hidden><div class="tip3d" id="tip3d" hidden></div></div>
+          </div>
+          <div class="feed" role="group" aria-label="Parts">
+            <button id="addM">+ Metal</button>
+            <button id="addP">+ Plastic</button>
+            <label class="chk"><input type="checkbox" id="auto" checked> Auto feed</label>
+            <label class="chk" title="Place parts straight on the conveyor, skipping the gripper, for programs without pick and place"><input type="checkbox" id="direct"> Skip gripper</label>
+            <button id="resetSim">Reset</button>
+          </div>
+          <p class="hint3d" id="hint3d" hidden>Drag to orbit, scroll or pinch to zoom, double-click to reset the view. The START and STOP buttons on the table can be pressed.</p>
+        </section>
+        <section class="panel dark iopanel" aria-label="I/O and Monitor">
+          <div class="phead">
+            <div class="seg tabs" role="tablist" aria-label="I/O or Monitor">
+              <button role="tab" id="tIO" aria-selected="true" aria-controls="pIO">I/O</button>
+              <button role="tab" id="tMon" aria-selected="false" aria-controls="pMon" tabindex="-1">Monitor</button>
+            </div>
+            <span class="phint" id="ioHint">Hold X0 or X1 to press the button</span>
+          </div>
+          <div id="pIO" role="tabpanel" aria-labelledby="tIO" class="iocols">
+            <div><div class="iohead">Inputs X<span class="ih">, hold X0 or X1 to press</span></div><div class="iogrid" id="ioX"></div></div>
+            <div><div class="iohead">Outputs Y</div><div class="iogrid" id="ioY"></div></div>
+          </div>
+          <div id="pMon" role="tabpanel" aria-labelledby="tMon" class="inner" hidden>
+            <p class="monnote" id="monNote" hidden>The PLC is in STOP. Values shown are the last ones before it stopped.</p>
+            <div class="scroll" tabindex="0" role="region" aria-label="Device values in the program"><table class="watch" id="watchT"><thead><tr><th scope="col">Device</th><th scope="col">Type</th><th scope="col">Value</th></tr></thead><tbody id="watch"></tbody></table></div>
+          </div>
+        </section>
+      </div>
       <section class="panel" id="paneProg" aria-labelledby="hProg">
         <div class="phead">
           <h2 id="hProg"><span class="hl">Program</span></h2>
@@ -597,43 +682,6 @@ button.iorow span.d{color:#E4E4E7}
         <div class="console info" id="con" role="status">Press Run or Ctrl+Enter to run the program</div>
       </section>
 
-      <div class="col" id="paneMach">
-        <section class="panel lime" aria-labelledby="hMach">
-          <div class="phead">
-            <h2 id="hMach"><span class="hl">Machine</span></h2>
-            <div class="seg" role="group" aria-label="Machine view"><button id="v2d" aria-pressed="true">2D</button><button id="v3d" aria-pressed="false">3D</button></div>
-          </div>
-          <div class="inner simwrap">
-            <canvas id="sim" aria-label="Simulated PLC training kit with conveyor, pneumatic gripper, sensors and status lamps. The START and STOP buttons in the picture can be pressed"></canvas>
-            <div id="sim3d" class="sim3d" hidden><div class="tip3d" id="tip3d" hidden></div></div>
-          </div>
-          <div class="feed" role="group" aria-label="Parts">
-            <button id="addM">+ Metal</button>
-            <button id="addP">+ Plastic</button>
-            <label class="chk"><input type="checkbox" id="auto" checked> Auto feed</label>
-            <label class="chk" title="Place parts straight on the conveyor, skipping the gripper, for programs without pick and place"><input type="checkbox" id="direct"> Skip gripper</label>
-            <button id="resetSim">Reset</button>
-          </div>
-          <p class="hint3d" id="hint3d" hidden>Drag to orbit, scroll or pinch to zoom, double-click to reset the view. The START and STOP buttons on the table can be pressed.</p>
-        </section>
-        <section class="panel dark" aria-label="I/O and Monitor">
-          <div class="phead">
-            <div class="seg tabs" role="tablist" aria-label="I/O or Monitor">
-              <button role="tab" id="tIO" aria-selected="true" aria-controls="pIO">I/O</button>
-              <button role="tab" id="tMon" aria-selected="false" aria-controls="pMon" tabindex="-1">Monitor</button>
-            </div>
-            <span class="phint" id="ioHint">Hold X0 or X1 to press the button</span>
-          </div>
-          <div id="pIO" role="tabpanel" aria-labelledby="tIO" class="iocols">
-            <div><div class="iohead">Inputs X</div><div class="iogrid" id="ioX"></div></div>
-            <div><div class="iohead">Outputs Y</div><div class="iogrid" id="ioY"></div></div>
-          </div>
-          <div id="pMon" role="tabpanel" aria-labelledby="tMon" class="inner" hidden>
-            <p class="monnote" id="monNote" hidden>The PLC is in STOP. Values shown are the last ones before it stopped.</p>
-            <div class="scroll" tabindex="0" role="region" aria-label="Device values in the program"><table class="watch" id="watchT"><thead><tr><th scope="col">Device</th><th scope="col">Type</th><th scope="col">Value</th></tr></thead><tbody id="watch"></tbody></table></div>
-          </div>
-        </section>
-      </div>
     </div>
   </section>
 
@@ -3238,7 +3286,7 @@ function setView(v){
 $('v2d').addEventListener('click',()=>setView('2d'));
 $('v3d').addEventListener('click',()=>setView('3d'));
 let R3=null;
-function size3d(){if(!R3)return;const w=V3.el.clientWidth||600,h=Math.round(w*500/900);R3.renderer.setSize(w,h,false);R3.renderer.domElement.style.width='100%';R3.renderer.domElement.style.height='auto';R3.cam.aspect=w/h;R3.cam.updateProjectionMatrix()}
+function size3d(){if(!R3)return;const w=V3.el.clientWidth||600,h=V3.el.clientHeight||Math.round(w*500/900);R3.renderer.setSize(w,h,false);R3.renderer.domElement.style.width='100%';R3.renderer.domElement.style.height='100%';R3.cam.aspect=w/h;R3.cam.updateProjectionMatrix()}
 function build3d(){
   const T=window.THREE;
   const renderer=new T.WebGLRenderer({antialias:true,alpha:false});
@@ -3445,7 +3493,7 @@ function build3d(){
   /* ---- parts ---- */
   const partGeo=rboxGeo(G.pw/100,G.ph/100,0.36,0.03),parts=new Map();
   /* ---- camera orbit with easing ---- */
-  const home={th:-0.28,ph:1.13,r:10.2},orb={...home,tx:0,ty:1.35,tz:0.2},want={...home};
+  const home={th:-0.28,ph:1.13,r:9.6},orb={...home,tx:0,ty:1.35,tz:0.2},want={...home};
   const placeCam=()=>{cam.position.set(orb.tx+orb.r*Math.sin(orb.ph)*Math.sin(orb.th),orb.ty+orb.r*Math.cos(orb.ph),orb.tz+orb.r*Math.sin(orb.ph)*Math.cos(orb.th));cam.lookAt(orb.tx,orb.ty,orb.tz)};
   placeCam();
   const ray=new T.Raycaster(),ndc=new T.Vector2();
@@ -3578,8 +3626,8 @@ function uiExtra(){
   const st=$('pill').className+'|'+$('pillTxt').textContent+'|'+running+'|'+source;
   if(st!==lastDock){
     $('dPill').className=$('pill').className;$('dPillTxt').textContent=$('pillTxt').textContent;
-    const canStop=running;$('btnStop').disabled=!canStop;$('dStop').disabled=!canStop;
-    $('dRun').disabled=source==='bridge';
+    const canStop=running;$('btnStop').disabled=!canStop;$('dStop').disabled=!canStop;$('mStop').disabled=!canStop;
+    $('dRun').disabled=source==='bridge';$('mRun').disabled=source==='bridge';
     const stale=!running&&scanCount>0&&source!=='bridge'&&(lang==='LD'||lang==='IL'||!!stRt);
     $('monNote').hidden=!stale;$('watchT').classList.toggle('stale',stale);
     lastDock=st;
@@ -3588,6 +3636,13 @@ function uiExtra(){
 }
 $('dRun').addEventListener('click',()=>startPLC());
 $('dStop').addEventListener('click',()=>stopPLC(false));
+$('mRun').addEventListener('click',()=>startPLC());
+$('mStop').addEventListener('click',()=>stopPLC(false));
+/* full screen machine view */
+{const fs=$('fsBtn'),mp=$('machPanel');
+ if(document.fullscreenEnabled&&mp.requestFullscreen){fs.hidden=false;
+  fs.addEventListener('click',()=>{if(document.fullscreenElement)document.exitFullscreen();else mp.requestFullscreen().catch(()=>{})});
+  document.addEventListener('fullscreenchange',()=>{const on=document.fullscreenElement===mp;fs.setAttribute('aria-label',on?'Exit full screen':'Full screen');fs.title=on?'Exit full screen (Esc)':'Full screen'})}}
 /* I/O and Monitor tabs */
 function setIoTab(t){
   const io=t==='io';
@@ -3604,7 +3659,7 @@ setIoTab(store.get('plcsim.iotab')==='mon'?'mon':'io');
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{
   const g=b.dataset.go;
   if(g==='3D'){if(window.matchMedia('(max-width:44rem)').matches)$('tabMach').click();$('v3d').click();document.getElementById('paneMach').scrollIntoView({block:'start'})}
-  else{$('lang'+g).click();if(window.matchMedia('(max-width:44rem)').matches)$('tabProg').click();document.getElementById('work').scrollIntoView({block:'start'})}
+  else{$('lang'+g).click();if(window.matchMedia('(max-width:44rem)').matches)$('tabProg').click();document.getElementById('paneProg').scrollIntoView({block:'start'})}
 }));
 document.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',()=>{const d=document.getElementById(a.dataset.open);if(d)d.open=true}));
 let artRun=null;

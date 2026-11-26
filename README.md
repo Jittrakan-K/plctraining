@@ -27,6 +27,26 @@ Open `plc-training-kit-sim.html` in a browser, or use GitHub Pages (`index.html`
 | | | Y6 | Up-down cylinder |
 | | | Y7 | Conveyor motor (runs to the right) |
 
+### Hardware in the real kit
+
+| Use | Part |
+|---|---|
+| PLC | Mitsubishi FX3U-16MT/ES |
+| HMI | Mitsubishi GOT2000 GT2103-PMBD (3.8 in, monochrome), cable GT21-C10R4-8P5 |
+| X0, X1 | Push buttons ABW110-G (green), ABW110-R (red) |
+| X2 | Keyence fibre head FU-35FZ with amplifier FS-N41N (NPN) |
+| X3 | Autonics inductive proximity sensor PRT30-15DO (M30) |
+| Y0 to Y2 | SUNMOON 24 V DC LED pilot lamps (green, yellow, red) |
+| Y3 | Koganei cylinder SUPS16x50 (kicker) |
+| Y4 | SMC parallel gripper MHZ2-16D |
+| Y5 | SMC cylinder CDJ2KB10-60 (left-right) |
+| Y6 | Koganei twin rod cylinder TBDA10x50 (up-down) |
+| Y7 | MISUMI stepping motor C-57STM01 with driver DR57A, 50 x 10 cm belt |
+| Valves | Koganei 030-4E1 (24 V DC) on manifold YM4F01, SMC SY7120 |
+| Air | Koganei regulator RZ30, MISUMI speed controllers and fittings |
+| Power | MEAN WELL LRS-75-24, Mitsubishi breaker NF30-CS (2P 20 A) |
+| Programming | FX-USB-AW (PLC), GT09-C30USB-5P (HMI) |
+
 A part waits at the pick point (X2). The gripper moves it to the conveyor, which carries it past the metal sensor (X3). Metal parts are kicked into the bin by Y3; plastic parts run to the end of the conveyor.
 
 The real kit has no cylinder position sensors, so the example programs use timers. The times are estimates and may need tuning on the real machine.
